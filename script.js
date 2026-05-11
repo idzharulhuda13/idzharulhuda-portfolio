@@ -130,47 +130,104 @@ document.querySelectorAll('section').forEach(el => {
   observer.observe(el);
 });
 
-// ===== Chart: BigQuery Optimization =====
-const chartEl = document.getElementById('optimization-chart');
-if (chartEl) {
-  new Chart(chartEl, {
+// ===== Chart 1: Query Processing Speed (9x faster) =====
+const speedChart = document.getElementById('speed-chart');
+if (speedChart) {
+  new Chart(speedChart, {
     type: 'bar',
     data: {
-      labels: ['Query Speed', 'Slot Time', 'Data Shuffled'],
-      datasets: [
-        {
-          label: 'Before',
-          data: [1, 100, 100],
-          backgroundColor: 'rgba(239, 68, 68, 0.6)',
-          borderColor: 'rgba(239, 68, 68, 1)',
-          borderWidth: 1,
-          borderRadius: 6
-        },
-        {
-          label: 'After',
-          data: [9, 4, 42],
-          backgroundColor: 'rgba(16, 185, 129, 0.6)',
-          borderColor: 'rgba(16, 185, 129, 1)',
-          borderWidth: 1,
-          borderRadius: 6
-        }
-      ]
+      labels: ['Before\n(1x baseline)', 'After\n(9x faster)'],
+      datasets: [{
+        label: 'Query Processing Speed',
+        data: [1, 9],
+        backgroundColor: [
+          'rgba(239, 68, 68, 0.5)',
+          'rgba(16, 185, 129, 0.7)'
+        ],
+        borderColor: [
+          'rgba(239, 68, 68, 1)',
+          'rgba(16, 185, 129, 1)'
+        ],
+        borderWidth: 2,
+        borderRadius: 8,
+        barPercentage: 0.5
+      }]
     },
     options: {
       responsive: true,
       plugins: {
-        legend: {
-          labels: { color: '#a1a1aa', font: { family: "'JetBrains Mono', monospace" } }
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              return ctx.parsed.y + 'x speed';
+            }
+          }
         }
       },
       scales: {
         x: {
           ticks: { color: '#71717a', font: { family: "'JetBrains Mono', monospace", size: 11 } },
+          grid: { display: false }
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            color: '#71717a',
+            font: { family: "'JetBrains Mono', monospace", size: 11 },
+            callback: function(val) { return val + 'x'; }
+          },
+          grid: { color: 'rgba(39, 39, 42, 0.5)' }
+        }
+      }
+    }
+  });
+}
+
+// ===== Chart 2: BigQuery Resource Savings =====
+const savingsChart = document.getElementById('savings-chart');
+if (savingsChart) {
+  new Chart(savingsChart, {
+    type: 'bar',
+    data: {
+      labels: ['Slot Time\n(-96%)', 'Data Shuffled\n(-58%)'],
+      datasets: [{
+        label: 'Reduction',
+        data: [96, 58],
+        backgroundColor: 'rgba(16, 185, 129, 0.7)',
+        borderColor: 'rgba(16, 185, 129, 1)',
+        borderWidth: 2,
+        borderRadius: 8,
+        barPercentage: 0.5
+      }]
+    },
+    options: {
+      responsive: true,
+      indexAxis: 'y',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              return ctx.parsed.x + '% reduction';
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          max: 100,
+          ticks: {
+            color: '#71717a',
+            font: { family: "'JetBrains Mono', monospace", size: 11 },
+            callback: function(val) { return val + '%'; }
+          },
           grid: { color: 'rgba(39, 39, 42, 0.5)' }
         },
         y: {
-          ticks: { color: '#71717a', font: { family: "'JetBrains Mono', monospace", size: 11 } },
-          grid: { color: 'rgba(39, 39, 42, 0.5)' }
+          ticks: { color: '#a1a1aa', font: { family: "'JetBrains Mono', monospace", size: 11 } },
+          grid: { display: false }
         }
       }
     }
