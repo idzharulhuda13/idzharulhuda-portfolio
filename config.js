@@ -11,8 +11,8 @@ const PORTFOLIO = {
     initials: "ih",
     title: "Analytics Engineer",
     email: "idzharul.huda@gmail.com",
-    linkedin: "idzharulhuda13",
-    github: "idzharulhuda",
+    linkedin: "idzharulhuda",
+    github: "idzharulhuda13",
     location: "Jakarta, Indonesia",
     // Lines that cycle in the hero typing animation
     roles: [
@@ -216,8 +216,8 @@ const PORTFOLIO = {
     description: "Open to Analytics Engineer and Data Engineering opportunities. Let's build something great together.",
     links: [
       { type: "email",    label: "idzharul.huda@gmail.com", href: "mailto:idzharul.huda@gmail.com" },
-      { type: "linkedin", label: "LinkedIn",                 href: "https://linkedin.com/in/idzharulhuda13" },
-      { type: "github",   label: "GitHub",                   href: "https://github.com/idzharulhuda" }
+      { type: "linkedin", label: "LinkedIn",                 href: "https://linkedin.com/in/idzharulhuda" },
+      { type: "github",   label: "GitHub",                   href: "https://github.com/idzharulhuda13" }
     ]
   },
 
