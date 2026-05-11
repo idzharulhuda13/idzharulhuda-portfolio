@@ -9,24 +9,24 @@ const PORTFOLIO = {
   personal: {
     name: "Idzharul Huda",
     initials: "ih",
-    title: "Headless Data Infrastructure Engineer",
+    title: "Data Infrastructure Engineer",
     email: "idzharul.huda@gmail.com",
     linkedin: "idzharulhuda",
     github: "idzharulhuda13",
     location: "Jakarta, Indonesia",
     // Lines that cycle in the hero typing animation
     roles: [
-      "Headless Data Infrastructure Engineer",
+      "Data Infrastructure Engineer",
+      "SQL & DBT Developer",
       "BigQuery Cost Optimizer",
       "AI & LLM Pipeline Builder",
-      "Self-Serve Analytics Architect",
-      "Data Quality Engineer"
+      "Self-Serve Analytics Architect"
     ],
     // Bio paragraphs (shown in About section, highlighted with accent color)
     bio: [
       {
-        text: "I specialize in headless B2B data products. Instead of building more dashboards, I engineer pipelines that deliver the right data to the right people via the tools they already use — spreadsheets, email, APIs, and chat.",
-        highlights: ["headless B2B data products", "spreadsheets, email, APIs, and chat"]
+        text: "I'm a Data Infrastructure Engineer who builds both dashboards and the pipelines behind them. I engineer data systems that deliver insights wherever people need them — dashboards, spreadsheets, email, APIs, and chat.",
+        highlights: ["dashboards and the pipelines behind them", "dashboards, spreadsheets, email, APIs, and chat"]
       },
       {
         text: 'At Rey.id, I delivered a 30% increase in pipeline efficiency, built automated data quality checks that cut manual review effort by 50%, and pioneered a dbt + Metabase framework that enabled 40+ stakeholders to self-serve analytics.',
@@ -42,7 +42,7 @@ const PORTFOLIO = {
       }
     ],
     // Short tagline under the hero name
-    tagline: "I build headless data infrastructure — pipelines that deliver insights via spreadsheets, APIs, and automated reports. No dashboard required.",
+    tagline: "I build data infrastructure that delivers insights where they matter — dashboards, APIs, spreadsheets, and automated reports.",
   },
 
   // --- Impact Metrics Cards ---
@@ -240,7 +240,7 @@ const PORTFOLIO = {
   // --- Contact CTA ---
   contact: {
     heading: "Let's Connect",
-    description: "Open to Lead Data Engineer, AI Solutions Architect, and Senior Analytics Engineer roles. Let's build data infrastructure that actually moves the needle.",
+    description: "Open to Data Engineer, AI Solutions Architect, and Analytics Engineer roles. Let's build data infrastructure that actually moves the needle.",
     links: [
       { type: "email",    label: "idzharul.huda@gmail.com", href: "mailto:idzharul.huda@gmail.com" },
       { type: "linkedin", label: "LinkedIn",                 href: "https://linkedin.com/in/idzharulhuda" },
