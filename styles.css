@@ -454,6 +454,112 @@ section {
   color: var(--text-muted);
 }
 
+.project-links {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.project-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+
+.project-link:hover {
+  color: var(--accent);
+}
+
+.project-link span {
+  font-size: 1rem;
+}
+
+/* ===== Case Study Modal ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  padding: 24px;
+}
+
+.modal-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  color: var(--text-primary);
+}
+
+.modal-content h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+  padding-right: 40px;
+}
+
+.case-study-section {
+  margin-bottom: 20px;
+}
+
+.case-study-section h4 {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.case-study-section p {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
 /* ===== Timeline / Experience ===== */
 .timeline {
   position: relative;

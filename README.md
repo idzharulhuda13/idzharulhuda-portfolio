@@ -15,24 +15,32 @@ Analytics Engineer portfolio site built with vanilla HTML, CSS, and JavaScript. 
 
 ```
 .
-├── index.html              # Single-page portfolio
+├── config.js               # ALL CONTENT -- edit this to update the site
+├── index.html              # Clean template, zero content
 ├── styles.css              # Dark theme, responsive layout
-├── script.js               # Particles, charts, animations, interactivity
+├── script.js               # Reads config.js, renders everything dynamically
 └── .github/workflows/
     └── deploy.yml          # GitHub Pages auto-deploy on push to main
 ```
 
-## Sections
+## Updating Content
 
-| Section | What It Shows |
-|---------|--------------|
-| **Hero** | Animated role cycling, particle network background, CTA buttons |
-| **About** | Bio, key achievements, contact info |
-| **Impact** | 4 animated metric cards + 2 data charts (BigQuery optimization results) |
-| **Projects** | 6 project cards with tech tags and impact metrics |
-| **Experience** | Timeline of roles at Rey.id and Olvo.ai |
-| **Tech Stack** | Skills organized by category with proficiency levels |
-| **Contact** | Email, LinkedIn, GitHub links |
+**Edit `config.js` only.** The entire site is driven by the `PORTFOLIO` object:
+
+```js
+PORTFOLIO.personal     // name, email, bio, typing roles
+PORTFOLIO.metrics       // impact cards
+PORTFOLIO.charts        // chart data, titles, colors
+PORTFOLIO.projects      // project cards with case studies and GitHub links
+PORTFOLIO.experience    // job history
+PORTFOLIO.skills        // tech stack categories
+PORTFOLIO.contact       // contact links
+PORTFOLIO.settings      // animation timings, particle config
+```
+
+Each project supports:
+- `githubUrl` - link to the source code repo
+- `caseStudy` - problem/approach/result modal content (set to `null` if no case study)
 
 ## Run Locally
 
@@ -54,11 +62,3 @@ git push
 ```
 
 Site will be live at `https://idzharulhuda13.github.io/idzharulhuda-portfolio/` within ~1 minute.
-
-## Customization
-
-- **Content:** Edit `index.html` directly -- all text is inline
-- **Colors:** Change CSS variables at the top of `styles.css` (`--accent`, `--bg-primary`, etc.)
-- **Charts:** Update data in `script.js` -- look for `Chart()` constructor calls
-- **Typed.js roles:** Edit the `strings` array in `script.js`
-- **Particles:** Adjust count, speed, and connection distance in `script.js`

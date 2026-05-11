@@ -9,24 +9,24 @@ const PORTFOLIO = {
   personal: {
     name: "Idzharul Huda",
     initials: "ih",
-    title: "Analytics Engineer",
+    title: "Headless Data Infrastructure Engineer",
     email: "idzharul.huda@gmail.com",
     linkedin: "idzharulhuda",
     github: "idzharulhuda13",
     location: "Jakarta, Indonesia",
     // Lines that cycle in the hero typing animation
     roles: [
-      "Analytics Engineer",
-      "SQL & DBT Developer",
-      "BigQuery Optimizer",
-      "Data Quality Builder",
-      "ML Engineer"
+      "Headless Data Infrastructure Engineer",
+      "BigQuery Cost Optimizer",
+      "AI & LLM Pipeline Builder",
+      "Self-Serve Analytics Architect",
+      "Data Quality Engineer"
     ],
     // Bio paragraphs (shown in About section, highlighted with accent color)
     bio: [
       {
-        text: "I'm an Analytics Engineer with 4+ years of experience specializing in DBT, SQL, and BigQuery.",
-        highlights: ["DBT", "SQL", "BigQuery"]
+        text: "I specialize in headless B2B data products. Instead of building more dashboards, I engineer pipelines that deliver the right data to the right people via the tools they already use — spreadsheets, email, APIs, and chat.",
+        highlights: ["headless B2B data products", "spreadsheets, email, APIs, and chat"]
       },
       {
         text: 'At Rey.id, I delivered a 30% increase in pipeline efficiency, built automated data quality checks that cut manual review effort by 50%, and pioneered a dbt + Metabase framework that enabled 40+ stakeholders to self-serve analytics.',
@@ -42,7 +42,7 @@ const PORTFOLIO = {
       }
     ],
     // Short tagline under the hero name
-    tagline: "Analytics Engineer specializing in DBT, SQL, and BigQuery. Building reliable single sources of truth for data-driven decisions."
+    tagline: "I build headless data infrastructure — pipelines that deliver insights via spreadsheets, APIs, and automated reports. No dashboard required.",
   },
 
   // --- Impact Metrics Cards ---
@@ -81,60 +81,87 @@ const PORTFOLIO = {
   // --- Projects ---
   projects: [
     {
+      title: "BigQuery Pipeline Optimization",
+      description: "Optimized datamart model making it 9x faster, decreasing BigQuery slot time by 96%+ and data shuffled by 58%. Redesigned partitioning strategy and clustering keys to slash compute costs.",
+      tech: ["BigQuery", "SQL", "Partitioning", "Cost Optimization"],
+      metrics: [
+        { value: "96%", label: "slot time reduction" },
+        { value: "9x",  label: "faster processing" }
+      ],
+      featured: true,
+      githubUrl: "",
+      caseStudy: {
+        problem: "A critical datamart query was consuming 96%+ of BigQuery slot time, creating bottlenecks for all downstream reports and driving up cloud costs.",
+        approach: "Analyzed EXPLAIN ANALYZE output to identify full table scans. Redesigned partitioning strategy on event_date, added clustering keys on high-cardinality filter columns, and restructured CTEs to reduce data shuffled.",
+        result: "Query runtime dropped from hours to minutes. BigQuery slot time reduced by 96%, data shuffled by 58%, and overall pipeline efficiency increased by 30%. Reports moved from daily to hourly generation."
+      }
+    },
+    {
+      title: "Dataverse — Conversational AI Analytics",
+      description: "LLM-powered analytics platform that lets users query datasets (CSV, Excel, Parquet) in natural language. Features automated data cleaning, SQL generation, and visualization — a headless data product that delivers results without a dashboard.",
+      tech: ["LLM", "Python", "Streamlit", "Pandas", "SQL Generation"],
+      metrics: [
+        { value: "191", label: "commits shipped" },
+        { value: "5", label: "specialist agents" }
+      ],
+      featured: true,
+      githubUrl: "https://github.com/idzharulhuda13/dataverse",
+      caseStudy: {
+        problem: "Business users needed ad-hoc analysis but lacked SQL skills. Analysts spent hours writing queries for simple questions like 'show me sales by region last quarter.'",
+        approach: "Built a multi-agent system with cleaning, enrichment, SQL generation, and visualization specialists. Users upload any dataset and ask questions in natural language. The system handles data cleaning, generates SQL, and returns charts.",
+        result: "Enabled non-technical users to explore data without analyst intervention. Reduced ad-hoc query backlog by eliminating repetitive reporting requests."
+      }
+    },
+    {
       title: "DBT + Metabase Self-Serve Analytics",
-      description: "Pioneered a dbt + Metabase framework enabling 40+ stakeholders to self-serve analytics without analyst intervention.",
+      description: "Pioneered a dbt + Metabase framework enabling 40+ stakeholders to self-serve analytics without analyst intervention. Migrated from manual Google Sheets workflows to automated BigQuery pipelines.",
       tech: ["dbt", "BigQuery", "Metabase", "SQL"],
       metrics: [
         { value: "40+", label: "stakeholders enabled" },
         { value: "0",   label: "analyst intervention" }
       ],
-      featured: true
-    },
-    {
-      title: "BigQuery Pipeline Optimization",
-      description: "Optimized datamart model making it 9x faster, decreasing BigQuery slot time by 96%+ and data shuffled by 58%.",
-      tech: ["BigQuery", "SQL", "Partitioning"],
-      metrics: [
-        { value: "96%", label: "slot time reduction" },
-        { value: "9x",  label: "faster processing" }
-      ],
-      featured: false
+      featured: false,
+      githubUrl: "https://github.com/idzharulhuda13/Analytics-Engineering-Portfolio",
+      caseStudy: {
+        problem: "15 analysts spent 2+ hours daily running manual reports from Google Sheets. Stakeholders couldn't access data until afternoon reports were ready.",
+        approach: "Migrated 50+ reports to BigQuery with dbt transformations (staging -> intermediate -> marts). Built automated data quality checks. Deployed Metabase for self-serve exploration.",
+        result: "Reports run hourly instead of daily. 40+ stakeholders self-serve. Analyst time freed for higher-value work. 30% overall pipeline efficiency gain."
+      }
     },
     {
       title: "OCR + LLM Document Digitization",
-      description: "Digitized thousands of hardcopy documents using OCR, YOLO, and GPT-4. Contributed to company's first $1M+ sale.",
+      description: "Digitized thousands of hardcopy documents using OCR, YOLO, and GPT-4. Built a real-time demo app that directly contributed to the company's first $1M+ sale.",
       tech: ["Python", "YOLO", "GPT-4", "OCR", "Streamlit"],
       metrics: [
         { value: "70%", label: "efficiency improvement" },
         { value: "$1M+", label: "sale contribution" }
       ],
-      featured: false
+      featured: false,
+      githubUrl: "",
+      caseStudy: null
     },
     {
       title: "Automated Data Quality Framework",
-      description: "Built end-to-end data quality checks and automated discrepancy detection, cutting manual error resolution by 50%.",
+      description: "Built end-to-end data quality checks and automated discrepancy detection, cutting manual error resolution by 50%. Enforced ISO 27001:2022 aligned data handling standards.",
       tech: ["dbt tests", "BigQuery", "Python", "Airflow"],
       metrics: [
         { value: "50%", label: "less manual work" },
         { value: "13%", label: "accuracy boost" }
       ],
-      featured: false
-    },
-    {
-      title: "Dataverse APP - Conversational AI Analytics",
-      description: "Conversational AI analytics platform for natural language interaction with datasets (CSV, Excel, Parquet).",
-      tech: ["LLM", "Python", "Streamlit", "Pandas"],
-      metrics: [],
-      featured: false
+      featured: false,
+      githubUrl: "",
+      caseStudy: null
     },
     {
       title: "Telehealth Cost-Effectiveness Study",
-      description: "Published paper demonstrating telehealth-powered managed care was 7x more cost-effective than conventional care for ARI.",
+      description: "Published paper demonstrating telehealth-powered managed care was 7x more cost-effective than conventional care for Acute Respiratory Infection (ARI).",
       tech: ["Research", "Statistical Analysis"],
       metrics: [
         { value: "7x", label: "more cost-effective" }
       ],
-      featured: false
+      featured: false,
+      githubUrl: "",
+      caseStudy: null
     }
   ],
 
@@ -213,7 +240,7 @@ const PORTFOLIO = {
   // --- Contact CTA ---
   contact: {
     heading: "Let's Connect",
-    description: "Open to Analytics Engineer and Data Engineering opportunities. Let's build something great together.",
+    description: "Open to Lead Data Engineer, AI Solutions Architect, and Senior Analytics Engineer roles. Let's build data infrastructure that actually moves the needle.",
     links: [
       { type: "email",    label: "idzharul.huda@gmail.com", href: "mailto:idzharul.huda@gmail.com" },
       { type: "linkedin", label: "LinkedIn",                 href: "https://linkedin.com/in/idzharulhuda" },

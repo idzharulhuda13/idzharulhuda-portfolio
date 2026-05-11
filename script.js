@@ -270,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- Render Projects ---
   const projectsGrid = document.getElementById('projects-grid');
-  P.projects.forEach(proj => {
+  P.projects.forEach((proj, idx) => {
     const card = document.createElement('div');
     card.className = 'project-card'
       + (proj.featured ? ' featured' : '');
@@ -287,6 +287,18 @@ document.addEventListener('DOMContentLoaded', () => {
         + '</div>';
     }
 
+    let linksHTML = '<div class="project-links">';
+    if (proj.githubUrl) {
+      linksHTML += '<a href="' + proj.githubUrl
+        + '" target="_blank" class="project-link">'
+        + '<span>&#8984;</span> Source Code</a>';
+    }
+    if (proj.caseStudy) {
+      linksHTML += '<button class="project-link case-study-btn" data-idx="'
+        + idx + '"><span>&#128221;</span> Case Study</button>';
+    }
+    linksHTML += '</div>';
+
     card.innerHTML =
       '<div class="project-header">'
       + (proj.featured
@@ -298,9 +310,52 @@ document.addEventListener('DOMContentLoaded', () => {
       + '<div class="project-tech">'
       + proj.tech.map(t => '<span>' + t + '</span>').join('')
       + '</div>'
-      + metricsHTML;
+      + metricsHTML
+      + linksHTML;
 
     projectsGrid.appendChild(card);
+  });
+
+  // --- Case Study Modal ---
+  const modal = document.createElement('div');
+  modal.className = 'modal-overlay';
+  modal.id = 'case-study-modal';
+  modal.innerHTML =
+    '<div class="modal-content">'
+    + '<button class="modal-close" id="modal-close">&times;</button>'
+    + '<h2 id="modal-title"></h2>'
+    + '<div class="modal-body">'
+    + '<div class="case-study-section">'
+    + '<h4>Problem</h4><p id="modal-problem"></p>'
+    + '</div>'
+    + '<div class="case-study-section">'
+    + '<h4>Approach</h4><p id="modal-approach"></p>'
+    + '</div>'
+    + '<div class="case-study-section">'
+    + '<h4>Result</h4><p id="modal-result"></p>'
+    + '</div>'
+    + '</div>'
+    + '</div>';
+  document.body.appendChild(modal);
+
+  document.getElementById('modal-close').addEventListener('click', () => {
+    modal.classList.remove('visible');
+  });
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.remove('visible');
+  });
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.case-study-btn');
+    if (!btn) return;
+    const idx = parseInt(btn.dataset.idx);
+    const proj = P.projects[idx];
+    if (!proj || !proj.caseStudy) return;
+    document.getElementById('modal-title').textContent = proj.title;
+    document.getElementById('modal-problem').textContent = proj.caseStudy.problem;
+    document.getElementById('modal-approach').textContent = proj.caseStudy.approach;
+    document.getElementById('modal-result').textContent = proj.caseStudy.result;
+    modal.classList.add('visible');
   });
 
   // --- Render Experience ---
