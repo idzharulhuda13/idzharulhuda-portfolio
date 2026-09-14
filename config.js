@@ -69,48 +69,50 @@ var PORTFOLIO = {
   // --- Impact metrics: value and unit are separate strings ---
   metrics: [
     {
-      value: "9",
-      unit: "x",
-      label: "Faster datamart processing",
-      scope: "One production datamart model, full-refresh query, same data volume before and after the rewrite.",
-      source: "BigQuery INFORMATION_SCHEMA.JOBS, 2024",
-      delta: {
-        before: { value: "1x", note: "baseline runtime of the original query, full table scan" },
-        after: { value: "9x", note: "same model and data volume after repartitioning and clustering" }
-      }
-    },
-    {
       value: "96",
       unit: "%",
-      label: "Less BigQuery slot time",
-      scope: "The same datamart model, which feeds the 50+ reports migrated from Google Sheets to BigQuery.",
-      source: "BigQuery INFORMATION_SCHEMA.JOBS, 2024",
+      label: "less BigQuery slot time on the datamart the reports depend on",
+      scope: "one production datamart model, same query and data volume before and after",
+      source: "query audit, 2024",
       delta: {
-        before: { value: "100", note: "slot time on the original full-scan query, indexed to 100" },
-        after: { value: "4", note: "residual slot time after the 96% reduction, same indexing" }
+        before: { value: "100", note: "slot time indexed to 100 on the original full-scan query" },
+        after: { value: "4", note: "residual slot time after the rewrite" }
       }
     },
     {
-      value: "95",
-      unit: "%",
-      label: "Report accuracy, up from 82%",
-      scope: "CHISS report workflows run by the reporting team, measured before and after automation with dynamic master mapping.",
-      source: "CHISS report accuracy checks against the master mapping, 2024",
+      value: "9",
+      unit: "x",
+      label: "faster processing on that same datamart model",
+      scope: "full-refresh run, same data volume",
+      source: "query audit, 2024",
       delta: {
-        before: { value: "82%", note: "manual CHISS workflows, static master mapping" },
-        after: { value: "95%", note: "automated CHISS workflows, dynamic master mapping" }
+        before: { value: "1x", note: "baseline runtime of the original query" },
+        after: { value: "9x", note: "after repartitioning and clustering" }
       }
     },
     {
-      value: "50",
-      unit: "+",
-      label: "Reports off Google Sheets onto BigQuery",
-      scope: "50+ reports and the 15 analysts who previously spent 2+ hours a day running them by hand; 40+ stakeholders now self-serve on dbt and Metabase.",
-      source: "dbt run logs, 2024",
-      delta: {
-        before: { value: "daily", note: "refresh cadence while reports were assembled by hand in Google Sheets" },
-        after: { value: "hourly", note: "scheduled BigQuery + dbt runs after the migration" }
-      }
+      value: "599",
+      unit: "",
+      label: "dbt models in production, with 908 automated data tests",
+      scope: "404 models write a physical table each run, 190 are inlined, 5 build incrementally; 233 rebuild hourly and 124 daily",
+      source: "repo scan and dbt manifest, Sep 2026",
+      delta: null
+    },
+    {
+      value: "121",
+      unit: "",
+      label: "tables refreshed every hour",
+      scope: "about 2,900 table loads a day across 25 ingestion pipelines and 159 source tables in 7 groups; every load is a change-set with a 2-hour look-back window",
+      source: "declared schedules and pipeline repo, Sep 2026",
+      delta: null
+    },
+    {
+      value: "3.5",
+      unit: "TB/day",
+      label: "scanned in the warehouse, fully on-demand",
+      scope: "about 105 TB a month with no capacity reservations; the warehouse holds 2.7 TB and 1.5 bn rows across roughly 3,800 tables",
+      source: "BigQuery query and storage billing, Aug-Sep 2026",
+      delta: null
     }
   ],
 
@@ -191,7 +193,7 @@ var PORTFOLIO = {
       caseStudy: {
         problem: "15 analysts spent 2+ hours daily running manual reports from Google Sheets. Stakeholders couldn't access data until afternoon reports were ready.",
         approach: "Migrated 50+ reports to BigQuery with dbt transformations (staging, intermediate, marts). Built automated data quality checks. Deployed Metabase for self-serve exploration.",
-        result: "Reports run hourly instead of daily. 40+ stakeholders self-serve. 30% overall pipeline efficiency gain."
+        result: "Reports run hourly instead of daily. 40+ stakeholders self-serve. 30% overall pipeline efficiency gain. Looker Studio is the primary BI surface today, with Metabase kept for its dedicated dataset and refresh job."
       },
       metrics: [
         { value: "40+", label: "stakeholders enabled" },
@@ -370,12 +372,32 @@ var PORTFOLIO = {
   // --- Experience ---
   experience: [
     {
+      role: "Analytics and Reporting Lead",
+      company: "Rey.id",
+      companyUrl: "https://rey.id",
+      location: "Jakarta, Indonesia",
+      period: "Aug 2026 - Present",
+      details: [
+        "Promoted to lead the analytics and reporting function on 26 Aug 2026, owning the batch analytics platform behind client reporting",
+        "Run the platform end to end: 25 ingestion pipelines, 21 of them hourly, loading 121 tables (about 2,900 table loads a day) into BigQuery with a change-set merge and a 2-hour look-back window",
+        "Maintain 599 dbt models and 908 automated data tests — 233 models rebuild hourly, 124 daily, all transformation as SQL inside the warehouse (no Spark), run from git through GitHub Actions",
+        "Added a daily completeness check that compares what each pipeline claims it built against what BigQuery actually changed, so a job that reports success but writes nothing is caught",
+        "Kept the platform fully on-demand: 3.5 TB scanned a day (about 105 TB a month) with no capacity reservations",
+        "Deliver client reports as files staged to Cloud Storage and pushed to SFTP or email, with per-contract password archives and cleanup after each run",
+        "Instrumented the storage estate (2.7 TB, 1.5 bn rows, about 3,800 tables) and kept storage and processing inside the Jakarta region for Indonesian PDP and ISO 27001 alignment"
+      ],
+      techTags: ["Airflow", "dbt", "BigQuery", "Cloud Storage", "Looker Studio", "Metabase", "Dataplex", "GitHub Actions"]
+    },
+    {
       role: "Data Analyst (Analytics Engineer)",
       company: "Rey.id",
       companyUrl: "https://rey.id",
       location: "Jakarta, Indonesia",
-      period: "Aug 2022 - Present",
+      period: "Aug 2022 - Aug 2026",
       details: [
+        "Enforced personal-data controls in the platform itself: column-level policy tags on name, email, phone, address, ID and financial fields, 29 tagged models, and a catalogue of 776 tables and 1,473 relationships that blocks personal data from readers without clearance",
+        "Built table-level lineage across 776 tables and 1,473 relationships, used daily (column-level lineage and lineage outside dbt are still open gaps)",
+        "Documented the estate honestly: dev and scratch copies account for 88% of stored bytes — expected for a development estate, though 94% of that had not been touched in 90+ days",
         "Optimized datamart model: 9x faster, 96%+ less BigQuery slot time, 58% less data shuffled",
         "Migrated 50+ reports from Google Sheets to BigQuery: daily -> hourly generation, 15 analysts freed from 2+ hours a day of manual reporting",
         "Pioneered the DBT + Metabase framework for 40+ stakeholders to self-serve analytics",
@@ -384,7 +406,7 @@ var PORTFOLIO = {
         "Enforced ISO 27001:2022 aligned data handling standards across analytics workflows",
         "Built 10+ automated dashboards for marketing, operations, and finance teams"
       ],
-      techTags: ["BigQuery", "dbt", "SQL", "Metabase", "Airflow", "Python", "Google Sheets"]
+      techTags: ["dbt", "BigQuery", "Metabase", "SQL", "GitHub Actions"]
     },
     {
       role: "AI Engineer",
@@ -403,24 +425,25 @@ var PORTFOLIO = {
   ],
 
   // --- Tech stack: two groups, each entry names where it is used ---
+  // The ML and vision tools were moved to the Olvo.ai bullets above — the current role is data platform work.
   skills: {
     daily: [
-      { name: "SQL", where: "dbt models and ad-hoc analysis at Rey.id, from staging through to marts" },
-      { name: "dbt", where: "the 50+ reports migrated off Google Sheets at Rey.id, staging / intermediate / marts" },
-      { name: "BigQuery", where: "the datamart and reporting layer at Rey.id, including the 96% slot time cut and the Sheets migration" },
-      { name: "Metabase", where: "the self-serve layer 40+ stakeholders at Rey.id query instead of filing requests" },
-      { name: "Python", where: "data quality checks at Rey.id, the OCR + YOLO + GPT-4 pipelines at Olvo.ai, and the side builds" },
-      { name: "Google Apps Script", where: "the pregnancy tracker digest and the dental clinic incentives dashboard" }
+      { name: "SQL", where: "all transformation, 599 dbt models in the warehouse" },
+      { name: "dbt", where: "the modelling layer, run from CI" },
+      { name: "BigQuery", where: "2.7 TB stored, 3.5 TB scanned a day" },
+      { name: "Airflow", where: "21 hourly pipelines, self-hosted on Kubernetes" },
+      { name: "Looker Studio", where: "primary BI surface for the business" },
+      { name: "Google Sheets", where: "analyst extracts and finance reporting" }
     ],
     production: [
-      { name: "Airflow", where: "orchestrating the automated data quality and discrepancy detection checks at Rey.id" },
-      { name: "Looker Studio", where: "automated dashboards for the marketing, operations and finance teams at Rey.id" },
-      { name: "Tableau", where: "business reporting dashboards for marketing and operations stakeholders at Rey.id" },
-      { name: "Streamlit", where: "the real-time client demo that supported Olvo.ai's first $1M+ sale" },
-      { name: "TensorFlow", where: "model training behind the document detection step in the Olvo.ai digitization pipeline" },
-      { name: "LLMs", where: "GPT-4 digitization at Olvo.ai, the hospital formulary embeddings, and the Dataverse query app" },
-      { name: "YOLO / OCR", where: "digitizing thousands of hardcopy documents at Olvo.ai, 70% efficiency improvement" },
-      { name: "Zoho Analytics", where: "hourly incentive sync into the reporting workbook" }
+      { name: "Metabase", where: "dedicated dataset and its own refresh job, secondary to Looker Studio" },
+      { name: "Dataplex", where: "catalogue and data quality" },
+      { name: "Cloud Storage", where: "file staging for ingestion and outbound delivery" },
+      { name: "GitHub Actions", where: "6 workflows: PR checks, hourly, daily, on-demand, docs" },
+      { name: "Python", where: "third-party API pulls and data jobs" },
+      { name: "Google Apps Script", where: "clinic and incentive reporting dashboards" },
+      { name: "Streamlit", where: "Dataverse, a public build" },
+      { name: "Zoho Analytics", where: "hourly incentive sync into a reporting workbook" }
     ]
   },
 
