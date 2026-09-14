@@ -367,11 +367,15 @@ Next batches (not this one): detail pages `/projects/<slug>.html` + renderer, ar
 `assets/og-card.png` + `og:image` (deliberately deferred so the tag never points at a missing file —
 W2 ships every other OG/Twitter tag), mobile/a11y pass, PR to `main`.
 
-## 7. Numbers still missing from Dada (asked 2026-09-14)
+## 7. Numbers Dada cannot supply (answered 2026-09-14)
 
-These would upgrade `metrics[].delta` and `proof[].note` from "scope only" to real before/after strips.
-Until he answers, the fields stay `null` and the renderer hides them — no ratio is invented:
-1. Datamart wall clock before/after (and the row count of the model it runs over).
-2. Bytes processed before/after on the optimised model (`INFORMATION_SCHEMA.JOBS`).
-3. Slot-hour or USD cost delta, if Dada is allowed to quote money.
-4. Dataverse: what it ran on (datasets/users) and Olvo.ai document volume.
+Asked for the missing measurements; **Dada's answer 2026-09-14: "itu udah lama banget aku gapunya lagi
+historynya"** — the BigQuery history (bytes, slot hours, wall clock) is gone. Closed as unavailable, not
+as forgotten: nothing is invented, and `delta` / `proof[].note` stay `null` for those items so the renderer
+hides them.
+
+What the site uses instead (all pre-existing, from Dada's own resume/config, so still his claims to stand by):
+the 82% → 95% accuracy pair, daily → hourly report cadence, 1x → 9x datamart runtime, 96% slot-time
+reduction, 40+ stakeholders, 50+ reports migrated, 15 analysts × 2h/day.
+
+Reopen condition: if he ever restores the query history, the fields are data-only edits — no code change.
