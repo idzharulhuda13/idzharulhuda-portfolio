@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="ih">
+  <rect x="0" y="0" width="32" height="32" fill="#08090b"/>
+  <rect x="0.5" y="0.5" width="31" height="31" fill="none" stroke="#1e232b" stroke-width="1"/>
+  <text x="16" y="16.5" font-family="JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="500" fill="#10b981" text-anchor="middle" dominant-baseline="central">ih</text>
+</svg>

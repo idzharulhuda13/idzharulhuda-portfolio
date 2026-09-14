@@ -3,100 +3,131 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="page-title">Analytics Engineer Portfolio</title>
-  <meta name="description" id="page-meta" content="">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  <title id="page-title">Idzharul Huda | Data Infrastructure Engineer</title>
+  <meta name="description" id="page-meta" content="Data infrastructure engineer in Jakarta. Pipelines, BigQuery cost optimisation, dbt, and headless reporting.">
+  <meta name="theme-color" content="#08090b">
+  <link rel="canonical" href="https://idzharulhuda13.github.io/idzharulhuda-portfolio/">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="apple-touch-icon" href="favicon.svg">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://idzharulhuda13.github.io/idzharulhuda-portfolio/">
+  <meta property="og:title" content="Idzharul Huda | Data Infrastructure Engineer">
+  <meta property="og:description" content="Data infrastructure engineer in Jakarta. Pipelines, BigQuery cost optimisation, dbt, and headless reporting.">
+  <meta property="og:site_name" content="Idzharul Huda">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Idzharul Huda | Data Infrastructure Engineer">
+  <meta name="twitter:description" content="Data infrastructure engineer in Jakarta. Pipelines, BigQuery cost optimisation, dbt, and headless reporting.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+<noscript><style>.reveal{opacity:1 !important;transform:none !important}</style></noscript>
 </head>
 <body>
-  <!-- Navigation -->
-  <nav class="navbar">
-    <a href="#hero" class="logo" id="nav-logo">&gt; </a>
-    <div class="nav-links">
-      <a href="#about">About</a>
-      <a href="#metrics">Impact</a>
-      <a href="#projects">Projects</a>
-      <a href="#experience">Experience</a>
-      <a href="#contact">Contact</a>
-    </div>
-  </nav>
 
-  <!-- Hero Section -->
-  <section id="hero" class="hero">
-    <canvas id="particle-canvas"></canvas>
-    <div class="hero-content">
-      <p class="hero-prefix">Hi, I'm</p>
-      <h1 class="hero-name" id="hero-name"></h1>
-      <h2 class="hero-title">
-        I'm a <span class="accent"><span id="typed-output"></span></span>
-      </h2>
-      <p class="hero-desc" id="hero-desc"></p>
-      <div class="hero-cta">
-        <a href="#projects" class="btn btn-primary">View My Work</a>
-        <a href="#contact" class="btn btn-secondary">Get In Touch</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="#top" id="brand-logo">&gt; ih</a>
+      <nav class="nav">
+        <a class="nav-link" href="#about">About</a>
+        <a class="nav-link" href="#impact">Impact</a>
+        <a class="nav-link" href="#projects">Work</a>
+        <a class="nav-link" href="#experience">Experience</a>
+        <a class="nav-link" href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero reveal" id="top">
+    <div class="wrap hero-inner">
+      <p class="hero-eyebrow" id="hero-eyebrow"></p>
+      <h1 class="hero-title" id="hero-name"></h1>
+      <p class="hero-lead" id="hero-lead"></p>
+      <div class="hero-cta" id="hero-cta"></div>
+      <div class="stack-strip" id="stack-strip"></div>
+      <div class="hero-stats" id="hero-stats"></div>
+    </div>
+  </section>
+
+  <section class="section reveal" id="about">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-label">&gt; about</p>
+        <h2 class="section-title">How I work</h2>
       </div>
-    </div>
-    <div class="scroll-indicator">
-      <span>Scroll</span>
-      <div class="scroll-arrow"></div>
+      <div class="prose" id="about-prose"></div>
+      <dl class="about-facts" id="about-facts"></dl>
     </div>
   </section>
 
-  <!-- About Section -->
-  <section id="about" class="about">
-    <div class="container">
-      <h2 class="section-title"><span class="accent">&gt;</span> About</h2>
-      <div class="about-content" id="about-content"></div>
-      <div class="about-details" id="about-details"></div>
+  <section class="section section--grid reveal" id="impact">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-label">&gt; impact</p>
+        <h2 class="section-title">Measured impact</h2>
+        <p class="section-note">Every number below is paired with its scope and source.</p>
+      </div>
+      <div class="impact-list" id="impact-list"></div>
     </div>
   </section>
 
-  <!-- Metrics / Impact Section -->
-  <section id="metrics" class="metrics">
-    <div class="container">
-      <h2 class="section-title"><span class="accent">&gt;</span> Impact</h2>
-      <div class="metrics-grid" id="metrics-grid"></div>
-      <div class="charts-row" id="charts-row"></div>
-    </div>
-  </section>
-
-  <!-- Projects Section -->
-  <section id="projects" class="projects">
-    <div class="container">
-      <h2 class="section-title"><span class="accent">&gt;</span> Projects</h2>
+  <section class="section reveal" id="projects">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-label">&gt; work</p>
+        <h2 class="section-title">Selected work</h2>
+      </div>
       <div class="projects-grid" id="projects-grid"></div>
+      <div class="section-head section-head--sub">
+        <p class="section-label">&gt; side builds</p>
+        <h2 class="section-title">Side builds</h2>
+      </div>
+      <div class="projects-grid" id="sidebuilds-grid"></div>
     </div>
   </section>
 
-  <!-- Experience Section -->
-  <section id="experience" class="experience">
-    <div class="container">
-      <h2 class="section-title"><span class="accent">&gt;</span> Experience</h2>
+  <section class="section reveal" id="experience">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-label">&gt; experience</p>
+        <h2 class="section-title">Experience</h2>
+      </div>
       <div class="timeline" id="timeline"></div>
     </div>
   </section>
 
-  <!-- Skills Section -->
-  <section id="skills" class="skills">
-    <div class="container">
-      <h2 class="section-title"><span class="accent">&gt;</span> Tech Stack</h2>
-      <div class="skills-grid" id="skills-grid"></div>
+  <section class="section reveal" id="skills">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-label">&gt; stack</p>
+        <h2 class="section-title">Tech stack</h2>
+        <p class="section-note">Each entry names where it is actually used.</p>
+      </div>
+      <div class="stack-grid" id="stack-grid"></div>
     </div>
   </section>
 
-  <!-- Contact Section -->
-  <section id="contact" class="contact">
-    <div class="container">
-      <h2 class="section-title"><span class="accent">&gt;</span> <span id="contact-heading"></span></h2>
-      <p class="contact-desc" id="contact-desc"></p>
+  <section class="section reveal" id="contact">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-label">&gt; contact</p>
+        <h2 class="section-title" id="contact-heading"></h2>
+      </div>
+      <p class="contact-lead" id="contact-lead"></p>
       <div class="contact-links" id="contact-links"></div>
+      <p class="citation" id="contact-citation"></p>
     </div>
   </section>
 
-  <footer>
-    <p id="footer-text"></p>
+  <footer class="site-footer">
+    <div class="wrap"><p class="footer-text" id="footer-text"></p></div>
   </footer>
 
   <script src="config.js"></script>
