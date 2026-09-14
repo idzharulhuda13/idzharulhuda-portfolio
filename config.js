@@ -31,7 +31,7 @@ var PORTFOLIO = {
     availability: "Open to senior data engineering roles — Jakarta or remote",
 
     // Set when a real PDF exists; the CTA is skipped while this is empty
-    resumeUrl: "",
+    resumeUrl: "resume.pdf",
 
     // Hero lead
     tagline: "I build the pipelines and the delivery layer around them: BigQuery models, dbt transformations, cost optimisation, and reports that land in tools people already open.",
