@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BigQuery Pipeline Optimization - Idzharul Huda</title>
+  <meta name="description" content="A critical datamart query was consuming 96%+ of BigQuery slot time, bottlenecking every report downstream of it and driving cloud cost up.">
+  <meta name="theme-color" content="#08090b">
+  <link rel="canonical" href="https://idzharulhuda13.github.io/idzharulhuda-portfolio/projects/bigquery-pipeline-optimization.html">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="BigQuery Pipeline Optimization - Idzharul Huda">
+  <meta property="og:description" content="A critical datamart query was consuming 96%+ of BigQuery slot time, bottlenecking every report downstream of it and driving cloud cost up.">
+  <meta property="og:url" content="https://idzharulhuda13.github.io/idzharulhuda-portfolio/projects/bigquery-pipeline-optimization.html">
+  <meta property="og:site_name" content="Idzharul Huda">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://idzharulhuda13.github.io/idzharulhuda-portfolio/assets/og-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Idzharul Huda — data infrastructure engineer">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="BigQuery Pipeline Optimization - Idzharul Huda">
+  <meta name="twitter:description" content="A critical datamart query was consuming 96%+ of BigQuery slot time, bottlenecking every report downstream of it and driving cloud cost up.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../project.css">
+</head>
+<body class="project-page">
+
+  <header class="pj-header">
+    <a class="pj-back" href="../index.html#projects">&lt;- Back to portfolio</a>
+    <p class="pj-kicker">Case study</p>
+    <h1 class="pj-title">BigQuery Pipeline Optimization</h1>
+    <p class="pj-lead">One datamart model: 9x faster, 96% less slot time, 58% less data shuffled.</p>
+    <dl class="pj-meta">
+      <dt class="pj-meta-label">Role</dt>
+      <dd class="pj-meta-value">Analytics engineer, Rey.id</dd>
+      <dt class="pj-meta-label">Stack</dt>
+      <dd class="pj-meta-value">BigQuery, SQL, Partitioning, Clustering, Cost Optimization</dd>
+    </dl>
+  </header>
+
+  <main class="pj-main">
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Problem and constraints</h2>
+      <p>A critical datamart query was consuming 96%+ of BigQuery slot time, bottlenecking every report downstream of it and driving cloud cost up.</p>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Approach</h2>
+      <p>Read EXPLAIN ANALYZE output to find full table scans. Redesigned partitioning on event_date, added clustering keys on the high-cardinality filter columns, and restructured CTEs to reduce data shuffled.</p>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Architecture</h2>
+      <figure class="pj-figure">
+        <img src="../assets/arch/bigquery-pipeline-optimization.svg" alt="Diagram of the datamart query path: full table scan on the original query, then partitioning on event_date, clustering keys on the filter columns, and restructured CTEs in the rewritten query.">
+        <figcaption>Query path before and after repartitioning and clustering.</figcaption>
+      </figure>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Measured result</h2>
+      <p>The same model and data volume now runs 9x faster, with 96% less slot time and 58% less data shuffled, and overall pipeline efficiency up 30%.</p>
+      <table class="pj-proof">
+        <thead>
+          <tr>
+            <th scope="col">What</th>
+            <th scope="col">Value</th>
+            <th scope="col">Scope and source</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="pj-proof-label">faster processing</td>
+            <td class="pj-proof-value">9x</td>
+            <td class="pj-proof-note">one production datamart model, same data volume, full-refresh run</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">less BigQuery slot time</td>
+            <td class="pj-proof-value">96%</td>
+            <td class="pj-proof-note">same model and query, measured before and after the rewrite</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">less data shuffled</td>
+            <td class="pj-proof-value">58%</td>
+            <td class="pj-proof-note">after repartitioning on event_date and adding clustering keys</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">overall pipeline efficiency gain</td>
+            <td class="pj-proof-value">30%</td>
+            <td class="pj-proof-note">across the reporting layer the model feeds</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Stack</h2>
+      <div class="pj-tags">
+        <span class="tech-chip">BigQuery</span>
+        <span class="tech-chip">SQL</span>
+        <span class="tech-chip">Partitioning</span>
+        <span class="tech-chip">Clustering</span>
+        <span class="tech-chip">Cost Optimization</span>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="pj-footer">
+    <a class="pj-back" href="../index.html#projects">&lt;- Back to portfolio</a>
+    <p class="pj-footer-note">Idzharul Huda - Data Infrastructure Engineer - <a class="pj-footer-link" href="https://github.com/idzharulhuda13">GitHub</a></p>
+  </footer>
+
+</body>
+</html>

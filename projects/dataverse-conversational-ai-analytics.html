@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dataverse — Conversational AI Analytics - Idzharul Huda</title>
+  <meta name="description" content="Business users needed ad-hoc analysis but lacked SQL skills, so analysts spent hours writing queries for simple questions.">
+  <meta name="theme-color" content="#08090b">
+  <link rel="canonical" href="https://idzharulhuda13.github.io/idzharulhuda-portfolio/projects/dataverse-conversational-ai-analytics.html">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Dataverse — Conversational AI Analytics - Idzharul Huda">
+  <meta property="og:description" content="Business users needed ad-hoc analysis but lacked SQL skills, so analysts spent hours writing queries for simple questions.">
+  <meta property="og:url" content="https://idzharulhuda13.github.io/idzharulhuda-portfolio/projects/dataverse-conversational-ai-analytics.html">
+  <meta property="og:site_name" content="Idzharul Huda">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://idzharulhuda13.github.io/idzharulhuda-portfolio/assets/og-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Idzharul Huda — data infrastructure engineer">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Dataverse — Conversational AI Analytics - Idzharul Huda">
+  <meta name="twitter:description" content="Business users needed ad-hoc analysis but lacked SQL skills, so analysts spent hours writing queries for simple questions.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../project.css">
+</head>
+<body class="project-page">
+
+  <header class="pj-header">
+    <a class="pj-back" href="../index.html#projects">&lt;- Back to portfolio</a>
+    <p class="pj-kicker">Case study</p>
+    <h1 class="pj-title">Dataverse — Conversational AI Analytics</h1>
+    <p class="pj-lead">Upload a dataset, ask in plain language, get SQL and charts — no analyst in the loop.</p>
+    <dl class="pj-meta">
+      <dt class="pj-meta-label">Type</dt>
+      <dd class="pj-meta-value">Independent build, public repo</dd>
+      <dt class="pj-meta-label">Stack</dt>
+      <dd class="pj-meta-value">LLM, Python, Streamlit, Pandas, SQL Generation</dd>
+    </dl>
+  </header>
+
+  <main class="pj-main">
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Problem and constraints</h2>
+      <p>Business users needed ad-hoc analysis but lacked SQL skills, so analysts spent hours writing queries for simple questions like 'show me sales by region last quarter.'</p>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Approach</h2>
+      <p>Built a multi-agent system with cleaning, enrichment, SQL generation, and visualization specialists. Users upload any dataset and ask questions in natural language; the system handles data cleaning, generates SQL, and returns charts.</p>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Architecture</h2>
+      <figure class="pj-figure">
+        <img src="../assets/arch/dataverse-conversational-ai-analytics.svg" alt="Diagram of the Dataverse request path: a dataset uploaded as CSV, Excel or Parquet, the cleaning and enrichment agents, the SQL generation agent, and the visualization output.">
+        <figcaption>Request path from an uploaded dataset through the specialist agents to SQL and charts.</figcaption>
+      </figure>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Measured result</h2>
+      <p>Enabled non-technical users to explore data without analyst intervention, removing the repetitive reporting requests that made up the ad-hoc queue.</p>
+      <table class="pj-proof">
+        <thead>
+          <tr>
+            <th scope="col">What</th>
+            <th scope="col">Value</th>
+            <th scope="col">Scope and source</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="pj-proof-label">commits shipped</td>
+            <td class="pj-proof-value">191</td>
+            <td class="pj-proof-note">single public repo, multi-agent analytics app</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">specialist agents</td>
+            <td class="pj-proof-value">5</td>
+            <td class="pj-proof-note">cleaning, enrichment, SQL generation and visualization over uploaded CSV, Excel and Parquet</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Stack</h2>
+      <div class="pj-tags">
+        <span class="tech-chip">LLM</span>
+        <span class="tech-chip">Python</span>
+        <span class="tech-chip">Streamlit</span>
+        <span class="tech-chip">Pandas</span>
+        <span class="tech-chip">SQL Generation</span>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="pj-footer">
+    <a class="pj-back" href="../index.html#projects">&lt;- Back to portfolio</a>
+    <p class="pj-footer-note">Idzharul Huda - Data Infrastructure Engineer - <a class="pj-footer-link" href="https://github.com/idzharulhuda13">GitHub</a></p>
+  </footer>
+
+</body>
+</html>

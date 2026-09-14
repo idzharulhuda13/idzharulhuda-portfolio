@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DBT + Metabase Self-Serve Analytics - Idzharul Huda</title>
+  <meta name="description" content="15 analysts spent 2+ hours daily running manual reports from Google Sheets.">
+  <meta name="theme-color" content="#08090b">
+  <link rel="canonical" href="https://idzharulhuda13.github.io/idzharulhuda-portfolio/projects/dbt-metabase-self-serve-analytics.html">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="DBT + Metabase Self-Serve Analytics - Idzharul Huda">
+  <meta property="og:description" content="15 analysts spent 2+ hours daily running manual reports from Google Sheets.">
+  <meta property="og:url" content="https://idzharulhuda13.github.io/idzharulhuda-portfolio/projects/dbt-metabase-self-serve-analytics.html">
+  <meta property="og:site_name" content="Idzharul Huda">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://idzharulhuda13.github.io/idzharulhuda-portfolio/assets/og-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Idzharul Huda — data infrastructure engineer">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DBT + Metabase Self-Serve Analytics - Idzharul Huda">
+  <meta name="twitter:description" content="15 analysts spent 2+ hours daily running manual reports from Google Sheets.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../project.css">
+</head>
+<body class="project-page">
+
+  <header class="pj-header">
+    <a class="pj-back" href="../index.html#projects">&lt;- Back to portfolio</a>
+    <p class="pj-kicker">Case study</p>
+    <h1 class="pj-title">DBT + Metabase Self-Serve Analytics</h1>
+    <p class="pj-lead">50+ reports moved to BigQuery, daily to hourly, with 40+ stakeholders self-serving.</p>
+    <dl class="pj-meta">
+      <dt class="pj-meta-label">Role</dt>
+      <dd class="pj-meta-value">Analytics engineer, Rey.id</dd>
+      <dt class="pj-meta-label">Stack</dt>
+      <dd class="pj-meta-value">dbt, BigQuery, Metabase, SQL</dd>
+    </dl>
+  </header>
+
+  <main class="pj-main">
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Problem and constraints</h2>
+      <p>15 analysts spent 2+ hours daily running manual reports from Google Sheets. Stakeholders couldn't access data until afternoon reports were ready.</p>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Approach</h2>
+      <p>Migrated 50+ reports to BigQuery with dbt transformations (staging, intermediate, marts). Built automated data quality checks. Deployed Metabase for self-serve exploration.</p>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Architecture</h2>
+      <figure class="pj-figure">
+        <img src="../assets/arch/dbt-metabase-self-serve-analytics.svg" alt="Diagram of the reporting path: BigQuery source tables into dbt staging, intermediate and mart models, then Metabase dashboards for self-serve exploration.">
+        <figcaption>Report path from source data through the dbt layers into Metabase.</figcaption>
+      </figure>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Measured result</h2>
+      <p>Reports run hourly instead of daily. 40+ stakeholders self-serve. 30% overall pipeline efficiency gain.</p>
+      <table class="pj-proof">
+        <thead>
+          <tr>
+            <th scope="col">What</th>
+            <th scope="col">Value</th>
+            <th scope="col">Scope and source</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="pj-proof-label">reports migrated</td>
+            <td class="pj-proof-value">50+</td>
+            <td class="pj-proof-note">from manual Google Sheets workflows to scheduled BigQuery models with dbt transformations</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">stakeholders self-serving</td>
+            <td class="pj-proof-value">40+</td>
+            <td class="pj-proof-note">querying dbt models and Metabase dashboards without an analyst</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">analysts previously running manual reports</td>
+            <td class="pj-proof-value">15</td>
+            <td class="pj-proof-note">2+ hours a day each before the migration</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">report refresh cadence</td>
+            <td class="pj-proof-value">daily to hourly</td>
+            <td class="pj-proof-note">the same reports after moving off hand-assembled Google Sheets</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Stack</h2>
+      <div class="pj-tags">
+        <span class="tech-chip">dbt</span>
+        <span class="tech-chip">BigQuery</span>
+        <span class="tech-chip">Metabase</span>
+        <span class="tech-chip">SQL</span>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="pj-footer">
+    <a class="pj-back" href="../index.html#projects">&lt;- Back to portfolio</a>
+    <p class="pj-footer-note">Idzharul Huda - Data Infrastructure Engineer - <a class="pj-footer-link" href="https://github.com/idzharulhuda13">GitHub</a></p>
+  </footer>
+
+</body>
+</html>
