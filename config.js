@@ -378,7 +378,7 @@ var PORTFOLIO = {
       location: "Jakarta, Indonesia",
       period: "Aug 2026 - Present",
       details: [
-        "Promoted to lead the analytics and reporting function on 26 Aug 2026, owning the batch analytics platform behind client reporting",
+        "Lead the analytics and reporting function and own the batch analytics platform behind client reporting",
         "Run the platform end to end: 25 ingestion pipelines, 21 of them hourly, loading 121 tables (about 2,900 table loads a day) into BigQuery with a change-set merge and a 2-hour look-back window",
         "Maintain 599 dbt models and 908 automated data tests — 233 models rebuild hourly, 124 daily, all transformation as SQL inside the warehouse (no Spark), run from git through GitHub Actions",
         "Added a daily completeness check that compares what each pipeline claims it built against what BigQuery actually changed, so a job that reports success but writes nothing is caught",
