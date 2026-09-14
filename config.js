@@ -1,5 +1,5 @@
 // ============================================================
-// PORTFOLIO CONFIG -- schema v2 (frozen keys, see exec spec section 3)
+// PORTFOLIO CONFIG — schema v2 (frozen keys, see exec spec section 3)
 // Everything on the site is driven by this single object.
 // Content rule: no number appears here that is not already in the
 // pre-v2 config or the writer's brief. Unknown measurements are omitted.
@@ -24,11 +24,11 @@ var PORTFOLIO = {
     focus: "Data infrastructure: analytics engineering, pipeline cost optimisation, and delivery into the tools people already use",
     timezone: "Asia/Jakarta (UTC+7)",
 
-    // Hero h1 -- positioning, not a job title
-    headline: "Data infrastructure that delivers insights where people already work -- pipelines, spreadsheets, APIs, automation.",
+    // Hero h1 — positioning, not a job title
+    headline: "Data infrastructure that delivers insights where people already work — pipelines, spreadsheets, APIs, automation.",
 
     // Mono eyebrow
-    availability: "Open to senior data engineering roles -- Jakarta or remote",
+    availability: "Open to senior data engineering roles — Jakarta or remote",
 
     // Set when a real PDF exists; the CTA is skipped while this is empty
     resumeUrl: "",
@@ -39,7 +39,7 @@ var PORTFOLIO = {
     // About prose
     bio: [
       {
-        text: "I'm a Data Infrastructure Engineer who builds both the pipelines and the delivery layer around them. I engineer data systems that deliver insights wherever people need them -- dashboards, spreadsheets, email, APIs, and chat.",
+        text: "I'm a Data Infrastructure Engineer who builds both the pipelines and the delivery layer around them. I engineer data systems that deliver insights wherever people need them — dashboards, spreadsheets, email, APIs, and chat.",
         highlights: ["the pipelines and the delivery layer around them", "dashboards, spreadsheets, email, APIs, and chat"]
       },
       {
@@ -125,14 +125,14 @@ var PORTFOLIO = {
       featured: true,
       kind: "work",
       githubUrl: "",
-      detailUrl: "",
+      detailUrl: "projects/bigquery-pipeline-optimization.html",
       proof: [
         { value: "9x", label: "faster processing", note: "one production datamart model, same data volume, full-refresh run" },
         { value: "96%", label: "less BigQuery slot time", note: "same model and query, measured before and after the rewrite" },
         { value: "58%", label: "less data shuffled", note: "after repartitioning on event_date and adding clustering keys" },
         { value: "30%", label: "overall pipeline efficiency gain", note: "across the reporting layer the model feeds" }
       ],
-      archDiagram: "",
+      archDiagram: "assets/arch/bigquery-pipeline-optimization.svg",
       codeSnippet: null,
       caseStudy: {
         problem: "A critical datamart query was consuming 96%+ of BigQuery slot time, bottlenecking every report downstream of it and driving cloud cost up.",
@@ -145,20 +145,20 @@ var PORTFOLIO = {
       ]
     },
     {
-      title: "Dataverse -- Conversational AI Analytics",
+      title: "Dataverse — Conversational AI Analytics",
       slug: "dataverse-conversational-ai-analytics",
-      description: "LLM-powered analytics platform that lets users query datasets (CSV, Excel, Parquet) in natural language. Automated data cleaning, SQL generation, and visualization -- a headless data product that returns results without a dashboard.",
-      outcome: "Upload a dataset, ask in plain language, get SQL and charts -- no analyst in the loop.",
+      description: "LLM-powered analytics platform that lets users query datasets (CSV, Excel, Parquet) in natural language. Automated data cleaning, SQL generation, and visualization — a headless data product that returns results without a dashboard.",
+      outcome: "Upload a dataset, ask in plain language, get SQL and charts — no analyst in the loop.",
       tech: ["LLM", "Python", "Streamlit", "Pandas", "SQL Generation"],
       featured: false,
       kind: "work",
       githubUrl: "https://github.com/idzharulhuda13/dataverse",
-      detailUrl: "",
+      detailUrl: "projects/dataverse-conversational-ai-analytics.html",
       proof: [
         { value: "191", label: "commits shipped", note: "single public repo, multi-agent analytics app" },
         { value: "5", label: "specialist agents", note: "cleaning, enrichment, SQL generation and visualization over uploaded CSV, Excel and Parquet" }
       ],
-      archDiagram: "",
+      archDiagram: "assets/arch/dataverse-conversational-ai-analytics.svg",
       codeSnippet: null,
       caseStudy: {
         problem: "Business users needed ad-hoc analysis but lacked SQL skills, so analysts spent hours writing queries for simple questions like 'show me sales by region last quarter.'",
@@ -179,14 +179,14 @@ var PORTFOLIO = {
       featured: false,
       kind: "work",
       githubUrl: "https://github.com/idzharulhuda13/Analytics-Engineering-Portfolio",
-      detailUrl: "",
+      detailUrl: "projects/dbt-metabase-self-serve-analytics.html",
       proof: [
         { value: "50+", label: "reports migrated", note: "from manual Google Sheets workflows to scheduled BigQuery models with dbt transformations" },
         { value: "40+", label: "stakeholders self-serving", note: "querying dbt models and Metabase dashboards without an analyst" },
         { value: "15", label: "analysts previously running manual reports", note: "2+ hours a day each before the migration" },
         { value: "daily to hourly", label: "report refresh cadence", note: "the same reports after moving off hand-assembled Google Sheets" }
       ],
-      archDiagram: "",
+      archDiagram: "assets/arch/dbt-metabase-self-serve-analytics.svg",
       codeSnippet: null,
       caseStudy: {
         problem: "15 analysts spent 2+ hours daily running manual reports from Google Sheets. Stakeholders couldn't access data until afternoon reports were ready.",
@@ -271,7 +271,7 @@ var PORTFOLIO = {
       title: "Hourly Incentive Reporting Pipeline",
       slug: "hourly-incentive-reporting-pipeline",
       description: "Multi-source sync that pulls eight SQL cards from Metabase and Zoho Analytics into a single Google Sheets workbook on an hourly trigger. The SQL for every card is version-controlled in the repo and the BI tool is only the runner; the sheet tabs are the read surface. Weekly rows are frozen once a week closes, so a late-arriving change shows up as an audited divergence instead of silently rewriting history.",
-      outcome: "Eight analytics feeds, hourly, into one workbook -- every divergence audited.",
+      outcome: "Eight analytics feeds, hourly, into one workbook — every divergence audited.",
       tech: ["Google Apps Script", "Metabase", "Zoho Analytics", "SQL", "Google Sheets"],
       featured: false,
       kind: "side",
@@ -294,7 +294,7 @@ var PORTFOLIO = {
     {
       title: "Incentive Performance Dashboard",
       slug: "incentive-performance-dashboard",
-      description: "Google Apps Script web app over the same workbook: pick a week, get per-person and per-team performance -- sales, quotes, mechanization, collections, restructuring, targets, achievement percentages, status and bonus. Read-only by design: no business logic in the web app, and the diagnostics panel reports a missing or renamed column instead of quietly returning zeros.",
+      description: "Google Apps Script web app over the same workbook: pick a week, get per-person and per-team performance — sales, quotes, mechanization, collections, restructuring, targets, achievement percentages, status and bonus. Read-only by design: no business logic in the web app, and the diagnostics panel reports a missing or renamed column instead of quietly returning zeros.",
       outcome: "One URL that answers the current incentive week without spreadsheet wrangling.",
       tech: ["Google Apps Script", "JavaScript", "Google Sheets", "Web App"],
       featured: false,

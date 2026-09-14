@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 420" width="880" height="420" role="img">
+  <title>Dataverse conversational AI analytics — uploaded dataset through specialist agents to SQL and chart</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 6 6" refX="6" refY="3" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0.5L6 3L0 5.5Z" fill="#5f6672"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 6 6" refX="6" refY="3" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0.5L6 3L0 5.5Z" fill="#10b981"/>
+    </marker>
+  </defs>
+  <g font-family="'JetBrains Mono', ui-monospace, monospace">
+    <rect x="0.5" y="0.5" width="879" height="419" rx="6" fill="#0f1115" stroke="#1e232b"/>
+
+    <path d="M214 210H238" stroke="#5f6672" fill="none" marker-end="url(#arrow)"/>
+    <path d="M428 210H452" stroke="#5f6672" fill="none" marker-end="url(#arrow)"/>
+    <path d="M642 210H666" stroke="#10b981" fill="none" marker-end="url(#arrowGreen)"/>
+
+    <rect x="24" y="178" width="190" height="64" rx="4" fill="#14171c" stroke="#1e232b"/>
+    <text x="119" y="215" font-size="13" fill="#e6e8ec" text-anchor="middle">user question</text>
+
+    <rect x="238" y="178" width="190" height="64" rx="4" fill="#14171c" stroke="#1e232b"/>
+    <text x="333" y="204" font-size="13" fill="#e6e8ec" text-anchor="middle">upload</text>
+    <text x="333" y="224" font-size="11" fill="#8b929e" text-anchor="middle">CSV / Excel / Parquet</text>
+
+    <rect x="452" y="65" width="190" height="290" rx="4" fill="#14171c" stroke="#1e232b"/>
+    <text x="547" y="104" font-size="13" fill="#e6e8ec" text-anchor="middle">5 specialist agents</text>
+    <rect x="466" y="127" width="162" height="32" rx="3" fill="#0f1115" stroke="#1e232b"/>
+    <text x="547" y="146" font-size="11" fill="#e6e8ec" text-anchor="middle">orchestrator</text>
+    <rect x="466" y="170" width="162" height="32" rx="3" fill="#0f1115" stroke="#1e232b"/>
+    <text x="547" y="189" font-size="11" fill="#e6e8ec" text-anchor="middle">cleaning agent</text>
+    <rect x="466" y="213" width="162" height="32" rx="3" fill="#0f1115" stroke="#1e232b"/>
+    <text x="547" y="232" font-size="11" fill="#e6e8ec" text-anchor="middle">enrichment agent</text>
+    <rect x="466" y="256" width="162" height="32" rx="3" fill="#0f1115" stroke="#1e232b"/>
+    <text x="547" y="275" font-size="11" fill="#e6e8ec" text-anchor="middle">SQL generation agent</text>
+    <rect x="466" y="299" width="162" height="32" rx="3" fill="#0f1115" stroke="#1e232b"/>
+    <text x="547" y="318" font-size="11" fill="#e6e8ec" text-anchor="middle">visualization agent</text>
+
+    <rect x="666" y="178" width="190" height="64" rx="4" fill="#14171c" stroke="#1e232b"/>
+    <text x="761" y="204" font-size="13" fill="#e6e8ec" text-anchor="middle">result</text>
+    <text x="761" y="224" font-size="11" fill="#8b929e" text-anchor="middle">SQL + chart</text>
+
+  </g>
+</svg>

@@ -6,4 +6,22 @@
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
+  <url>
+    <loc>https://idzharulhuda13.github.io/idzharulhuda-portfolio/projects/bigquery-pipeline-optimization.html</loc>
+    <lastmod>2026-09-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://idzharulhuda13.github.io/idzharulhuda-portfolio/projects/dataverse-conversational-ai-analytics.html</loc>
+    <lastmod>2026-09-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://idzharulhuda13.github.io/idzharulhuda-portfolio/projects/dbt-metabase-self-serve-analytics.html</loc>
+    <lastmod>2026-09-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>

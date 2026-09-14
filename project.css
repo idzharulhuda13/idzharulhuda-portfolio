@@ -1,0 +1,326 @@
+/* ==========================================================================
+   project.css -- detail-page layer for projects/*.html.
+   Loaded AFTER styles.css and only by the detail pages, so it reuses the v2
+   tokens from :root and adds nothing to the shared stylesheet. No token is
+   redefined here and no existing site class is restyled.
+
+   Same rules as styles.css: hairline borders, no shadows, no gradients,
+   radius <= 8px, mono for every number and label.
+   ========================================================================== */
+
+/* --- page column ----------------------------------------------------------
+   One column at a 72ch measure, centred, with the hairlines drawn inside it.
+   ch is measured on the 14px body face, so the padding sits outside the
+   measure instead of eating into it. */
+.pj-header,
+.pj-main,
+.pj-footer {
+  max-width: calc(72ch + (2 * var(--sp-24)));
+  margin: 0 auto;
+  padding-left: var(--sp-24);
+  padding-right: var(--sp-24);
+}
+
+.pj-header {
+  padding-top: var(--sp-64);
+  padding-bottom: var(--sp-32);
+  border-bottom: 1px solid var(--line);
+}
+
+.pj-main {
+  padding-top: var(--sp-48);
+  padding-bottom: var(--sp-64);
+}
+
+.pj-footer {
+  padding-top: var(--sp-32);
+  padding-bottom: var(--sp-64);
+  border-top: 1px solid var(--line);
+}
+
+/* --- back link -----------------------------------------------------------
+   44px hit area on every link back to the portfolio, so the touch target
+   holds even though the text is 13px mono. */
+.pj-back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  color: var(--muted);
+  transition: color var(--t-fast);
+}
+
+.pj-back:hover {
+  color: var(--accent);
+}
+
+/* --- head ----------------------------------------------------------------- */
+.pj-kicker {
+  margin-top: var(--sp-24);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-s);
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+
+/* One type step between the hero clamp and --fs-h2: project titles are longer
+   than the hero headline, so they need a lower ceiling to stay at 2 lines. */
+.pj-title {
+  margin-top: var(--sp-12);
+  max-width: 34ch;
+  font-size: clamp(26px, 4vw, 34px);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.pj-lead {
+  margin-top: var(--sp-16);
+  max-width: 62ch;
+  font-size: var(--fs-lead);
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* --- meta pairs ---------------------------------------------------------- */
+.pj-meta {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: var(--sp-4) var(--sp-16);
+  margin-top: var(--sp-24);
+  padding-top: var(--sp-16);
+  border-top: 1px solid var(--line);
+}
+
+.pj-meta-label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-s);
+  line-height: 1.6;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+/* dd keeps no browser indent: the grid column does the aligning. */
+.pj-meta-value {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: var(--text);
+}
+
+/* --- sections ------------------------------------------------------------ */
+.pj-section {
+  padding-top: var(--sp-48);
+}
+
+.pj-section:first-child {
+  padding-top: 0;
+}
+
+.pj-h2 {
+  margin-bottom: var(--sp-16);
+  padding-bottom: var(--sp-8);
+  border-bottom: 1px solid var(--line);
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.pj-section p {
+  max-width: 72ch;
+  font-size: var(--fs-body);
+  line-height: 1.6;
+}
+
+/* --- architecture figure -------------------------------------------------
+   figcaption is styled globally in styles.css and is left alone. Only the
+   image needs a rule, because this figure uses the detail-page class. */
+.pj-figure {
+  margin: 0;
+  overflow: hidden;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+}
+
+.pj-figure img {
+  width: 100%;
+}
+
+/* --- proof table ---------------------------------------------------------
+   What / Value / Scope and source. Values are mono and tabular so the
+   columns line up and two figures can be compared at a glance. */
+.pj-proof {
+  width: 100%;
+  margin-top: var(--sp-24);
+  border-collapse: collapse;
+  font-size: var(--fs-body);
+}
+
+.pj-proof th,
+.pj-proof td {
+  padding: var(--sp-12);
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+
+.pj-proof thead th {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-s);
+  font-weight: 500;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.pj-proof tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.pj-proof-label {
+  min-width: 12ch;
+  color: var(--text);
+}
+
+.pj-proof-value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-h3);
+  line-height: 1.2;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.pj-proof-note {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-s);
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* --- stack tags ----------------------------------------------------------
+   .tech-chip is defined in styles.css; this only arranges the row. */
+.pj-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-8);
+}
+
+/* --- footer --------------------------------------------------------------- */
+.pj-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-8) var(--sp-24);
+}
+
+.pj-footer-note {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-s);
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.pj-footer-link {
+  color: var(--muted);
+  border-bottom: 1px solid var(--line);
+  transition: color var(--t-fast), border-color var(--t-fast);
+}
+
+.pj-footer-link:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* --- focus ---------------------------------------------------------------
+   One visible ring for every link on the detail page; the ring on .tech-chip
+   comes from styles.css. */
+.project-page a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* --- responsive ----------------------------------------------------------
+   At <=640px the proof table stops being a table: each measurement becomes a
+   block that reads like the card proof, value first. The header row stays in
+   the DOM (clipped, not removed) so the columns are still announced. */
+@media (max-width: 640px) {
+  .pj-header {
+    padding-top: var(--sp-48);
+  }
+
+  .pj-section {
+    padding-top: var(--sp-32);
+  }
+
+  .pj-title {
+    max-width: none;
+  }
+
+  .pj-meta {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .pj-meta-value {
+    margin-bottom: var(--sp-8);
+  }
+
+  .pj-proof thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .pj-proof,
+  .pj-proof tbody,
+  .pj-proof tr,
+  .pj-proof td {
+    display: block;
+    width: 100%;
+  }
+
+  .pj-proof tbody tr {
+    padding: var(--sp-16) 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .pj-proof tbody td {
+    padding: 0;
+    border-bottom: 0;
+  }
+
+  .pj-proof-value {
+    display: block;
+    font-size: var(--fs-h2);
+  }
+
+  .pj-proof-label {
+    display: block;
+    margin-top: var(--sp-4);
+  }
+
+  .pj-proof-note {
+    display: block;
+    margin-top: var(--sp-4);
+  }
+}
+
+/* --- reduced motion ------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .pj-back,
+  .pj-footer-link {
+    transition: none;
+  }
+}
