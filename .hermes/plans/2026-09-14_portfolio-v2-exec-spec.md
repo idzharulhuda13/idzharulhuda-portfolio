@@ -341,8 +341,10 @@ self-serve at scale) — the 2026-05-11 audit's "positioning is missing" finding
 hardcoded fake charts are DELETED, not restyled.
 
 **Projects.** Featured card first (BigQuery optimization), then the rest of work projects, then the
-`> side builds` grid (RaschLab, Pregnancy Journey Tracker, one Apps Script dashboard) using the same card
-component, no badges. Metrics appear only as `proof[]` with scope notes.
+`> side builds` grid (the two Rize cards — reporting pipeline + performance dashboard — then RaschLab,
+Pregnancy Journey Tracker, one Apps Script dashboard) using the same card
+component, no badges. Metrics appear only as `proof[]` with scope notes. Side-build cards name no client
+and no employer-confidential figures.
 
 **Experience.** Timeline kept; each role gets `techTags`; the first bullet of Rey.id links to the BigQuery
 case study when `detailUrl` exists.
@@ -379,3 +381,13 @@ the 82% → 95% accuracy pair, daily → hourly report cadence, 1x → 9x datama
 reduction, 40+ stakeholders, 50+ reports migrated, 15 analysts × 2h/day.
 
 Reopen condition: if he ever restores the query history, the fields are data-only edits — no code change.
+
+## 8. Placement correction (Dada, 2026-09-14)
+
+> "rize sampingan aja rey utama"
+
+Rey.id is the **main job**; Rize Farm is **side work**. Consequences, already applied:
+- the two Rize cards ship in the `> side builds` strip with `kind: "side"` and no badge;
+- the experience timeline is untouched, and no Rize role entry is created — the earlier question about
+  dating a Rize role is closed as moot (it was asked on the wrong premise);
+- the Zoho Analytics skill entry sits in `skills.production`, not `skills.daily`.
