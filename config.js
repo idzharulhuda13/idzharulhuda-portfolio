@@ -252,7 +252,7 @@ var PORTFOLIO = {
       featured: false,
       kind: "work",
       githubUrl: "",
-      detailUrl: "",
+      detailUrl: "projects/telehealth-cost-effectiveness-study.html",
       proof: [
         { value: "7x", label: "more cost-effective", note: "telehealth managed care vs conventional care for acute respiratory infection (ARI)" }
       ],
