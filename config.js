@@ -47,8 +47,8 @@ var PORTFOLIO = {
         highlights: ["30% increase in pipeline efficiency", "50%", "40+ stakeholders"]
       },
       {
-        text: "Previously as an AI Engineer at Olvo.ai, I built OCR + LLM pipelines that digitized thousands of hardcopy documents and contributed to the company's first $1M+ sale.",
-        highlights: ["Olvo.ai", "$1M+ sale"]
+        text: "Previously as an AI Engineer at Olvo.ai, I built OCR and LLM pipelines that digitized thousands of hardcopy documents into structured datasets.",
+        highlights: ["Olvo.ai", "OCR and LLM pipelines"]
       },
       {
         text: "My goal is to create scalable, trustworthy data systems that empower teams to move faster with confidence.",
@@ -203,8 +203,8 @@ var PORTFOLIO = {
     {
       title: "OCR + LLM Document Digitization",
       slug: "ocr-llm-document-digitization",
-      description: "Digitized thousands of hardcopy documents using OCR, YOLO, and GPT-4, with a 70% efficiency improvement. Built the real-time demo app that directly contributed to the company's first $1M+ sale.",
-      outcome: "Thousands of hardcopy documents digitised, 70% efficiency gain, first $1M+ sale supported.",
+      description: "Digitized thousands of hardcopy documents using OCR, YOLO, and GPT-4, with a 70% efficiency improvement. Built the real-time demo app used in the client evaluation.",
+      outcome: "Thousands of hardcopy documents digitised, 70% efficiency gain, client evaluation demo shipped.",
       tech: ["Python", "YOLO", "GPT-4", "OCR", "Streamlit"],
       featured: false,
       kind: "work",
@@ -212,15 +212,13 @@ var PORTFOLIO = {
       detailUrl: "",
       proof: [
         { value: "70%", label: "efficiency improvement", note: "OCR + YOLO + GPT-4 pipeline over thousands of hardcopy documents" },
-        { value: "$1M+", label: "first sale supported", note: "real-time Streamlit demo built for the client evaluation" },
         { value: "60%", label: "less manual review", note: "claims verification and pricing audits" }
       ],
       archDiagram: "",
       codeSnippet: null,
       caseStudy: null,
       metrics: [
-        { value: "70%", label: "efficiency improvement" },
-        { value: "$1M+", label: "sale contribution" }
+        { value: "70%", label: "efficiency improvement" }
       ]
     },
     {
@@ -417,7 +415,7 @@ var PORTFOLIO = {
       details: [
         "Digitized thousands of hardcopy documents using OCR, YOLO, and GPT-4 - 70% efficiency improvement",
         "Designed an LLM-based embedding system to standardize hospital formularies across institutions",
-        "Built a real-time client demo app with Streamlit, contributing to the $1M+ first sale",
+        "Built a real-time client demo app with Streamlit for the client evaluation",
         "Automated claims verification and pricing audits - 60% less manual review workload"
       ],
       techTags: ["Python", "YOLO", "OCR", "GPT-4", "Streamlit"]
