@@ -464,6 +464,6 @@ var PORTFOLIO = {
 
   // --- Visual settings (v2) ---
   settings: {
-    revealThreshold: 0.12   // Intersection observer threshold for section reveal
+    revealThreshold: 0.12   // fraction of viewport the section top must cross before it fades in
   }
 };
