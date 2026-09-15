@@ -24,4 +24,22 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://idzharulhuda13.github.io/idzharulhuda-portfolio/resume.html</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://idzharulhuda13.github.io/idzharulhuda-portfolio/projects/hourly-incentive-reporting-pipeline.html</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://idzharulhuda13.github.io/idzharulhuda-portfolio/projects/incentive-performance-dashboard.html</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
