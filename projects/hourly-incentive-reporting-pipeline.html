@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hourly Incentive Reporting Pipeline | Idzharul Huda</title>
+  <meta name="description" content="Multi-source sync that pulls eight SQL cards into one Google Sheets workbook on an hourly trigger, with frozen weeks and audited divergences.">
+  <meta name="theme-color" content="#08090b">
+  <link rel="canonical" href="https://idzharulhuda13.github.io/idzharulhuda-portfolio/projects/hourly-incentive-reporting-pipeline.html">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Hourly Incentive Reporting Pipeline | Idzharul Huda">
+  <meta property="og:description" content="Multi-source sync that pulls eight SQL cards into one Google Sheets workbook on an hourly trigger, with frozen weeks and audited divergences.">
+  <meta property="og:url" content="https://idzharulhuda13.github.io/idzharulhuda-portfolio/projects/hourly-incentive-reporting-pipeline.html">
+  <meta property="og:site_name" content="Idzharul Huda">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://idzharulhuda13.github.io/idzharulhuda-portfolio/assets/og-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Idzharul Huda — data infrastructure engineer">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Hourly Incentive Reporting Pipeline | Idzharul Huda">
+  <meta name="twitter:description" content="Multi-source sync that pulls eight SQL cards into one Google Sheets workbook on an hourly trigger, with frozen weeks and audited divergences.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../project.css">
+</head>
+<body class="project-page">
+
+  <header class="pj-header">
+    <a class="pj-back" href="../index.html#projects">&lt;- Back to portfolio</a>
+    <p class="pj-kicker">Case study</p>
+    <h1 class="pj-title">Hourly Incentive Reporting Pipeline</h1>
+    <p class="pj-lead">Eight analytics feeds, hourly, into one workbook — every divergence audited.</p>
+    <dl class="pj-meta">
+      <dt class="pj-meta-label">Role</dt>
+      <dd class="pj-meta-value">Apps Script reporting pipeline, side project</dd>
+      <dt class="pj-meta-label">Stack</dt>
+      <dd class="pj-meta-value">Google Apps Script, Metabase, Zoho Analytics, SQL, Google Sheets</dd>
+    </dl>
+  </header>
+
+  <main class="pj-main">
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Problem and constraints</h2>
+      <p>Incentive numbers were assembled by hand across several tools, so a wrong row could sit in the report unnoticed and a corrected week could silently change a number somebody had already been paid against.</p>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Approach</h2>
+      <p>Moved every source query into version control and let the pipeline run on an hourly trigger: Metabase and Zoho cards compute, the sync writes raw tabs, the sheet computes the aggregates, and the dashboard only reads. Added a divergence layer that compares frozen weeks against their source, and reconciliation queries that must return zero difference before the reporting console is treated as authoritative.</p>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Measured result</h2>
+      <p>Numbers became auditable end to end: each divergence carries a first_seen and last_seen, only real changes are logged (instead of thousands of rows of already-known state every day), and a card that outgrew the query endpoint's row cap was migrated to a full export with a written runbook.</p>
+      <table class="pj-proof">
+        <thead>
+          <tr>
+            <th scope="col">What</th>
+            <th scope="col">Value</th>
+            <th scope="col">Scope and source</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="pj-proof-label">SQL cards synced hourly</td>
+            <td class="pj-proof-value">8</td>
+            <td class="pj-proof-note">each card mapped to one sheet tab; the query text lives in the repo, not in the BI card</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">refresh cadence</td>
+            <td class="pj-proof-value">hourly</td>
+            <td class="pj-proof-note">installable Apps Script time trigger, one write path per tab</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">known-state rows per day no longer rewritten</td>
+            <td class="pj-proof-value">~12,400</td>
+            <td class="pj-proof-note">divergence state is stored once with first_seen and last_seen instead of re-writing 518 rows on every run</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">row cap that forced a migration</td>
+            <td class="pj-proof-value">2,000</td>
+            <td class="pj-proof-note">one card sat at 1,566 rows of the query endpoint's 2,000-row cap, growing about 32 rows a day, so it moved to a full export</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Stack</h2>
+      <div class="pj-tags">
+        <span class="tech-chip">Google Apps Script</span>
+        <span class="tech-chip">Metabase</span>
+        <span class="tech-chip">Zoho Analytics</span>
+        <span class="tech-chip">SQL</span>
+        <span class="tech-chip">Google Sheets</span>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="pj-footer">
+    <a class="pj-back" href="../index.html#projects">&lt;- Back to portfolio</a>
+    <p class="pj-footer-note">Idzharul Huda - Data Infrastructure Engineer - <a class="pj-footer-link" href="https://github.com/idzharulhuda13">GitHub</a></p>
+  </footer>
+
+</body>
+</html>

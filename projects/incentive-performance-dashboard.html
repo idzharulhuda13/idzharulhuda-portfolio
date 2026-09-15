@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Incentive Performance Dashboard | Idzharul Huda</title>
+  <meta name="description" content="Google Apps Script web app over the incentive workbook: pick a week and read per-person and per-team numbers, read-only, with a diagnostics panel instead of silent zeros.">
+  <meta name="theme-color" content="#08090b">
+  <link rel="canonical" href="https://idzharulhuda13.github.io/idzharulhuda-portfolio/projects/incentive-performance-dashboard.html">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Incentive Performance Dashboard | Idzharul Huda">
+  <meta property="og:description" content="Google Apps Script web app over the incentive workbook: pick a week and read per-person and per-team numbers, read-only, with a diagnostics panel instead of silent zeros.">
+  <meta property="og:url" content="https://idzharulhuda13.github.io/idzharulhuda-portfolio/projects/incentive-performance-dashboard.html">
+  <meta property="og:site_name" content="Idzharul Huda">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://idzharulhuda13.github.io/idzharulhuda-portfolio/assets/og-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Idzharul Huda — data infrastructure engineer">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Incentive Performance Dashboard | Idzharul Huda">
+  <meta name="twitter:description" content="Google Apps Script web app over the incentive workbook: pick a week and read per-person and per-team numbers, read-only, with a diagnostics panel instead of silent zeros.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../project.css">
+</head>
+<body class="project-page">
+
+  <header class="pj-header">
+    <a class="pj-back" href="../index.html#projects">&lt;- Back to portfolio</a>
+    <p class="pj-kicker">Case study</p>
+    <h1 class="pj-title">Incentive Performance Dashboard</h1>
+    <p class="pj-lead">One URL that answers the current incentive week without spreadsheet wrangling.</p>
+    <dl class="pj-meta">
+      <dt class="pj-meta-label">Role</dt>
+      <dd class="pj-meta-value">Google Apps Script web app, side project</dd>
+      <dt class="pj-meta-label">Stack</dt>
+      <dd class="pj-meta-value">Google Apps Script, JavaScript, Google Sheets, Web App</dd>
+    </dl>
+  </header>
+
+  <main class="pj-main">
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Problem and constraints</h2>
+      <p>Weekly incentive and achievement numbers lived in a spreadsheet that only one person could read correctly: a renamed column, a reordered tab or a date format mismatch silently turned real numbers into zeros, and a person with no team assignment dropped out of the report entirely.</p>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Approach</h2>
+      <p>Built a web app that reads the workbook by column name, normalises week formats and parses both Indonesian and US number formats, keeps people without a matching team in an explicit unassigned bucket, and surfaces a diagnostics list when an expected column is missing or empty instead of rendering a plausible zero.</p>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Measured result</h2>
+      <p>Anyone can open one URL, pick a week and read their own numbers, with the failure modes that used to corrupt the spreadsheet now reported loudly instead of silently.</p>
+      <table class="pj-proof">
+        <thead>
+          <tr>
+            <th scope="col">What</th>
+            <th scope="col">Value</th>
+            <th scope="col">Scope and source</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="pj-proof-label">source tabs read per request</td>
+            <td class="pj-proof-value">3</td>
+            <td class="pj-proof-note">per-person scoreboard, per-team scoreboard, and the email database used to join records</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">write paths from the dashboard</td>
+            <td class="pj-proof-value">0</td>
+            <td class="pj-proof-note">read-only: aggregation happens in the sheet, the app only renders</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">reporting granularity</td>
+            <td class="pj-proof-value">weekly</td>
+            <td class="pj-proof-note">matches the cadence the incentive targets are set on</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Stack</h2>
+      <div class="pj-tags">
+        <span class="tech-chip">Google Apps Script</span>
+        <span class="tech-chip">JavaScript</span>
+        <span class="tech-chip">Google Sheets</span>
+        <span class="tech-chip">Web App</span>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="pj-footer">
+    <a class="pj-back" href="../index.html#projects">&lt;- Back to portfolio</a>
+    <p class="pj-footer-note">Idzharul Huda - Data Infrastructure Engineer - <a class="pj-footer-link" href="https://github.com/idzharulhuda13">GitHub</a></p>
+  </footer>
+
+</body>
+</html>

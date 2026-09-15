@@ -276,7 +276,7 @@ var PORTFOLIO = {
       featured: false,
       kind: "side",
       githubUrl: "",
-      detailUrl: "",
+      detailUrl: "projects/hourly-incentive-reporting-pipeline.html",
       proof: [
         { value: "8", label: "SQL cards synced hourly", note: "each card mapped to one sheet tab; the query text lives in the repo, not in the BI card" },
         { value: "hourly", label: "refresh cadence", note: "installable Apps Script time trigger, one write path per tab" },
@@ -300,7 +300,7 @@ var PORTFOLIO = {
       featured: false,
       kind: "side",
       githubUrl: "",
-      detailUrl: "",
+      detailUrl: "projects/incentive-performance-dashboard.html",
       proof: [
         { value: "3", label: "source tabs read per request", note: "per-person scoreboard, per-team scoreboard, and the email database used to join records" },
         { value: "0", label: "write paths from the dashboard", note: "read-only: aggregation happens in the sheet, the app only renders" },
