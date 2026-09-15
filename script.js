@@ -539,21 +539,25 @@
       return;
     }
 
-    var threshold = get('settings.revealThreshold', null);
-    if (typeof threshold !== 'number' || !isFinite(threshold) || threshold < 0 || threshold > 1) {
-      threshold = get('settings.fadeThreshold', null); // older config key
+    var inset = get('settings.revealThreshold', null);
+    if (typeof inset !== 'number' || !isFinite(inset) || inset < 0 || inset > 1) {
+      inset = get('settings.fadeThreshold', null); // older config key
     }
-    if (typeof threshold !== 'number' || !isFinite(threshold) || threshold < 0 || threshold > 1) {
-      threshold = 0.12;
+    if (typeof inset !== 'number' || !isFinite(inset) || inset < 0 || inset > 1) {
+      inset = 0.12;
     }
 
+    // The configured value is a fraction of the VIEWPORT, not of the section.
+    // A phone-width page stacks the cards into one column, so a section can
+    // measure several times the viewport height and a fraction-of-element
+    // threshold becomes unreachable -- the section would stay at opacity 0.
     var observer = new IntersectionObserver(function (entries) {
       for (var k = 0; k < entries.length; k++) {
         if (!entries[k].isIntersecting) continue;
         entries[k].target.classList.add('is-visible');
         observer.unobserve(entries[k].target);
       }
-    }, { threshold: threshold });
+    }, { rootMargin: '0px 0px -' + Math.round(inset * 100) + '% 0px', threshold: 0 });
 
     for (i = 0; i < nodes.length; i++) observer.observe(nodes[i]);
   }
