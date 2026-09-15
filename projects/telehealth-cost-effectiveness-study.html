@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telehealth Cost-Effectiveness Study | Idzharul Huda</title>
+  <meta name="description" content="A retrospective cost analysis of telehealth-powered managed care against conventional in-person care for acute respiratory infection, published and presented at ICOPH 2024.">
+  <meta name="theme-color" content="#08090b">
+  <link rel="canonical" href="https://idzharulhuda13.github.io/idzharulhuda-portfolio/projects/telehealth-cost-effectiveness-study.html">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Telehealth Cost-Effectiveness Study | Idzharul Huda">
+  <meta property="og:description" content="A retrospective cost analysis of telehealth-powered managed care against conventional in-person care for acute respiratory infection, published and presented at ICOPH 2024.">
+  <meta property="og:url" content="https://idzharulhuda13.github.io/idzharulhuda-portfolio/projects/telehealth-cost-effectiveness-study.html">
+  <meta property="og:site_name" content="Idzharul Huda">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://idzharulhuda13.github.io/idzharulhuda-portfolio/assets/og-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Idzharul Huda — data infrastructure engineer">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Telehealth Cost-Effectiveness Study | Idzharul Huda">
+  <meta name="twitter:description" content="A retrospective cost analysis of telehealth-powered managed care against conventional in-person care for acute respiratory infection, published and presented at ICOPH 2024.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../project.css">
+</head>
+<body class="project-page">
+
+  <header class="pj-header">
+    <a class="pj-back" href="../index.html#projects">&lt;- Back to portfolio</a>
+    <p class="pj-kicker">Case study</p>
+    <h1 class="pj-title">Telehealth Cost-Effectiveness Study</h1>
+    <p class="pj-lead">A retrospective cost analysis of telehealth-powered managed care against conventional in-person care for acute respiratory infection.</p>
+    <dl class="pj-meta">
+      <dt class="pj-meta-label">Role</dt>
+      <dd class="pj-meta-value">Co-author, data engineering — Rey.id (employer publication)</dd>
+      <dt class="pj-meta-label">Stack</dt>
+      <dd class="pj-meta-value">Cost-effectiveness analysis, Retrospective claims data, Sensitivity analysis</dd>
+    </dl>
+  </header>
+
+  <main class="pj-main">
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Problem and constraints</h2>
+      <p>Acute respiratory infection is one of the most common reasons people seek primary care, and in Indonesia that traditionally means an in-person visit to a general practitioner or a specialist: consultation time, travel across the city, and a prescription filled at a pharmacy. The question the business needed answered was not whether telehealth works clinically, but what it does to the cost of treating one episode, and which component drives the difference — because that answer decides whether the premium can move.</p>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Approach</h2>
+      <p>Retrospective analysis of the telemedicine consultation database over 24 months, comparing two delivery models for the same diagnosis group: telehealth-powered managed care — teleconsultation, pharmacy delivery, and an offline visit when it is needed — against conventional in-person care. Four cost categories were compared: consultation, prescription, travel, and the greenhouse-gas externality of the travel that did not happen. The drivers were then separated with a sensitivity analysis over a modelled cohort, first holding the premium constant and then applying a premium discount, to test what the change does to margin and to what the patient pays.</p>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Measured result</h2>
+      <p>Telehealth-powered managed care came out almost 7x cheaper per treated episode than conventional care for the same diagnosis group. Consultation and prescription differences carried most of the saving; travel time contributed less, and the greenhouse-gas effect was the smallest of the four categories. The work was presented at the International Conference of Public Health (ICOPH) 2024 in Bangkok and published in the conference abstract book.</p>
+      <table class="pj-proof">
+        <thead>
+          <tr>
+            <th scope="col">What</th>
+            <th scope="col">Value</th>
+            <th scope="col">Scope and source</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="pj-proof-label">cases analysed</td>
+            <td class="pj-proof-value">3,298</td>
+            <td class="pj-proof-note">3,209 managed-care cases and 89 outpatient-only cases from the telemedicine consultation database</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">study window</td>
+            <td class="pj-proof-value">24 months</td>
+            <td class="pj-proof-note">July 2022 to June 2024, analysed retrospectively</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">cost categories compared</td>
+            <td class="pj-proof-value">4</td>
+            <td class="pj-proof-note">consultation, prescription, travel, and the greenhouse-gas externality</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">modelled cohort in the sensitivity analysis</td>
+            <td class="pj-proof-value">1,000 individuals</td>
+            <td class="pj-proof-note">premium held constant, then discounted, both measured against the conventional baseline</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">cost per treated episode</td>
+            <td class="pj-proof-value">almost 7x lower</td>
+            <td class="pj-proof-note">telehealth-powered managed care versus conventional in-person care, acute respiratory infection diagnoses</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">presenting venue</td>
+            <td class="pj-proof-value">ICOPH 2024</td>
+            <td class="pj-proof-note">International Conference of Public Health, Bangkok, 15-16 August 2024</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Stack</h2>
+      <div class="pj-tags">
+        <span class="tech-chip">Cost-effectiveness analysis</span>
+        <span class="tech-chip">Retrospective claims data</span>
+        <span class="tech-chip">Sensitivity analysis</span>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="pj-footer">
+    <a class="pj-back" href="../index.html#projects">&lt;- Back to portfolio</a>
+    <p class="pj-footer-note">Idzharul Huda - Data Infrastructure Engineer - <a class="pj-footer-link" href="https://github.com/idzharulhuda13">GitHub</a></p>
+  </footer>
+
+</body>
+</html>
