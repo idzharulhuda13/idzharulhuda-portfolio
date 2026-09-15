@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clinic Incentives Dashboard | Idzharul Huda</title>
+  <meta name="description" content="Google Apps Script sidebar dashboard bound to a dental practice's cashier workbook: month-filtered KPIs, a revenue trend and a target held in a Config tab, with no write-back.">
+  <meta name="theme-color" content="#08090b">
+  <link rel="canonical" href="https://idzharulhuda13.github.io/idzharulhuda-portfolio/projects/clinic-incentives-dashboard.html">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Clinic Incentives Dashboard | Idzharul Huda">
+  <meta property="og:description" content="Google Apps Script sidebar dashboard bound to a dental practice's cashier workbook: month-filtered KPIs, a revenue trend and a target held in a Config tab, with no write-back.">
+  <meta property="og:url" content="https://idzharulhuda13.github.io/idzharulhuda-portfolio/projects/clinic-incentives-dashboard.html">
+  <meta property="og:site_name" content="Idzharul Huda">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://idzharulhuda13.github.io/idzharulhuda-portfolio/assets/og-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Idzharul Huda — data infrastructure engineer">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Clinic Incentives Dashboard | Idzharul Huda">
+  <meta name="twitter:description" content="Google Apps Script sidebar dashboard bound to a dental practice's cashier workbook: month-filtered KPIs, a revenue trend and a target held in a Config tab, with no write-back.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../project.css">
+</head>
+<body class="project-page">
+
+  <header class="pj-header">
+    <a class="pj-back" href="../index.html#projects">&lt;- Back to portfolio</a>
+    <p class="pj-kicker">Case study</p>
+    <h1 class="pj-title">Clinic Incentives Dashboard</h1>
+    <p class="pj-lead">A dashboard that lives inside the workbook the practice already keeps, with the target in a Config tab instead of in somebody's memory.</p>
+    <dl class="pj-meta">
+      <dt class="pj-meta-label">Role</dt>
+      <dd class="pj-meta-value">Apps Script dashboard for a dental practice, side project</dd>
+      <dt class="pj-meta-label">Stack</dt>
+      <dd class="pj-meta-value">Google Apps Script, Google Sheets, JavaScript, Google Charts</dd>
+    </dl>
+  </header>
+
+  <main class="pj-main">
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Problem and constraints</h2>
+      <p>The practice's monthly picture — transactions, unique patients, average per transaction, active days, and realisation against the incentive target — had to be assembled from the cashier workbook by hand, so the numbers only existed after somebody did that work. The target itself lived outside the workbook, and the workbook had to keep working exactly as before: it is the practice's book of record, so nothing in the new tooling may change or overwrite it.</p>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Approach</h2>
+      <p>An Apps Script sidebar bound to the cashier workbook reads the payment tab by header name and computes six KPI cards: revenue, transactions, unique patients, average per transaction, active days, and realisation against the target with a progress bar. A month filter reslices the cards, the treatment ranking and the recent-transaction list, while the revenue trend always shows every month so a filtered view never hides the shape of the year. One timezone-safe formatter handles every date, a Config tab holds the monthly target override and the auto-open flag, and a small insight strip counts zero-value transactions, which in practice are free consultations. The sidebar never writes back: all aggregation happens in the script, the workbook stays untouched.</p>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Measured result</h2>
+      <p>Opening the workbook now answers the current month by itself — the KPIs, the revenue trend, the top treatments and realisation against the target, with the target held as a Config value instead of a person's memory.</p>
+      <table class="pj-proof">
+        <thead>
+          <tr>
+            <th scope="col">What</th>
+            <th scope="col">Value</th>
+            <th scope="col">Scope and source</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="pj-proof-label">KPI cards</td>
+            <td class="pj-proof-value">6</td>
+            <td class="pj-proof-note">revenue, transactions, unique patients, average per transaction, active days, realisation against target</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">write paths from the dashboard</td>
+            <td class="pj-proof-value">0</td>
+            <td class="pj-proof-note">read-only by design: aggregation happens in the script, the workbook is never modified</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">Config keys</td>
+            <td class="pj-proof-value">2</td>
+            <td class="pj-proof-note">monthly target override and auto-open flag</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">date handling</td>
+            <td class="pj-proof-value">one helper</td>
+            <td class="pj-proof-note">every date goes through a single timezone-safe formatter, so no locale drift between the script and the sheet</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Stack</h2>
+      <div class="pj-tags">
+        <span class="tech-chip">Google Apps Script</span>
+        <span class="tech-chip">Google Sheets</span>
+        <span class="tech-chip">JavaScript</span>
+        <span class="tech-chip">Google Charts</span>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="pj-footer">
+    <a class="pj-back" href="../index.html#projects">&lt;- Back to portfolio</a>
+    <p class="pj-footer-note">Idzharul Huda - Data Infrastructure Engineer - <a class="pj-footer-link" href="https://github.com/idzharulhuda13">GitHub</a></p>
+  </footer>
+
+</body>
+</html>
