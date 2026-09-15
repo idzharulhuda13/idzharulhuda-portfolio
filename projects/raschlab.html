@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RaschLab | Idzharul Huda</title>
+  <meta name="description" content="A Python toolkit that reproduces a legacy item-response tool's output on real assessment datasets, with every table column gated against committed reference fixtures.">
+  <meta name="theme-color" content="#08090b">
+  <link rel="canonical" href="https://idzharulhuda13.github.io/idzharulhuda-portfolio/projects/raschlab.html">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="RaschLab | Idzharul Huda">
+  <meta property="og:description" content="A Python toolkit that reproduces a legacy item-response tool's output on real assessment datasets, with every table column gated against committed reference fixtures.">
+  <meta property="og:url" content="https://idzharulhuda13.github.io/idzharulhuda-portfolio/projects/raschlab.html">
+  <meta property="og:site_name" content="Idzharul Huda">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://idzharulhuda13.github.io/idzharulhuda-portfolio/assets/og-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Idzharul Huda — data infrastructure engineer">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="RaschLab | Idzharul Huda">
+  <meta name="twitter:description" content="A Python toolkit that reproduces a legacy item-response tool's output on real assessment datasets, with every table column gated against committed reference fixtures.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../project.css">
+</head>
+<body class="project-page">
+
+  <header class="pj-header">
+    <a class="pj-back" href="../index.html#projects">&lt;- Back to portfolio</a>
+    <p class="pj-kicker">Case study</p>
+    <h1 class="pj-title">RaschLab</h1>
+    <p class="pj-lead">A Python toolkit that reproduces a legacy item-response tool's output on real assessment datasets, row by row.</p>
+    <dl class="pj-meta">
+      <dt class="pj-meta-label">Role</dt>
+      <dd class="pj-meta-value">Independent build, private repo</dd>
+      <dt class="pj-meta-label">Stack</dt>
+      <dd class="pj-meta-value">Python, Rasch / IRT, numpy, openpyxl</dd>
+    </dl>
+  </header>
+
+  <main class="pj-main">
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Problem and constraints</h2>
+      <p>Item analysis for national assessment data ran through a legacy item-response binary: every run printed fixed-width text tables, and checking a new implementation against it meant reading the numbers by eye. The replacement had to consume the same control files and fixed-width response files the existing workflow already produced, and the reference tool's own convergence report showed its stop rules were not the ones a reimplementation would naturally pick.</p>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Approach</h2>
+      <p>Implemented dichotomous Rasch estimation in Python — person and item measures, fit statistics and the summary blocks — reading the control-file and fixed-width response-file formats the workflow already produced, and writing CSV plus an XLSX workbook (item table, person table, summary). Two estimation modes ship side by side: one mirrors the reference tool's path and stops at a calibrated threshold, the other is a Newton-Raphson implementation used as the reference-free check. Parity is measured rather than assumed: the vendor tool's own output for six anchored runs was parsed into golden fixtures and committed, so the comparison harness runs where the vendor export is absent, and every column of every table is gated instead of only the headline measure.</p>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Measured result</h2>
+      <p>Item-measure correlations exceed 0.9999 across all six runs; the worst per-run maximum difference in compat mode is 0.0314 logit, and the worst rank displacement is 3 positions. The stop threshold is calibrated against those runs rather than copied from the vendor manual, which is recorded in the repo as a deliberate deviation.</p>
+      <table class="pj-proof">
+        <thead>
+          <tr>
+            <th scope="col">What</th>
+            <th scope="col">Value</th>
+            <th scope="col">Scope and source</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="pj-proof-label">item-measure correlation across the reference runs</td>
+            <td class="pj-proof-value">> 0.9999</td>
+            <td class="pj-proof-note">six anchored runs, compared column by column against the reference tool's own tables</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">worst maximum difference per run, compat mode</td>
+            <td class="pj-proof-value">0.0314 logit</td>
+            <td class="pj-proof-note">six runs covering 547 items in total</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">worst rank displacement</td>
+            <td class="pj-proof-value">3 positions</td>
+            <td class="pj-proof-note">2 positions or fewer on the other five runs</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">items covered by the golden fixtures</td>
+            <td class="pj-proof-value">547</td>
+            <td class="pj-proof-note">four instrument sections plus two revisions, 76 to 147 items each</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">reference data available without the vendor tool</td>
+            <td class="pj-proof-value">6 runs</td>
+            <td class="pj-proof-note">aggregate per-iteration numbers only — no student data in the committed fixtures</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">runtime dependencies</td>
+            <td class="pj-proof-value">2</td>
+            <td class="pj-proof-note">numpy for estimation and fit statistics, openpyxl for the XLSX output</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Stack</h2>
+      <div class="pj-tags">
+        <span class="tech-chip">Python</span>
+        <span class="tech-chip">Rasch / IRT</span>
+        <span class="tech-chip">numpy</span>
+        <span class="tech-chip">openpyxl</span>
+        <span class="tech-chip">pytest</span>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="pj-footer">
+    <a class="pj-back" href="../index.html#projects">&lt;- Back to portfolio</a>
+    <p class="pj-footer-note">Idzharul Huda - Data Infrastructure Engineer - <a class="pj-footer-link" href="https://github.com/idzharulhuda13">GitHub</a></p>
+  </footer>
+
+</body>
+</html>
