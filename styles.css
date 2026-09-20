@@ -1216,6 +1216,10 @@ button:focus-visible,
   text-anchor: middle;
 }
 
+.wf-axis-label .step-num {
+  font-size: 10px;
+}
+
 .wf-val {
   font-family: var(--font-mono);
   font-size: 12px;

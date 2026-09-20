@@ -223,7 +223,7 @@
     var h5 = afterVal * scale;
     var y5 = baselineY - h5;
 
-    return '<svg class="chart-svg waterfall-svg" viewBox="0 0 380 155" role="img" aria-labelledby="wf-title wf-desc"' +
+    return '<svg class="chart-svg waterfall-svg" viewBox="0 0 380 160" role="img" aria-labelledby="wf-title wf-desc"' +
       ' data-opening="' + Math.round(beforeVal) + '"' +
       ' data-closing="' + Math.round(afterVal) + '"' +
       ' data-step-1="' + s1 + '"' +
@@ -235,31 +235,31 @@
       // Opening bar
       '<rect x="' + x1 + '" y="' + y1.toFixed(1) + '" width="' + barW + '" height="' + h1.toFixed(1) + '" class="wf-bar opening-bar" />' +
       '<text x="' + (x1 + barW / 2) + '" y="' + (y1 - 8).toFixed(1) + '" class="wf-val">' + esc(beforeVal) + '</text>' +
-      '<text x="' + (x1 + barW / 2) + '" y="' + (baselineY + 18) + '" class="wf-axis-label"><tspan class="step-num">01</tspan> Baseline</text>' +
+      '<text x="' + (x1 + barW / 2) + '" y="141" class="wf-axis-label" title="01 Baseline"><tspan x="' + (x1 + barW / 2) + '" dy="0" class="step-num">01</tspan><tspan x="' + (x1 + barW / 2) + '" dy="12">Baseline</tspan></text>' +
       // Connector 1
       '<path d="M ' + (x1 + barW) + ' ' + y1.toFixed(1) + ' H ' + ((x1 + barW + x2) / 2).toFixed(1) + ' V ' + y1.toFixed(1) + ' H ' + x2 + '" class="wf-connector" fill="none" />' +
       // Step 1
       '<rect x="' + x2 + '" y="' + y2.toFixed(1) + '" width="' + barW + '" height="' + h2.toFixed(1) + '" class="wf-bar step-bar" />' +
       '<text x="' + (x2 + barW / 2) + '" y="' + (y2 - 8).toFixed(1) + '" class="wf-val step-val">-' + s1 + '%</text>' +
-      '<text x="' + (x2 + barW / 2) + '" y="' + (baselineY + 18) + '" class="wf-axis-label"><tspan class="step-num">02</tspan> Partitioning</text>' +
+      '<text x="' + (x2 + barW / 2) + '" y="141" class="wf-axis-label" title="02 Partitioning"><tspan x="' + (x2 + barW / 2) + '" dy="0" class="step-num">02</tspan><tspan x="' + (x2 + barW / 2) + '" dy="12">Partition</tspan></text>' +
       // Connector 2
       '<path d="M ' + (x2 + barW) + ' ' + level2.toFixed(1) + ' H ' + ((x2 + barW + x3) / 2).toFixed(1) + ' V ' + level2.toFixed(1) + ' H ' + x3 + '" class="wf-connector" fill="none" />' +
       // Step 2
       '<rect x="' + x3 + '" y="' + y3.toFixed(1) + '" width="' + barW + '" height="' + h3.toFixed(1) + '" class="wf-bar step-bar" />' +
       '<text x="' + (x3 + barW / 2) + '" y="' + (y3 - 8).toFixed(1) + '" class="wf-val step-val">-' + s2 + '%</text>' +
-      '<text x="' + (x3 + barW / 2) + '" y="' + (baselineY + 18) + '" class="wf-axis-label"><tspan class="step-num">03</tspan> Clustering</text>' +
+      '<text x="' + (x3 + barW / 2) + '" y="141" class="wf-axis-label" title="03 Clustering"><tspan x="' + (x3 + barW / 2) + '" dy="0" class="step-num">03</tspan><tspan x="' + (x3 + barW / 2) + '" dy="12">Cluster</tspan></text>' +
       // Connector 3
       '<path d="M ' + (x3 + barW) + ' ' + level3.toFixed(1) + ' H ' + ((x3 + barW + x4) / 2).toFixed(1) + ' V ' + level3.toFixed(1) + ' H ' + x4 + '" class="wf-connector" fill="none" />' +
       // Step 3
       '<rect x="' + x4 + '" y="' + y4.toFixed(1) + '" width="' + barW + '" height="' + h4.toFixed(1) + '" class="wf-bar step-bar" />' +
       '<text x="' + (x4 + barW / 2) + '" y="' + (y4 - 8).toFixed(1) + '" class="wf-val step-val">-' + s3 + '%</text>' +
-      '<text x="' + (x4 + barW / 2) + '" y="' + (baselineY + 18) + '" class="wf-axis-label"><tspan class="step-num">04</tspan> Pruning</text>' +
+      '<text x="' + (x4 + barW / 2) + '" y="141" class="wf-axis-label" title="04 Pruning"><tspan x="' + (x4 + barW / 2) + '" dy="0" class="step-num">04</tspan><tspan x="' + (x4 + barW / 2) + '" dy="12">Prune</tspan></text>' +
       // Connector 4
       '<path d="M ' + (x4 + barW) + ' ' + level4.toFixed(1) + ' H ' + ((x4 + barW + x5) / 2).toFixed(1) + ' V ' + level4.toFixed(1) + ' H ' + x5 + '" class="wf-connector" fill="none" />' +
       // Closing bar
       '<rect x="' + x5 + '" y="' + y5.toFixed(1) + '" width="' + barW + '" height="' + h5.toFixed(1) + '" class="wf-bar closing-bar" />' +
       '<text x="' + (x5 + barW / 2) + '" y="' + (y5 - 8).toFixed(1) + '" class="wf-val closing-val">' + esc(afterVal) + '</text>' +
-      '<text x="' + (x5 + barW / 2) + '" y="' + (baselineY + 18) + '" class="wf-axis-label"><tspan class="step-num">05</tspan> Residual</text>' +
+      '<text x="' + (x5 + barW / 2) + '" y="141" class="wf-axis-label" title="05 Residual"><tspan x="' + (x5 + barW / 2) + '" dy="0" class="step-num">05</tspan><tspan x="' + (x5 + barW / 2) + '" dy="12">Residual</tspan></text>' +
       '</svg>';
   }
 
