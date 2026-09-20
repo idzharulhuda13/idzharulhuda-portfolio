@@ -354,16 +354,27 @@
       '</svg>';
   }
 
-  // 4.c Data pipeline map band: 9 nodes in 4 stages
+  // 4.c Data pipeline map band: 9 nodes in 4 stages.
+  // Returns two SVG variants inside a wrapper div.
+  // .pipeline-desktop: wide left-to-right layout (shown at 600px and above).
+  // .pipeline-phone: four stacked rows, top-to-bottom (shown below 600px).
+  // CSS hides one and shows the other; the hidden one also carries aria-hidden
+  // so screen readers only encounter the visible variant.
   function generatePipelineSVG() {
-    return '<svg class="chart-svg pipeline-svg" viewBox="0 0 820 190" role="img" aria-labelledby="pipe-title pipe-desc">' +
+    // Desktop: existing geometry, untouched.
+    var desktopSVG =
+      '<svg class="chart-svg pipeline-svg pipeline-desktop"' +
+      ' viewBox="0 0 820 190" role="img" aria-labelledby="pipe-title pipe-desc">' +
       '<title id="pipe-title">Data platform pipeline from sources to governance and BI</title>' +
-      '<desc id="pipe-desc">Architecture pipeline diagram displaying 9 nodes connected by right-angled paths: Sources (Postgres, Webhook APIs, Event logs), Ingestion (Airflow, Cloud Storage), Warehouse and models (BigQuery, dbt models), and Governance and BI (Dataplex, BI surfaces).</desc>' +
+      '<desc id="pipe-desc">Architecture pipeline diagram: 9 nodes in 4 stages connected by right-angled paths.' +
+      ' Sources: Postgres, Webhook APIs, Event logs.' +
+      ' Ingestion: Airflow, Cloud Storage.' +
+      ' Warehouse and models: BigQuery, dbt models.' +
+      ' Governance and BI: Dataplex, BI surfaces.</desc>' +
       '<text x="60" y="18" class="pipe-stage-label"><tspan class="step-num">01</tspan> Sources</text>' +
       '<text x="255" y="18" class="pipe-stage-label"><tspan class="step-num">02</tspan> Ingestion</text>' +
       '<text x="450" y="18" class="pipe-stage-label"><tspan class="step-num">03</tspan> Warehouse and models</text>' +
       '<text x="655" y="18" class="pipe-stage-label"><tspan class="step-num">04</tspan> Governance and BI</text>' +
-      // Connectors
       '<path d="M 60 44 H 160 V 70 H 255" class="pipe-connector" />' +
       '<path d="M 60 92 H 160 V 70 H 255" class="pipe-connector" />' +
       '<path d="M 60 140 H 160 V 128 H 255" class="pipe-connector" />' +
@@ -372,7 +383,6 @@
       '<path d="M 450 70 V 128" class="pipe-connector" />' +
       '<path d="M 450 128 H 550 V 54 H 655" class="pipe-connector" />' +
       '<path d="M 450 128 H 550 V 136 H 655" class="pipe-connector" />' +
-      // Nodes
       '<circle cx="60" cy="44" r="5.5" class="pipe-node-shape" />' +
       '<text x="74" y="42" class="pipe-node-label"><tspan class="step-num">01</tspan> Postgres (OLTP)</text>' +
       '<text x="74" y="53" class="pipe-node-sub">OLTP database</text>' +
@@ -401,6 +411,122 @@
       '<text x="669" y="134" class="pipe-node-label"><tspan class="step-num">09</tspan> BI surfaces</text>' +
       '<text x="669" y="145" class="pipe-node-sub">Looker and Metabase</text>' +
       '</svg>';
+
+    // Phone layout: 4 stage rows stacked vertically, viewBox 360x350.
+    // Stage label is left-anchored at x=6. Nodes sit to the right,
+    // centered labels below each circle. Connectors are orthogonal only.
+    //
+    // Row geometry (y_top per stage):
+    //   S1 y_top=0:   stage y=20, circle cy=42, label y=58, sub y=72, conn from y=83..100
+    //   S2 y_top=100: stage y=115, circle cy=135, label y=151, sub y=165, conn from y=176..193
+    //   S3 y_top=193: stage y=208, circle cy=228, label y=244, sub y=258, conn from y=269..286
+    //   S4 y_top=286: stage y=301, circle cy=318, label y=332, sub y=344
+    // ViewBox height: 350. Connector vertical zones: [83..100], [176..193], [269..286].
+    //
+    // Node cx positions:
+    //   S1 (3 nodes): 105, 200, 295
+    //   S2-S4 (2 nodes each): 140, 270
+    //
+    // S1->S2: nodes 01+02 elbow to Airflow(140); node 03 elbows to CloudStorage(270).
+    // S2->S3: Airflow(140)->BigQuery(140) straight; CloudStorage(270) splits.
+    // BigQuery->dbt within S3: horizontal connector between circles.
+    // S3->S4: dbt(270) fans to Dataplex(140) + BI(270).
+    var phoneSVG =
+      '<svg class="chart-svg pipeline-svg pipeline-phone"' +
+      ' viewBox="0 0 360 353" role="img"' +
+      ' aria-labelledby="pipe-phone-title pipe-phone-desc"' +
+      ' aria-hidden="true" tabindex="-1">' +
+      '<title id="pipe-phone-title">Data platform pipeline from sources to governance and BI</title>' +
+      '<desc id="pipe-phone-desc">Architecture pipeline: four stages stacked vertically.' +
+      ' Stage 01 Sources: Postgres (OLTP database), Webhook APIs (Partner streams), Event logs (Telemetry feeds).' +
+      ' Stage 02 Ingestion: Airflow (21 hourly pipelines), Cloud Storage (Raw staging lake).' +
+      ' Stage 03 Warehouse and models: BigQuery (Central data warehouse), dbt models (599 models, 908 tests).' +
+      ' Stage 04 Governance and BI: Dataplex (Data catalogue), BI surfaces (Looker and Metabase).</desc>' +
+
+      // Stage 01: Sources
+      '<text x="6" y="20" class="pipe-stage-label pipe-stage-label-phone">' +
+        '<tspan class="step-num">01</tspan> Sources' +
+      '</text>' +
+      '<circle cx="105" cy="42" r="5.5" class="pipe-node-shape" />' +
+      '<text x="105" y="58" class="pipe-node-label pipe-node-label-phone">' +
+        '<tspan class="step-num">01</tspan> Postgres' +
+      '</text>' +
+      '<text x="105" y="72" class="pipe-node-sub pipe-node-sub-phone">OLTP database</text>' +
+      '<circle cx="200" cy="42" r="5.5" class="pipe-node-shape" />' +
+      '<text x="200" y="58" class="pipe-node-label pipe-node-label-phone">' +
+        '<tspan class="step-num">02</tspan> Webhooks' +
+      '</text>' +
+      '<text x="200" y="72" class="pipe-node-sub pipe-node-sub-phone">Partner streams</text>' +
+      '<circle cx="295" cy="42" r="5.5" class="pipe-node-shape" />' +
+      '<text x="295" y="58" class="pipe-node-label pipe-node-label-phone">' +
+        '<tspan class="step-num">03</tspan> Event logs' +
+      '</text>' +
+      '<text x="295" y="72" class="pipe-node-sub pipe-node-sub-phone">Telemetry feeds</text>' +
+
+      // S1->S2 connectors: nodes 01+02 elbow to Airflow at x=140; node 03 elbows to CloudStorage at x=270
+      '<path d="M 105 48 V 83 H 140 V 100" class="pipe-connector" />' +
+      '<path d="M 200 48 V 83 H 140 V 100" class="pipe-connector" />' +
+      '<path d="M 295 48 V 83 H 270 V 100" class="pipe-connector" />' +
+
+      // Stage 02: Ingestion
+      '<text x="6" y="115" class="pipe-stage-label pipe-stage-label-phone">' +
+        '<tspan class="step-num">02</tspan> Ingestion' +
+      '</text>' +
+      '<circle cx="140" cy="135" r="5.5" class="pipe-node-shape hub" />' +
+      '<text x="140" y="151" class="pipe-node-label pipe-node-label-phone">' +
+        '<tspan class="step-num">04</tspan> Airflow' +
+      '</text>' +
+      '<text x="140" y="165" class="pipe-node-sub pipe-node-sub-phone">21 hourly pipelines</text>' +
+      '<circle cx="270" cy="135" r="5.5" class="pipe-node-shape" />' +
+      '<text x="270" y="151" class="pipe-node-label pipe-node-label-phone">' +
+        '<tspan class="step-num">05</tspan> Cloud Storage' +
+      '</text>' +
+      '<text x="270" y="165" class="pipe-node-sub pipe-node-sub-phone">Raw staging lake</text>' +
+
+      // S2->S3 connectors: Airflow(140) straight to BigQuery(140); CloudStorage(270) splits
+      '<path d="M 140 141 V 176 H 140 V 193" class="pipe-connector" />' +
+      '<path d="M 270 141 V 176 H 140 V 193" class="pipe-connector" />' +
+      '<path d="M 270 141 V 193" class="pipe-connector" />' +
+
+      // Stage 03: Warehouse and models
+      '<text x="6" y="208" class="pipe-stage-label pipe-stage-label-phone">' +
+        '<tspan class="step-num">03</tspan> Warehouse' +
+      '</text>' +
+      '<circle cx="140" cy="228" r="6.5" class="pipe-node-shape hub" />' +
+      '<text x="140" y="244" class="pipe-node-label pipe-node-label-phone">' +
+        '<tspan class="step-num">06</tspan> BigQuery' +
+      '</text>' +
+      '<text x="140" y="258" class="pipe-node-sub pipe-node-sub-phone">Central warehouse</text>' +
+      '<circle cx="270" cy="228" r="5.5" class="pipe-node-shape hub" />' +
+      '<text x="270" y="244" class="pipe-node-label pipe-node-label-phone">' +
+        '<tspan class="step-num">07</tspan> dbt models' +
+      '</text>' +
+      '<text x="270" y="258" class="pipe-node-sub pipe-node-sub-phone">599 models, 908 tests</text>' +
+
+      // BigQuery->dbt intra-stage horizontal connector
+      '<path d="M 147 228 H 264" class="pipe-connector" />' +
+
+      // S3->S4 connectors: dbt(270) fans to Dataplex(140) + BI(270)
+      '<path d="M 270 234 V 269 H 140 V 286" class="pipe-connector" />' +
+      '<path d="M 270 234 V 286" class="pipe-connector" />' +
+
+      // Stage 04: Governance and BI
+      '<text x="6" y="301" class="pipe-stage-label pipe-stage-label-phone">' +
+        '<tspan class="step-num">04</tspan> Governance + BI' +
+      '</text>' +
+      '<circle cx="140" cy="318" r="5.5" class="pipe-node-shape" />' +
+      '<text x="140" y="332" class="pipe-node-label pipe-node-label-phone">' +
+        '<tspan class="step-num">08</tspan> Dataplex' +
+      '</text>' +
+      '<text x="140" y="347" class="pipe-node-sub pipe-node-sub-phone">Data catalogue</text>' +
+      '<circle cx="270" cy="318" r="5.5" class="pipe-node-shape" />' +
+      '<text x="270" y="332" class="pipe-node-label pipe-node-label-phone">' +
+        '<tspan class="step-num">09</tspan> BI surfaces' +
+      '</text>' +
+      '<text x="270" y="347" class="pipe-node-sub pipe-node-sub-phone">Looker + Metabase</text>' +
+      '</svg>';
+
+    return '<div class="pipeline-svg-pair">' + desktopSVG + phoneSVG + '</div>';
   }
 
   // 4.d Data quality band: two labelled matrices (908 tests and 121 tables)
@@ -574,12 +700,44 @@
       '<h2 class="section-heading">Data platform architecture pipeline</h2>' +
       '<p class="section-sub">Nine stages from transactional sources through warehouse modeling to business intelligence</p>' +
       '</div>' +
-      '<div class="chart-container">' + generatePipelineSVG() + '</div>' +
+      generatePipelineSVG() +
       '<p class="cell-meta">' +
         'Scope: ' + esc(m121.scope || '25 ingestion pipelines loading 121 tables into BigQuery with 599 dbt models') + '<br>' +
         'Source: ' + esc(m121.source || 'declared schedules and pipeline repo, Sep 2026') +
       '</p>';
     setHTML(elPipelineMap, html);
+
+    // Sync aria-hidden and tabindex on the two pipeline SVG variants so that
+    // whichever is visually hidden is also removed from the accessibility tree.
+    // display:none already removes elements from the tree, but the task requires
+    // explicit aria-hidden attributes for belt-and-suspenders correctness.
+    if (window.matchMedia) {
+      var mqPhone = window.matchMedia('(max-width: 599px)');
+
+      function syncPipelineA11y(isPhone) {
+        var svgDesktop = elPipelineMap.querySelector('.pipeline-desktop');
+        var svgPhone = elPipelineMap.querySelector('.pipeline-phone');
+        if (!svgDesktop || !svgPhone) return;
+        if (isPhone) {
+          svgPhone.removeAttribute('aria-hidden');
+          svgPhone.removeAttribute('tabindex');
+          svgDesktop.setAttribute('aria-hidden', 'true');
+          svgDesktop.setAttribute('tabindex', '-1');
+        } else {
+          svgDesktop.removeAttribute('aria-hidden');
+          svgDesktop.removeAttribute('tabindex');
+          svgPhone.setAttribute('aria-hidden', 'true');
+          svgPhone.setAttribute('tabindex', '-1');
+        }
+      }
+
+      syncPipelineA11y(mqPhone.matches);
+      if (mqPhone.addEventListener) {
+        mqPhone.addEventListener('change', function (e) { syncPipelineA11y(e.matches); });
+      } else if (mqPhone.addListener) {
+        mqPhone.addListener(function (e) { syncPipelineA11y(e.matches); });
+      }
+    }
   }
 
   // --- Projects and Quality Matrix (Band 4) ---------------------------
