@@ -474,6 +474,19 @@ button:focus-visible,
   padding: 28px 24px;
 }
 
+/* Dual-SVG pipeline variant defaults (wide layout). Narrow MQ swaps these. */
+.pipeline-phone {
+  display: none;
+}
+
+.pipeline-desktop {
+  display: block;
+}
+
+.pipeline-svg-pair {
+  width: 100%;
+}
+
 .pipeline-header {
   margin-bottom: 16px;
 }
@@ -1092,6 +1105,19 @@ button:focus-visible,
   font-weight: 600;
 }
 
+/* Phone pipeline text overrides: stage label left-anchored, node labels centered below circles. */
+.pipe-stage-label-phone {
+  text-anchor: start;
+}
+
+.pipe-node-label-phone {
+  text-anchor: middle;
+}
+
+.pipe-node-sub-phone {
+  text-anchor: middle;
+}
+
 .step-num {
   font-family: var(--font-mono);
   font-size: 11px;
@@ -1229,7 +1255,7 @@ button:focus-visible,
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 599px) {
   body {
     padding: 0 12px 32px;
   }
@@ -1262,18 +1288,15 @@ button:focus-visible,
     padding: 8px 6px;
   }
 
-  /* The pipeline map is a wide schematic. Below 600px, scale it down but keep
-     the text at a readable size, and let the figure pan sideways instead of
-     squeezing every label into an unreadable row. */
-  .pipeline-column {
-    overflow-x: auto;
-    overflow-y: hidden;
+  /* Phone pipeline variant visible; desktop variant hidden. */
+  .pipeline-phone {
+    display: block;
   }
-  .pipeline-column .chart-svg {
-    width: 620px;
-    max-width: none;
-    height: auto;
+
+  .pipeline-desktop {
+    display: none;
   }
+
 }
 
 /* Reduced motion */
