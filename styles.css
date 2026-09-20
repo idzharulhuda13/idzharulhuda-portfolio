@@ -150,6 +150,7 @@ code, pre, kbd, samp,
 .step-num,
 .timeline-period,
 .timeline-company,
+.timeline-caption,
 .project-tech,
 .project-delta,
 .project-link,
@@ -695,18 +696,48 @@ button:focus-visible,
   background: var(--surface);
 }
 
-.timeline-strip {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+.experience-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.experience-title-group .section-sub {
+  margin-bottom: 0;
+}
+
+.timeline-caption {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.timeline-axis {
+  width: 100%;
+  height: 2px;
+  background: var(--line);
   position: relative;
   margin-top: 20px;
 }
 
+.timeline,
+.timeline-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  position: relative;
+  align-items: stretch;
+  margin-top: 0;
+}
+
+.timeline::before,
 .timeline-strip::before {
   content: "";
   position: absolute;
-  top: 0;
+  top: -2px;
   left: 0;
   right: 0;
   height: 2px;
@@ -714,20 +745,24 @@ button:focus-visible,
 }
 
 .timeline-card {
-  padding-top: 16px;
+  padding-top: 20px;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
-.timeline-card::before {
+.timeline-card::before,
+.timeline-marker {
   content: "";
   position: absolute;
-  top: -4px;
+  top: -6px;
   left: 0;
   width: 10px;
   height: 10px;
   background: var(--surface);
   border: 2px solid var(--signal);
   border-radius: 50%;
+  box-sizing: border-box;
 }
 
 .timeline-period {
@@ -753,6 +788,7 @@ button:focus-visible,
   font-size: 13px;
   color: var(--ink);
   line-height: 1.5;
+  flex-grow: 1;
 }
 
 /* ===== Band 7: About ===== */
@@ -1255,6 +1291,41 @@ button:focus-visible,
   display: none;
 }
 
+@media (max-width: 1023px) {
+  .experience-header {
+    display: block;
+  }
+  .experience-title-group .section-sub {
+    margin-bottom: 16px;
+  }
+  .timeline-caption {
+    display: none;
+  }
+  .timeline-axis {
+    display: none;
+  }
+  .timeline,
+  .timeline-strip {
+    display: block;
+    margin-top: 0;
+  }
+  .timeline::before,
+  .timeline-strip::before {
+    display: none;
+  }
+  .timeline-card {
+    border-left: 2px solid var(--line);
+    padding-left: 16px;
+    padding-top: 0;
+    width: auto;
+  }
+  .timeline-card::before,
+  .timeline-marker {
+    top: 0;
+    left: -6px;
+  }
+}
+
 @media (max-width: 1023px) and (min-width: 641px) {
   .band-secondary {
     grid-template-columns: repeat(2, 1fr);
@@ -1305,22 +1376,6 @@ button:focus-visible,
   .projects-column {
     border-right: none;
     border-bottom: 1px solid var(--line);
-  }
-  .timeline-strip {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  .timeline-strip::before {
-    display: none;
-  }
-  .timeline-card {
-    border-left: 2px solid var(--line);
-    padding-left: 16px;
-    padding-top: 0;
-  }
-  .timeline-card::before {
-    top: 0;
-    left: -6px;
   }
 }
 
