@@ -529,15 +529,15 @@
     return '<div class="pipeline-svg-pair">' + desktopSVG + phoneSVG + '</div>';
   }
 
-  // 4.d Data quality band: two labelled matrices (908 tests and 121 tables)
-  function generateQualityMatrixSVG(testsCount, tablesCount) {
-    var tests = testsCount || 908;
-    var tables = tablesCount || 121;
-
+  // 4.d Tests matrix: 908 automated dbt tests in a dense grid.
+  // Returns an SVG element string only (no wrapper div).
+  function generateTestsMatrixSVG(tests, note) {
     var colsTests = 41;
-    var cellTests = '';
-    var startX = 18;
-    var startY = 50;
+    var rows = Math.ceil(tests / colsTests);
+    var svgH = 28 + rows * 6.8 + 12;
+    var cellMarkup = '';
+    var startX = 8;
+    var startY = 24;
     var stepX = 5.0;
     var stepY = 6.8;
     var w = 4.0;
@@ -548,40 +548,46 @@
       var r = Math.floor(i / colsTests);
       var cx = (startX + c * stepX).toFixed(1);
       var cy = (startY + r * stepY).toFixed(1);
-      cellTests += '<rect x="' + cx + '" y="' + cy + '" width="' + w + '" height="' + h + '" rx="0.5" class="cell-test"/>';
+      cellMarkup += '<rect x="' + cx + '" y="' + cy + '" width="' + w + '" height="' + h + '" rx="0.5" class="cell-test"/>';
     }
 
-    var cellTables = '';
-    var startTableX = 240;
-    var startTableY = 50;
+    return '<svg class="chart-svg quality-svg quality-tests-svg" viewBox="0 0 220 ' + svgH.toFixed(0) + '" role="img" aria-labelledby="qm-tests-title qm-tests-desc">' +
+      '<title id="qm-tests-title">Automated dbt tests: ' + esc(tests) + ' total</title>' +
+      '<desc id="qm-tests-desc">' + esc(tests) + ' automated dbt tests. ' + esc(note) + '</desc>' +
+      '<text x="8" y="13" class="matrix-stage-title"><tspan class="step-num">01</tspan> Automated dbt tests</text>' +
+      '<text x="212" y="13" class="matrix-count-badge" text-anchor="end">' + esc(tests) + '</text>' +
+      cellMarkup +
+      '</svg>';
+  }
+
+  // 4.d Tables matrix: 121 hourly tables in a compact grid.
+  // Returns an SVG element string only (no wrapper div).
+  function generateTablesMatrixSVG(tables, note) {
     var colsTables = 11;
+    var rows = Math.ceil(tables / colsTables);
+    var svgH = 28 + rows * 14.0 + 12;
+    var cellMarkup = '';
+    var startX = 8;
+    var startY = 24;
     var stepTX = 19.0;
     var stepTY = 14.0;
     var tw = 14.0;
-    var th = 14.0;
+    var th = 11.0;
 
     for (var j = 0; j < tables; j++) {
       var tc = j % colsTables;
       var tr = Math.floor(j / colsTables);
-      var tcx = (startTableX + tc * stepTX).toFixed(1);
-      var tcy = (startTableY + tr * stepTY).toFixed(1);
-      cellTables += '<rect x="' + tcx + '" y="' + tcy + '" width="' + tw + '" height="' + th + '" rx="1" class="cell-table"/>';
+      var tcx = (startX + tc * stepTX).toFixed(1);
+      var tcy = (startY + tr * stepTY).toFixed(1);
+      cellMarkup += '<rect x="' + tcx + '" y="' + tcy + '" width="' + tw + '" height="' + th + '" rx="1" class="cell-table"/>';
     }
 
-    return '<svg class="chart-svg quality-svg" viewBox="0 0 450 232" role="img" aria-labelledby="qm-title qm-desc">' +
-      '<title id="qm-title">Data quality and refresh matrix: ' + esc(tests) + ' tests and ' + esc(tables) + ' hourly tables</title>' +
-      '<desc id="qm-desc">' + esc(tests) + ' automated dbt tests passing and ' + esc(tables) + ' tables refreshed every hour with a 2-hour look-back window.</desc>' +
-      '<g class="chart-group tests-group">' +
-        '<text x="18" y="18" class="matrix-stage-title"><tspan class="step-num">01</tspan> Automated dbt tests</text>' +
-        '<text x="222" y="18" class="matrix-count-badge" text-anchor="end">' + esc(tests) + ' tests</text>' +
-        cellTests +
-      '</g>' +
-      '<g class="chart-group tables-group">' +
-        '<text x="240" y="18" class="matrix-stage-title"><tspan class="step-num">02</tspan> Hourly tables</text>' +
-        '<text x="444" y="18" class="matrix-count-badge" text-anchor="end">' + esc(tables) + ' tables</text>' +
-        cellTables +
-      '</g>' +
-      '<text x="18" y="219" class="svg-footnote">Change-set merge with 2-hour look-back window (2,900 loads/day)</text>' +
+    return '<svg class="chart-svg quality-svg quality-tables-svg" viewBox="0 0 220 ' + svgH.toFixed(0) + '" role="img" aria-labelledby="qm-tables-title qm-tables-desc">' +
+      '<title id="qm-tables-title">Hourly tables: ' + esc(tables) + ' total</title>' +
+      '<desc id="qm-tables-desc">' + esc(tables) + ' tables refreshed every hour. ' + esc(note) + '</desc>' +
+      '<text x="8" y="13" class="matrix-stage-title"><tspan class="step-num">02</tspan> Hourly tables</text>' +
+      '<text x="212" y="13" class="matrix-count-badge" text-anchor="end">' + esc(tables) + '</text>' +
+      cellMarkup +
       '</svg>';
   }
 
@@ -815,7 +821,24 @@
     if (elQualityMatrix) {
       var metrics = arr(get('metrics', []));
       var m599 = metrics[2] || {};
-      var qHTML = '<div class="chart-container">' + generateQualityMatrixSVG(908, 121) + '</div>' +
+      var m121 = metrics[3] || {};
+
+      // Tests count: 908 (referenced in m599.label); tables count: from m121.value.
+      // Note text for each matrix comes from the corresponding metric scope in config.js.
+      var testsCount = 908;
+      var tablesCount = parseInt(String(m121.value || '121'), 10) || 121;
+      var testsNote = esc(m599.scope || '404 write a physical table each run, 190 inlined, 5 incremental');
+      var tablesNote = esc(m121.scope || '233 rebuild hourly and 124 daily, about 2,900 table loads a day');
+
+      var qHTML =
+        '<figure class="quality-figure">' +
+          '<div class="chart-container">' + generateTestsMatrixSVG(testsCount, testsNote) + '</div>' +
+          '<figcaption class="quality-note">' + testsNote + '</figcaption>' +
+        '</figure>' +
+        '<figure class="quality-figure">' +
+          '<div class="chart-container">' + generateTablesMatrixSVG(tablesCount, tablesNote) + '</div>' +
+          '<figcaption class="quality-note">' + tablesNote + '</figcaption>' +
+        '</figure>' +
         '<p class="cell-meta">' +
           'Scope: ' + esc(m599.scope || '404 physical tables, 190 inlined views, 5 incremental') + '<br>' +
           'Source: ' + esc(m599.source || 'repo scan and dbt manifest, Sep 2026') +
