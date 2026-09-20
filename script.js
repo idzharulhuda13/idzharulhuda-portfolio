@@ -643,7 +643,7 @@
     setHTML(elStats, statsHTML);
   }
 
-  // --- Impact Section (Band 2: 4fr / 3fr / 5fr) ----------------------
+  // --- Impact Section (Band 2) --------------------------------------
 
   function renderImpact() {
     var metrics = arr(get('metrics', []));
