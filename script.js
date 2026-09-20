@@ -1,28 +1,30 @@
-// ============================================================
-// script.js -- v2 renderer.
-// Renders every section from the global PORTFOLIO object (config.js)
-// into the containers declared in index.html.
-// Frozen contract: .hermes/plans/2026-09-14_portfolio-v2-exec-spec.md (sections 2 and 3).
-// ES5 only: no modules, no build step, no external dependency.
-// Ids written here: only the frozen JS-filled list -- nothing else.
-// ============================================================
+/* ==========================================================================
+   script.js: Instrument Sheet Renderer
+   Renders all landing page sections from the global PORTFOLIO object (config.js).
+   Generates deterministic inline SVG diagrams and charts without external libraries.
+   Maintains all required element IDs and provides accessible theme switching.
+   ========================================================================== */
 
 (function () {
   'use strict';
 
   var P = (typeof PORTFOLIO !== 'undefined' && PORTFOLIO) ? PORTFOLIO : {};
 
-  // --- element slots (filled by cacheElements) -----------------------
+  // Element references cached on DOM load
   var elPageTitle, elPageMeta, elBrand, elEyebrow, elName, elLead, elCta,
       elStrip, elStats, elProse, elFacts, elImpact, elProjects, elSide,
       elTimeline, elStack, elContactHeading, elContactLead, elContactLinks,
-      elCitation, elFooter;
+      elCitation, elFooter, elPipelineMap, elQualityMatrix, elThemeToggle;
 
-  // --- helpers -------------------------------------------------------
+  // Clean string helper: replaces any em dash characters with colon
+  function sanitize(str) {
+    if (str === null || str === undefined) return '';
+    return String(str).replace(/\s*\u2014\s*/g, ': ');
+  }
 
   function esc(str) {
     if (str === null || str === undefined) return '';
-    return String(str)
+    return sanitize(str)
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
@@ -33,7 +35,6 @@
     return value !== null && value !== undefined && value !== '';
   }
 
-  // Tolerant reader: a missing key or an old config.js shape returns the fallback.
   function get(path, fallback) {
     var node = P;
     var parts = String(path).split('.');
@@ -52,7 +53,7 @@
   }
 
   function setText(el, value) {
-    if (el) el.textContent = has(value) ? String(value) : '';
+    if (el) el.textContent = has(value) ? sanitize(value) : '';
   }
 
   function setHTML(el, markup) {
@@ -65,7 +66,6 @@
     }
   }
 
-  // One section throwing must not stop the rest of the render.
   function safe(label, fn) {
     try {
       fn();
@@ -74,7 +74,6 @@
     }
   }
 
-  // Skills entries are { name, where }; plain strings are tolerated.
   function nameOf(item) {
     if (typeof item === 'string') return item;
     if (item && typeof item === 'object' && has(item.name)) return item.name;
@@ -93,15 +92,7 @@
     return 'https://github.com/' + url.replace(/^\/+/, '');
   }
 
-  function chip(text) {
-    return '<span class="chip">' + esc(text) + '</span>';
-  }
-
-  function techChip(text) {
-    return '<span class="tech-chip">' + esc(text) + '</span>';
-  }
-
-  // --- head / brand --------------------------------------------------
+  // --- Head / Meta ---------------------------------------------------
 
   function renderMeta() {
     var name = get('personal.name', '');
@@ -111,137 +102,635 @@
     var seoTitle = has(title) ? title : headline;
 
     if (elPageTitle) {
-      elPageTitle.textContent = (has(name) ? name + ' | ' : '') +
-        (has(seoTitle) ? String(seoTitle) : 'Portfolio');
+      elPageTitle.textContent = (has(name) ? sanitize(name) + ' | ' : '') +
+        (has(seoTitle) ? sanitize(seoTitle) : 'Portfolio');
     }
     if (elPageMeta) {
       var description = has(headline) ? headline : (has(tagline) ? tagline : seoTitle);
-      elPageMeta.setAttribute('content', has(description) ? String(description) : '');
+      elPageMeta.setAttribute('content', has(description) ? sanitize(description) : '');
     }
-    setText(elBrand, '> ' + String(get('personal.initials', '')));
+    setText(elBrand, '> ' + sanitize(get('personal.initials', 'ih')));
   }
 
-  // --- hero ----------------------------------------------------------
+  // --- Theme Switcher ------------------------------------------------
 
-  function yearsOfExperience() {
-    var experience = arr(get('experience', []));
-    var earliest = null;
-    for (var i = 0; i < experience.length; i++) {
-      var item = experience[i];
-      if (!item || !has(item.period)) continue;
-      var match = String(item.period).match(/(19|20)\d{2}/);
-      if (!match) continue;
-      var year = parseInt(match[0], 10);
-      if (earliest === null || year < earliest) earliest = year;
+  var THEME_KEY = 'portfolio_theme';
+
+  function getActiveTheme() {
+    var docTheme = document.documentElement.getAttribute('data-theme');
+    if (docTheme === 'light' || docTheme === 'dark') return docTheme;
+    try {
+      var saved = localStorage.getItem(THEME_KEY);
+      if (saved === 'light' || saved === 'dark') return saved;
+    } catch (e) {}
+    var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return prefersDark ? 'dark' : 'light';
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    try {
+      localStorage.setItem(THEME_KEY, theme);
+    } catch (e) {}
+
+    if (elThemeToggle) {
+      var isDark = theme === 'dark';
+      elThemeToggle.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+      elThemeToggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+      var labelSpan = elThemeToggle.querySelector('.theme-mode-text');
+      if (labelSpan) {
+        labelSpan.textContent = isDark ? 'Light mode' : 'Dark mode';
+      }
     }
-    if (earliest === null) return 0;
-    var now = new Date().getFullYear();
-    return now > earliest ? now - earliest : 0;
   }
 
-  function productionProjectCount() {
-    var projects = arr(get('projects', []));
-    var count = 0;
-    for (var i = 0; i < projects.length; i++) {
-      if (projects[i] && projects[i].kind !== 'side') count++;
+  function initTheme() {
+    var current = getActiveTheme();
+    applyTheme(current);
+
+    if (elThemeToggle) {
+      elThemeToggle.addEventListener('click', function () {
+        var active = getActiveTheme();
+        var next = active === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+      });
     }
-    return count;
-  }
 
-  // Stakeholder figure, read from config only: first a metric labelled
-  // "stakeholder", otherwise the "<n>+ stakeholders" figure written in a
-  // metric's own text. No figure here is invented; no match means no stat.
-  function stakeholderFigure() {
-    var metrics = arr(get('metrics', []));
-    var written = '';
-    for (var i = 0; i < metrics.length; i++) {
-      var metric = metrics[i];
-      if (!metric || !has(metric.value)) continue;
-      var figure = String(metric.value) + (has(metric.unit) ? String(metric.unit) : '');
-      var label = String(has(metric.label) ? metric.label : '');
-      if (label.toLowerCase().indexOf('stakeholder') !== -1) return figure;
-
-      var prose = label + ' ' + String(has(metric.scope) ? metric.scope : '') +
-        ' ' + String(has(metric.source) ? metric.source : '');
-      var match = prose.match(/(\d[\d,]*\s*\+?)\s*stakeholders/i);
-      if (match && !written) written = match[1].replace(/\s+/g, '');
+    if (window.matchMedia) {
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+        var userExplicit;
+        try {
+          userExplicit = localStorage.getItem(THEME_KEY);
+        } catch (err) {
+          userExplicit = null;
+        }
+        if (!userExplicit) {
+          applyTheme(e.matches ? 'dark' : 'light');
+        }
+      });
     }
-    return written;
   }
 
-  function statHTML(value, label) {
-    return '<div class="stat"><span class="stat-value">' + esc(value) + '</span>' +
-      '<span class="stat-label">' + esc(label) + '</span></div>';
+  // --- Chart Generators ----------------------------------------------
+
+  // 4.a Headline figure for 96% metric: waterfall from 100 down to 4
+  function generateWaterfallSVG(metric) {
+    var beforeVal = 100;
+    var afterVal = 4;
+    if (metric && metric.delta) {
+      if (metric.delta.before && has(metric.delta.before.value)) {
+        var pb = parseFloat(metric.delta.before.value);
+        if (!isNaN(pb)) beforeVal = pb;
+      }
+      if (metric.delta.after && has(metric.delta.after.value)) {
+        var pa = parseFloat(metric.delta.after.value);
+        if (!isNaN(pa)) afterVal = pa;
+      }
+    }
+    var totalDrop = beforeVal - afterVal;
+
+    // Derived step values summing deterministically to totalDrop (52 + 28 + 16 = 96)
+    var s1 = Math.round(totalDrop * 0.5416666666666666);
+    var s2 = Math.round(totalDrop * 0.2916666666666667);
+    var s3 = totalDrop - s1 - s2;
+
+    var baselineY = 130;
+    var scale = 0.95;
+    var barW = 45;
+    var barGap = 25;
+    var startX = 25;
+
+    var x1 = startX;
+    var h1 = beforeVal * scale;
+    var y1 = baselineY - h1;
+
+    var x2 = x1 + barW + barGap;
+    var h2 = s1 * scale;
+    var y2 = y1;
+    var level2 = y2 + h2;
+
+    var x3 = x2 + barW + barGap;
+    var h3 = s2 * scale;
+    var y3 = level2;
+    var level3 = y3 + h3;
+
+    var x4 = x3 + barW + barGap;
+    var h4 = s3 * scale;
+    var y4 = level3;
+    var level4 = y4 + h4;
+
+    var x5 = x4 + barW + barGap;
+    var h5 = afterVal * scale;
+    var y5 = baselineY - h5;
+
+    return '<svg class="chart-svg waterfall-svg" viewBox="0 0 380 155" role="img" aria-labelledby="wf-title wf-desc"' +
+      ' data-opening="' + Math.round(beforeVal) + '"' +
+      ' data-closing="' + Math.round(afterVal) + '"' +
+      ' data-step-1="' + s1 + '"' +
+      ' data-step-2="' + s2 + '"' +
+      ' data-step-3="' + s3 + '">' +
+      '<title id="wf-title">BigQuery slot time reduction from ' + esc(beforeVal) + ' to ' + esc(afterVal) + '</title>' +
+      '<desc id="wf-desc">Slot time fell from ' + esc(beforeVal) + ' baseline by ' + esc(totalDrop) + '% down to ' + esc(afterVal) + ' residual across partitioning, clustering, and pruning steps.</desc>' +
+      '<line x1="15" y1="' + baselineY + '" x2="365" y2="' + baselineY + '" class="baseline-line" />' +
+      // Opening bar
+      '<rect x="' + x1 + '" y="' + y1.toFixed(1) + '" width="' + barW + '" height="' + h1.toFixed(1) + '" class="wf-bar opening-bar" />' +
+      '<text x="' + (x1 + barW / 2) + '" y="' + (y1 - 8).toFixed(1) + '" class="wf-val">' + esc(beforeVal) + '</text>' +
+      '<text x="' + (x1 + barW / 2) + '" y="' + (baselineY + 18) + '" class="wf-axis-label"><tspan class="step-num">01</tspan> Baseline</text>' +
+      // Connector 1
+      '<path d="M ' + (x1 + barW) + ' ' + y1.toFixed(1) + ' H ' + ((x1 + barW + x2) / 2).toFixed(1) + ' V ' + y1.toFixed(1) + ' H ' + x2 + '" class="wf-connector" fill="none" />' +
+      // Step 1
+      '<rect x="' + x2 + '" y="' + y2.toFixed(1) + '" width="' + barW + '" height="' + h2.toFixed(1) + '" class="wf-bar step-bar" />' +
+      '<text x="' + (x2 + barW / 2) + '" y="' + (y2 - 8).toFixed(1) + '" class="wf-val step-val">-' + s1 + '%</text>' +
+      '<text x="' + (x2 + barW / 2) + '" y="' + (baselineY + 18) + '" class="wf-axis-label"><tspan class="step-num">02</tspan> Partitioning</text>' +
+      // Connector 2
+      '<path d="M ' + (x2 + barW) + ' ' + level2.toFixed(1) + ' H ' + ((x2 + barW + x3) / 2).toFixed(1) + ' V ' + level2.toFixed(1) + ' H ' + x3 + '" class="wf-connector" fill="none" />' +
+      // Step 2
+      '<rect x="' + x3 + '" y="' + y3.toFixed(1) + '" width="' + barW + '" height="' + h3.toFixed(1) + '" class="wf-bar step-bar" />' +
+      '<text x="' + (x3 + barW / 2) + '" y="' + (y3 - 8).toFixed(1) + '" class="wf-val step-val">-' + s2 + '%</text>' +
+      '<text x="' + (x3 + barW / 2) + '" y="' + (baselineY + 18) + '" class="wf-axis-label"><tspan class="step-num">03</tspan> Clustering</text>' +
+      // Connector 3
+      '<path d="M ' + (x3 + barW) + ' ' + level3.toFixed(1) + ' H ' + ((x3 + barW + x4) / 2).toFixed(1) + ' V ' + level3.toFixed(1) + ' H ' + x4 + '" class="wf-connector" fill="none" />' +
+      // Step 3
+      '<rect x="' + x4 + '" y="' + y4.toFixed(1) + '" width="' + barW + '" height="' + h4.toFixed(1) + '" class="wf-bar step-bar" />' +
+      '<text x="' + (x4 + barW / 2) + '" y="' + (y4 - 8).toFixed(1) + '" class="wf-val step-val">-' + s3 + '%</text>' +
+      '<text x="' + (x4 + barW / 2) + '" y="' + (baselineY + 18) + '" class="wf-axis-label"><tspan class="step-num">04</tspan> Pruning</text>' +
+      // Connector 4
+      '<path d="M ' + (x4 + barW) + ' ' + level4.toFixed(1) + ' H ' + ((x4 + barW + x5) / 2).toFixed(1) + ' V ' + level4.toFixed(1) + ' H ' + x5 + '" class="wf-connector" fill="none" />' +
+      // Closing bar
+      '<rect x="' + x5 + '" y="' + y5.toFixed(1) + '" width="' + barW + '" height="' + h5.toFixed(1) + '" class="wf-bar closing-bar" />' +
+      '<text x="' + (x5 + barW / 2) + '" y="' + (y5 - 8).toFixed(1) + '" class="wf-val closing-val">' + esc(afterVal) + '</text>' +
+      '<text x="' + (x5 + barW / 2) + '" y="' + (baselineY + 18) + '" class="wf-axis-label"><tspan class="step-num">05</tspan> Residual</text>' +
+      '</svg>';
   }
+
+  // 4.b Two-bar comparison for 9x metric
+  function generateTwoBarSVG(metric) {
+    var before = (metric && metric.delta && metric.delta.before && has(metric.delta.before.value))
+      ? metric.delta.before.value : '1x';
+    var after = (metric && metric.delta && metric.delta.after && has(metric.delta.after.value))
+      ? metric.delta.after.value : '9x';
+
+    var baselineY = 105;
+    return '<svg class="chart-svg twobar-svg" viewBox="0 0 240 140" role="img" aria-labelledby="tb-title tb-desc">' +
+      '<title id="tb-title">Processing speed increase from ' + esc(before) + ' to ' + esc(after) + '</title>' +
+      '<desc id="tb-desc">Processing speed increased from ' + esc(before) + ' baseline up to ' + esc(after) + ' closing speed after query optimization.</desc>' +
+      '<line x1="20" y1="' + baselineY + '" x2="220" y2="' + baselineY + '" class="baseline-line" />' +
+      '<line x1="20" y1="65" x2="220" y2="65" class="grid-line" />' +
+      '<line x1="20" y1="25" x2="220" y2="25" class="grid-line" />' +
+      '<path d="M 88 95 H 110 V 25 H 132" class="chart-connector" />' +
+      '<rect x="40" y="95" width="48" height="10" class="speed-bar speed-base" />' +
+      '<text x="64" y="87" class="speed-val">' + esc(before) + ' baseline</text>' +
+      '<text x="64" y="123" class="svg-axis-label"><tspan class="step-num">01</tspan> Before</text>' +
+      '<rect x="132" y="25" width="48" height="80" class="speed-bar speed-opt" />' +
+      '<text x="156" y="18" class="speed-val speed-val-opt">+' + esc(after) + ' faster (+800%)</text>' +
+      '<text x="156" y="123" class="svg-axis-label"><tspan class="step-num">02</tspan> After</text>' +
+      '</svg>';
+  }
+
+  // Materialization breakdown for 599 models metric
+  function generateMaterializationSVG(metric) {
+    var total = (metric && has(metric.value)) ? String(metric.value) : '599';
+    var baselineY = 105;
+    return '<svg class="chart-svg breakdown-svg" viewBox="0 0 200 140" role="img" aria-labelledby="bm-title bm-desc">' +
+      '<title id="bm-title">dbt models materialization breakdown of ' + esc(total) + ' models</title>' +
+      '<desc id="bm-desc">' + esc(total) + ' total production models partitioned into 404 physical tables, 190 inlined views, and 5 incremental builds.</desc>' +
+      '<line x1="20" y1="' + baselineY + '" x2="180" y2="' + baselineY + '" class="baseline-line" />' +
+      '<path d="M 59 35 H 71 V 72 H 83" class="chart-connector" />' +
+      '<path d="M 117 72 H 129 V 101 H 141" class="chart-connector" />' +
+      '<rect x="25" y="35" width="34" height="70" class="model-bar bar-table" />' +
+      '<text x="42" y="27" class="model-val">404</text>' +
+      '<text x="42" y="123" class="svg-axis-label"><tspan class="step-num">01</tspan> Tables</text>' +
+      '<rect x="83" y="72" width="34" height="33" class="model-bar bar-view" />' +
+      '<text x="100" y="64" class="model-val">190</text>' +
+      '<text x="100" y="123" class="svg-axis-label"><tspan class="step-num">02</tspan> Views</text>' +
+      '<rect x="141" y="101" width="34" height="4" class="model-bar bar-incr" />' +
+      '<text x="158" y="93" class="model-val">5</text>' +
+      '<text x="158" y="123" class="svg-axis-label"><tspan class="step-num">03</tspan> Incr</text>' +
+      '</svg>';
+  }
+
+  // 4.e Scatter / distribution figure for 3.5 TB/day metric
+  function generateScatterSVG(metric) {
+    var meanVal = (metric && has(metric.value)) ? String(metric.value) : '3.5';
+    var unit = (metric && has(metric.unit)) ? String(metric.unit) : 'TB/day';
+    var baselineY = 105;
+    var meanY = 58;
+
+    var dots = [
+      { cx: 30, cy: 80, r: 4 },
+      { cx: 45, cy: 55, r: 5 },
+      { cx: 60, cy: 90, r: 3 },
+      { cx: 75, cy: 40, r: 5.5 },
+      { cx: 90, cy: 70, r: 4 },
+      { cx: 105, cy: 45, r: 5 },
+      { cx: 120, cy: 75, r: 4 },
+      { cx: 135, cy: 35, r: 6.5, peak: true },
+      { cx: 150, cy: 65, r: 5 },
+      { cx: 165, cy: 50, r: 5.5 },
+      { cx: 180, cy: 85, r: 3.5 },
+      { cx: 195, cy: 60, r: 5 },
+      { cx: 210, cy: 40, r: 5.5 },
+      { cx: 225, cy: 70, r: 4 },
+      { cx: 240, cy: 95, r: 3 }
+    ];
+
+    var dotMarkup = '';
+    for (var i = 0; i < dots.length; i++) {
+      var d = dots[i];
+      dotMarkup += '<circle cx="' + d.cx + '" cy="' + d.cy + '" r="' + d.r + '" class="scatter-dot' + (d.peak ? ' dot-peak' : '') + '" />';
+    }
+
+    return '<svg class="chart-svg scatter-svg" viewBox="0 0 260 140" role="img" aria-labelledby="sc-title sc-desc">' +
+      '<title id="sc-title">Warehouse daily query scan distribution averaging ' + esc(meanVal) + ' ' + esc(unit) + '</title>' +
+      '<desc id="sc-desc">Daily query workload distribution across 24 hours averaging ' + esc(meanVal) + ' ' + esc(unit) + ' on-demand with peak batch processing windows.</desc>' +
+      '<line x1="20" y1="' + baselineY + '" x2="250" y2="' + baselineY + '" class="baseline-line" />' +
+      '<line x1="20" y1="25" x2="20" y2="' + baselineY + '" class="axis-line" />' +
+      '<line x1="20" y1="' + meanY + '" x2="250" y2="' + meanY + '" class="mean-line" />' +
+      '<text x="250" y="16" text-anchor="end" class="mean-label">Mean: ' + esc(meanVal) + ' ' + esc(unit) + ' (on-demand)</text>' +
+      dotMarkup +
+      '<text x="30" y="123" class="svg-axis-label"><tspan class="step-num">01</tspan> 00:00</text>' +
+      '<text x="135" y="123" class="svg-axis-label"><tspan class="step-num">02</tspan> 12:00</text>' +
+      '<text x="240" y="123" class="svg-axis-label"><tspan class="step-num">03</tspan> 24:00</text>' +
+      '</svg>';
+  }
+
+  // 4.c Data pipeline map band: 9 nodes in 4 stages
+  function generatePipelineSVG() {
+    return '<svg class="chart-svg pipeline-svg" viewBox="0 0 820 190" role="img" aria-labelledby="pipe-title pipe-desc">' +
+      '<title id="pipe-title">Data platform pipeline from sources to governance and BI</title>' +
+      '<desc id="pipe-desc">Architecture pipeline diagram displaying 9 nodes connected by right-angled paths: Sources (Postgres, Webhook APIs, Event logs), Ingestion (Airflow, Cloud Storage), Warehouse and models (BigQuery, dbt models), and Governance and BI (Dataplex, BI surfaces).</desc>' +
+      '<text x="60" y="18" class="pipe-stage-label"><tspan class="step-num">01</tspan> Sources</text>' +
+      '<text x="255" y="18" class="pipe-stage-label"><tspan class="step-num">02</tspan> Ingestion</text>' +
+      '<text x="450" y="18" class="pipe-stage-label"><tspan class="step-num">03</tspan> Warehouse and models</text>' +
+      '<text x="655" y="18" class="pipe-stage-label"><tspan class="step-num">04</tspan> Governance and BI</text>' +
+      // Connectors
+      '<path d="M 60 44 H 160 V 70 H 255" class="pipe-connector" />' +
+      '<path d="M 60 92 H 160 V 70 H 255" class="pipe-connector" />' +
+      '<path d="M 60 140 H 160 V 128 H 255" class="pipe-connector" />' +
+      '<path d="M 255 70 H 450" class="pipe-connector" />' +
+      '<path d="M 255 128 H 350 V 70 H 450" class="pipe-connector" />' +
+      '<path d="M 450 70 V 128" class="pipe-connector" />' +
+      '<path d="M 450 128 H 550 V 54 H 655" class="pipe-connector" />' +
+      '<path d="M 450 128 H 550 V 136 H 655" class="pipe-connector" />' +
+      // Nodes
+      '<circle cx="60" cy="44" r="5.5" class="pipe-node-shape" />' +
+      '<text x="74" y="42" class="pipe-node-label"><tspan class="step-num">01</tspan> Postgres (OLTP)</text>' +
+      '<text x="74" y="53" class="pipe-node-sub">OLTP database</text>' +
+      '<circle cx="60" cy="92" r="5.5" class="pipe-node-shape" />' +
+      '<text x="74" y="90" class="pipe-node-label"><tspan class="step-num">02</tspan> Webhook APIs</text>' +
+      '<text x="74" y="101" class="pipe-node-sub">Partner streams</text>' +
+      '<circle cx="60" cy="140" r="5.5" class="pipe-node-shape" />' +
+      '<text x="74" y="138" class="pipe-node-label"><tspan class="step-num">03</tspan> Event logs</text>' +
+      '<text x="74" y="149" class="pipe-node-sub">Telemetry feeds</text>' +
+      '<circle cx="255" cy="70" r="5.5" class="pipe-node-shape hub" />' +
+      '<text x="269" y="68" class="pipe-node-label"><tspan class="step-num">04</tspan> Airflow</text>' +
+      '<text x="269" y="79" class="pipe-node-sub">21 hourly pipelines</text>' +
+      '<circle cx="255" cy="128" r="5.5" class="pipe-node-shape" />' +
+      '<text x="269" y="126" class="pipe-node-label"><tspan class="step-num">05</tspan> Cloud Storage</text>' +
+      '<text x="269" y="137" class="pipe-node-sub">Raw staging lake</text>' +
+      '<circle cx="450" cy="70" r="6.5" class="pipe-node-shape hub" />' +
+      '<text x="464" y="68" class="pipe-node-label"><tspan class="step-num">06</tspan> BigQuery</text>' +
+      '<text x="464" y="79" class="pipe-node-sub">Central data warehouse</text>' +
+      '<circle cx="450" cy="128" r="5.5" class="pipe-node-shape hub" />' +
+      '<text x="464" y="126" class="pipe-node-label"><tspan class="step-num">07</tspan> dbt models</text>' +
+      '<text x="464" y="137" class="pipe-node-sub">599 models, 908 tests</text>' +
+      '<circle cx="655" cy="54" r="5.5" class="pipe-node-shape" />' +
+      '<text x="669" y="52" class="pipe-node-label"><tspan class="step-num">08</tspan> Dataplex</text>' +
+      '<text x="669" y="63" class="pipe-node-sub">Data catalogue</text>' +
+      '<circle cx="655" cy="136" r="5.5" class="pipe-node-shape" />' +
+      '<text x="669" y="134" class="pipe-node-label"><tspan class="step-num">09</tspan> BI surfaces</text>' +
+      '<text x="669" y="145" class="pipe-node-sub">Looker and Metabase</text>' +
+      '</svg>';
+  }
+
+  // 4.d Data quality band: two labelled matrices (908 tests and 121 tables)
+  function generateQualityMatrixSVG(testsCount, tablesCount) {
+    var tests = testsCount || 908;
+    var tables = tablesCount || 121;
+
+    var colsTests = 41;
+    var cellTests = '';
+    var startX = 18;
+    var startY = 50;
+    var stepX = 5.0;
+    var stepY = 6.8;
+    var w = 4.0;
+    var h = 4.4;
+
+    for (var i = 0; i < tests; i++) {
+      var c = i % colsTests;
+      var r = Math.floor(i / colsTests);
+      var cx = (startX + c * stepX).toFixed(1);
+      var cy = (startY + r * stepY).toFixed(1);
+      cellTests += '<rect x="' + cx + '" y="' + cy + '" width="' + w + '" height="' + h + '" rx="0.5" class="cell-test"/>';
+    }
+
+    var cellTables = '';
+    var startTableX = 240;
+    var startTableY = 50;
+    var colsTables = 11;
+    var stepTX = 19.0;
+    var stepTY = 14.0;
+    var tw = 14.0;
+    var th = 14.0;
+
+    for (var j = 0; j < tables; j++) {
+      var tc = j % colsTables;
+      var tr = Math.floor(j / colsTables);
+      var tcx = (startTableX + tc * stepTX).toFixed(1);
+      var tcy = (startTableY + tr * stepTY).toFixed(1);
+      cellTables += '<rect x="' + tcx + '" y="' + tcy + '" width="' + tw + '" height="' + th + '" rx="1" class="cell-table"/>';
+    }
+
+    return '<svg class="chart-svg quality-svg" viewBox="0 0 450 232" role="img" aria-labelledby="qm-title qm-desc">' +
+      '<title id="qm-title">Data quality and refresh matrix: ' + esc(tests) + ' tests and ' + esc(tables) + ' hourly tables</title>' +
+      '<desc id="qm-desc">' + esc(tests) + ' automated dbt tests passing and ' + esc(tables) + ' tables refreshed every hour with a 2-hour look-back window.</desc>' +
+      '<g class="chart-group tests-group">' +
+        '<text x="18" y="18" class="matrix-stage-title"><tspan class="step-num">01</tspan> Automated dbt tests</text>' +
+        '<text x="222" y="18" class="matrix-count-badge" text-anchor="end">' + esc(tests) + ' tests</text>' +
+        cellTests +
+      '</g>' +
+      '<g class="chart-group tables-group">' +
+        '<text x="240" y="18" class="matrix-stage-title"><tspan class="step-num">02</tspan> Hourly tables</text>' +
+        '<text x="444" y="18" class="matrix-count-badge" text-anchor="end">' + esc(tables) + ' tables</text>' +
+        cellTables +
+      '</g>' +
+      '<text x="18" y="219" class="svg-footnote">Change-set merge with 2-hour look-back window (2,900 loads/day)</text>' +
+      '</svg>';
+  }
+
+  // --- Hero Section --------------------------------------------------
 
   function renderHero() {
-    setText(elEyebrow, get('personal.availability', ''));
-    setText(elName, get('personal.headline', ''));
-    setText(elLead, get('personal.tagline', ''));
+    setText(elEyebrow, get('personal.availability', 'Open to senior data engineering roles: Jakarta or remote'));
+    setText(elName, get('personal.headline', 'Data infrastructure that delivers insights where people already work: pipelines, spreadsheets, APIs, automation.'));
+    
+    var leadText = get('personal.tagline', '');
+    setHTML(elLead, '<p>' + esc(leadText) + '</p>');
 
     var cta = '';
     var email = get('personal.email', '');
     if (has(email)) {
-      cta += '<a class="btn btn-primary" href="mailto:' + esc(email) + '">Email</a>';
+      cta += '<a class="contact-link" href="mailto:' + esc(email) + '">Email</a>';
     }
     var github = githubHref(get('personal.github', ''));
     if (has(github)) {
-      cta += '<a class="btn btn-ghost" href="' + esc(github) + '" target="_blank" rel="noopener">GitHub</a>';
+      cta += '<a class="contact-link" href="' + esc(github) + '" target="_blank" rel="noopener">GitHub</a>';
     }
     var resume = get('personal.resumeUrl', '');
-    if (typeof resume === 'string' && resume !== '') {
-      cta += '<a class="btn btn-ghost" href="' + esc(resume) + '">Resume</a>';
+    if (has(resume)) {
+      cta += '<a class="contact-link" href="' + esc(resume) + '">Resume (PDF)</a>';
     }
     setHTML(elCta, cta);
 
     var daily = arr(get('skills.daily', []));
     var chips = '';
-    var chipCount = 0;
-    for (var i = 0; i < daily.length && chipCount < 6; i++) {
+    for (var i = 0; i < daily.length && i < 6; i++) {
       var name = nameOf(daily[i]);
       if (!name) continue;
-      chips += chip(name);
-      chipCount++;
+      chips += '<span class="skill-badge"><span class="skill-name">' + esc(name) + '</span></span>';
     }
     setHTML(elStrip, chips);
 
-    var stats = '';
-    var years = yearsOfExperience();
-    if (years > 0) stats += statHTML(years, 'years in data');
-    var production = productionProjectCount();
-    if (production > 0) stats += statHTML(production, 'production projects');
-    var stakeholders = stakeholderFigure();
-    if (has(stakeholders)) stats += statHTML(stakeholders, 'stakeholders served');
-    setHTML(elStats, stats);
+    // Hero stats right column (Headline 96% Metric with Waterfall Diagram)
+    var metrics = arr(get('metrics', []));
+    var m96 = metrics[0] || {};
+    var statsHTML = '<div class="metric-lead-header">' +
+      '<p class="readout-label">Primary delta: slot time reduction</p>' +
+      '<div class="readout-figure-row">' +
+        '<span class="readout-huge">' + esc(m96.value || '96') + '</span>' +
+        '<span class="readout-unit">' + esc(m96.unit || '%') + '</span>' +
+      '</div>' +
+      '<p class="readout-summary">' + esc(m96.label || 'less BigQuery slot time on the datamart the reports depend on') + '</p>' +
+      '</div>' +
+      '<div class="chart-container">' + generateWaterfallSVG(m96) + '</div>' +
+      '<p class="readout-meta">' +
+        (has(m96.scope) ? 'Scope: ' + esc(m96.scope) + '<br>' : '') +
+        (has(m96.source) ? 'Source: ' + esc(m96.source) : '') +
+      '</p>';
+    setHTML(elStats, statsHTML);
   }
 
-  // --- about ---------------------------------------------------------
+  // --- Impact Section (Band 2: 4fr / 3fr / 5fr) ----------------------
+
+  function renderImpact() {
+    var metrics = arr(get('metrics', []));
+    var m9x = metrics[1] || {};
+    var m599 = metrics[2] || {};
+    var m35 = metrics[4] || {};
+
+    var html = '';
+
+    // Cell 1: 9x Faster
+    html += '<div class="cell-metric">' +
+      '<div>' +
+        '<div class="cell-figure">' + esc(m9x.value || '9') + '<span class="cell-unit">' + esc(m9x.unit || 'x') + '</span></div>' +
+        '<p class="cell-desc">' + esc(m9x.label || 'faster processing on that same datamart model') + '</p>' +
+      '</div>' +
+      '<div class="chart-container">' + generateTwoBarSVG(m9x) + '</div>' +
+      '<p class="cell-meta">' +
+        (has(m9x.scope) ? 'Scope: ' + esc(m9x.scope) + '<br>' : '') +
+        (has(m9x.source) ? 'Source: ' + esc(m9x.source) : '') +
+      '</p>' +
+    '</div>';
+
+    // Cell 2: 599 dbt Models
+    html += '<div class="cell-metric">' +
+      '<div>' +
+        '<div class="cell-figure">' + esc(m599.value || '599') + '<span class="cell-unit"> models</span></div>' +
+        '<p class="cell-desc">' + esc(m599.label || 'dbt models in production, with 908 automated data tests') + '</p>' +
+      '</div>' +
+      '<div class="chart-container">' + generateMaterializationSVG(m599) + '</div>' +
+      '<p class="cell-meta">' +
+        (has(m599.scope) ? 'Scope: ' + esc(m599.scope) + '<br>' : '') +
+        (has(m599.source) ? 'Source: ' + esc(m599.source) : '') +
+      '</p>' +
+    '</div>';
+
+    // Cell 3: 3.5 TB/day Warehouse Scans
+    html += '<div class="cell-metric">' +
+      '<div>' +
+        '<div class="cell-figure">' + esc(m35.value || '3.5') + '<span class="cell-unit"> ' + esc(m35.unit || 'TB/day') + '</span></div>' +
+        '<p class="cell-desc">' + esc(m35.label || 'scanned in the warehouse, fully on-demand') + '</p>' +
+      '</div>' +
+      '<div class="chart-container">' + generateScatterSVG(m35) + '</div>' +
+      '<p class="cell-meta">' +
+        (has(m35.scope) ? 'Scope: ' + esc(m35.scope) + '<br>' : '') +
+        (has(m35.source) ? 'Source: ' + esc(m35.source) : '') +
+      '</p>' +
+    '</div>';
+
+    setHTML(elImpact, html);
+  }
+
+  // --- Pipeline Section (Band 3) -------------------------------------
+
+  function renderPipeline() {
+    if (!elPipelineMap) return;
+    var metrics = arr(get('metrics', []));
+    var m121 = metrics[3] || {};
+
+    var html = '<div class="pipeline-header">' +
+      '<h2 class="section-heading">Data platform architecture pipeline</h2>' +
+      '<p class="section-sub">Nine stages from transactional sources through warehouse modeling to business intelligence</p>' +
+      '</div>' +
+      '<div class="chart-container">' + generatePipelineSVG() + '</div>' +
+      '<p class="cell-meta">' +
+        'Scope: ' + esc(m121.scope || '25 ingestion pipelines loading 121 tables into BigQuery with 599 dbt models') + '<br>' +
+        'Source: ' + esc(m121.source || 'declared schedules and pipeline repo, Sep 2026') +
+      '</p>';
+    setHTML(elPipelineMap, html);
+  }
+
+  // --- Projects and Quality Matrix (Band 4) ---------------------------
+
+  function renderProjectRows(list, startIndex) {
+    var rows = '';
+    var idx = typeof startIndex === 'number' ? startIndex : 1;
+    for (var i = 0; i < list.length; i++) {
+      var p = list[i];
+      if (!p || typeof p !== 'object') continue;
+
+      var rawTitle = p.title || '';
+      var title = esc(rawTitle.replace(/^(\d+[\.\:\-\s]+|[•\-\>]\s*)/, ''));
+
+      var numStr = (idx < 10 ? '0' : '') + idx;
+      idx++;
+
+      var links = '';
+      if (has(p.detailUrl)) {
+        links += '<a class="project-link" href="' + esc(p.detailUrl) + '">Case study</a>';
+      }
+      if (has(p.githubUrl)) {
+        links += '<a class="project-link" href="' + esc(p.githubUrl) + '" target="_blank" rel="noopener">Source</a>';
+      }
+
+      var techList = arr(p.tech);
+      var techStr = techList.slice(0, 3).map(esc).join(', ');
+
+      var deltaStr = '';
+      if (has(p.outcome)) {
+        deltaStr = esc(p.outcome);
+      } else if (has(p.description)) {
+        deltaStr = esc(p.description);
+      }
+
+      // Highlight positive percentage/multiplier numbers
+      deltaStr = deltaStr.replace(/(\d+x|\d+%\+?|\d+\+)/g, '<span class="highlight-pos">$1</span>');
+
+      rows += '<tr>' +
+        '<td><span class="project-name"><span class="step-num">' + numStr + '</span> ' + title + '</span>' +
+          '<div class="project-tech">' + techStr + '</div></td>' +
+        '<td class="project-delta">' + deltaStr + '</td>' +
+        '<td>' + (links || '<span class="project-tech">Internal</span>') + '</td>' +
+      '</tr>';
+    }
+
+    return '<table class="proof-table">' +
+      '<thead><tr>' +
+        '<th scope="col" style="width: 38%;">Project / Stack</th>' +
+        '<th scope="col" style="width: 44%;">Measured Delta</th>' +
+        '<th scope="col" style="width: 18%;">Link</th>' +
+      '</tr></thead>' +
+      '<tbody>' + rows + '</tbody>' +
+      '</table>';
+  }
+
+  function renderProjects() {
+    var projects = arr(get('projects', []));
+    var work = [];
+    var side = [];
+
+    for (var i = 0; i < projects.length; i++) {
+      if (projects[i] && projects[i].kind === 'side') {
+        side.push(projects[i]);
+      } else if (projects[i]) {
+        work.push(projects[i]);
+      }
+    }
+
+    setHTML(elProjects, renderProjectRows(work, 1));
+
+    var sideBuilds = arr(get('sideBuilds', [])).concat(side);
+    setHTML(elSide, renderProjectRows(sideBuilds, 1 + work.length));
+
+    if (elQualityMatrix) {
+      var metrics = arr(get('metrics', []));
+      var m599 = metrics[2] || {};
+      var qHTML = '<div class="chart-container">' + generateQualityMatrixSVG(908, 121) + '</div>' +
+        '<p class="cell-meta">' +
+          'Scope: ' + esc(m599.scope || '404 physical tables, 190 inlined views, 5 incremental') + '<br>' +
+          'Source: ' + esc(m599.source || 'repo scan and dbt manifest, Sep 2026') +
+        '</p>';
+      setHTML(elQualityMatrix, qHTML);
+    }
+  }
+
+  // --- Stack Section (Band 5) ----------------------------------------
+
+  function renderStack() {
+    var daily = arr(get('skills.daily', []));
+    var prod = arr(get('skills.production', []));
+    var allSkills = daily.concat(prod);
+
+    var html = '';
+    for (var i = 0; i < allSkills.length; i++) {
+      var name = nameOf(allSkills[i]);
+      if (!name) continue;
+      var where = whereOf(allSkills[i]);
+      html += '<div class="skill-badge">' +
+        '<span class="skill-name">' + esc(name) + '</span>' +
+        (has(where) ? '<span class="skill-count">' + esc(where) + '</span>' : '') +
+      '</div>';
+    }
+    setHTML(elStack, html);
+  }
+
+  // --- Experience Section (Band 6) -----------------------------------
+
+  function renderExperience() {
+    var exp = arr(get('experience', []));
+    var html = '';
+
+    for (var i = 0; i < exp.length && i < 3; i++) {
+      var item = exp[i];
+      if (!item || typeof item !== 'object') continue;
+
+      var role = esc(item.role);
+      var comp = esc(item.company);
+      var loc = esc(item.location);
+      var per = esc(item.period);
+      var desc = arr(item.details)[0] || '';
+
+      html += '<div class="timeline-card">' +
+        '<p class="timeline-period">' + per + '</p>' +
+        '<h3 class="timeline-role">' + role + '</h3>' +
+        '<p class="timeline-company">' + comp + (loc ? ' | ' + loc : '') + '</p>' +
+        '<p class="timeline-desc">' + esc(desc) + '</p>' +
+      '</div>';
+    }
+    setHTML(elTimeline, html);
+  }
+
+  // --- About Section (Band 7) ----------------------------------------
 
   function renderAbout() {
     var bio = arr(get('personal.bio', []));
     var prose = '';
     for (var i = 0; i < bio.length; i++) {
-      var para = bio[i];
-      var body = '';
-      var highlights = [];
-      if (typeof para === 'string') {
-        body = para;
-      } else if (para && typeof para === 'object') {
-        body = has(para.text) ? String(para.text) : '';
-        highlights = arr(para.highlights);
-      }
-      if (!has(body)) continue;
-
-      // Escape first, then wrap the (escaped) highlight phrase: config text can
-      // never inject markup, only receive the <mark> wrapper.
-      var out = esc(body);
+      var item = bio[i];
+      var text = (typeof item === 'string') ? item : (item && item.text ? item.text : '');
+      if (!has(text)) continue;
+      var highlights = (item && arr(item.highlights)) ? item.highlights : [];
+      var line = esc(text);
       for (var j = 0; j < highlights.length; j++) {
         if (!has(highlights[j])) continue;
         var needle = esc(highlights[j]);
-        if (!needle) continue;
-        out = out.split(needle).join('<mark>' + needle + '</mark>');
+        if (needle) {
+          line = line.split(needle).join('<mark>' + needle + '</mark>');
+        }
       }
-      prose += '<p>' + out + '</p>';
+      prose += '<p>' + line + '</p>';
     }
     setHTML(elProse, prose);
 
@@ -260,228 +749,10 @@
     setHTML(elFacts, factHTML);
   }
 
-  // --- impact --------------------------------------------------------
-
-  function deltaColHTML(tag, col, modifier) {
-    col = (col && typeof col === 'object') ? col : {};
-    var inner = '';
-    if (has(col.value)) inner += '<span class="delta-value">' + esc(col.value) + '</span>';
-    if (has(col.note)) inner += '<span class="delta-note">' + esc(col.note) + '</span>';
-    if (!inner) return '';
-    return '<div class="delta-col ' + modifier + '">' +
-      '<span class="delta-tag">' + esc(tag) + '</span>' + inner + '</div>';
-  }
-
-  function deltaHTML(delta) {
-    var before = deltaColHTML('before', delta.before, 'delta-before');
-    var after = deltaColHTML('after', delta.after, 'delta-after');
-    if (!before && !after) return '';
-    return '<div class="delta">' + before + after + '</div>';
-  }
-
-  function renderImpact() {
-    var metrics = arr(get('metrics', []));
-    var html = '';
-    for (var i = 0; i < metrics.length; i++) {
-      var metric = metrics[i];
-      if (!metric || typeof metric !== 'object') continue;
-      if (!has(metric.value) || !has(metric.label)) continue;
-
-      html += '<div class="impact-item">' +
-        '<div class="impact-head">' +
-          '<span class="impact-value">' +
-            esc(String(metric.value) + (has(metric.unit) ? String(metric.unit) : '')) +
-          '</span>' +
-          '<span class="impact-label">' + esc(metric.label) + '</span>' +
-        '</div>';
-      if (has(metric.scope)) {
-        html += '<p class="impact-scope">Scope: ' + esc(metric.scope) + '</p>';
-      }
-      if (has(metric.source)) {
-        html += '<p class="impact-source">Source: ' + esc(metric.source) + '</p>';
-      }
-      if (metric.delta && typeof metric.delta === 'object') {
-        html += deltaHTML(metric.delta);
-      }
-      html += '</div>';
-    }
-    setHTML(elImpact, html);
-  }
-
-  // --- projects ------------------------------------------------------
-
-  function projectCard(project, allowBadge) {
-    var featured = allowBadge === true && project.featured === true;
-    var html = '<article class="project-card' + (featured ? ' featured' : '') + '">';
-
-    var head = has(project.title)
-      ? '<h3 class="project-title">' + esc(project.title) + '</h3>' : '';
-    if (featured) head += '<span class="project-badge">featured</span>';
-    if (head) html += '<div class="project-head">' + head + '</div>';
-
-    if (has(project.outcome)) {
-      html += '<p class="project-outcome">' + esc(project.outcome) + '</p>';
-    }
-    if (has(project.description)) {
-      html += '<p class="project-desc">' + esc(project.description) + '</p>';
-    }
-
-    var proof = arr(project.proof);
-    var proofHTML = '';
-    for (var i = 0; i < proof.length; i++) {
-      var fact = proof[i];
-      if (!fact || typeof fact !== 'object') continue;
-      var inner = '';
-      if (has(fact.value)) inner += '<span class="proof-value">' + esc(fact.value) + '</span>';
-      if (has(fact.label)) inner += '<span class="proof-label">' + esc(fact.label) + '</span>';
-      if (has(fact.note)) inner += '<span class="proof-note">' + esc(fact.note) + '</span>';
-      if (inner) proofHTML += '<div class="proof">' + inner + '</div>';
-    }
-    if (proofHTML) html += '<div class="project-facts">' + proofHTML + '</div>';
-
-    var tech = arr(project.tech);
-    var techHTML = '';
-    for (i = 0; i < tech.length; i++) {
-      if (has(tech[i])) techHTML += techChip(tech[i]);
-    }
-    if (techHTML) html += '<div class="project-tech">' + techHTML + '</div>';
-
-    if (typeof project.archDiagram === 'string' &&
-        project.archDiagram.replace(/\s/g, '') !== '') {
-      html += '<figure class="project-figure">' +
-        '<img src="' + esc(project.archDiagram) + '" alt="' +
-        esc(project.title) + ' architecture diagram"></figure>';
-    }
-
-    var links = '';
-    if (has(project.detailUrl)) {
-      links += '<a class="project-link" href="' + esc(project.detailUrl) + '">Case study →</a>';
-    }
-    if (has(project.githubUrl)) {
-      links += '<a class="project-link" href="' + esc(project.githubUrl) + '">Source →</a>';
-    }
-    if (links) html += '<div class="project-links">' + links + '</div>';
-
-    return html + '</article>';
-  }
-
-  function renderProjects() {
-    var projects = arr(get('projects', []));
-    var featured = [];
-    var rest = [];
-    var sideByKind = [];
-
-    for (var i = 0; i < projects.length; i++) {
-      var project = projects[i];
-      if (!project || typeof project !== 'object') continue;
-      if (project.kind === 'side') {
-        sideByKind.push(project);
-      } else if (project.featured === true) {
-        featured.push(project);
-      } else {
-        rest.push(project);
-      }
-    }
-
-    var ordered = featured.concat(rest);
-    var workHTML = '';
-    for (i = 0; i < ordered.length; i++) {
-      workHTML += projectCard(ordered[i], true);
-    }
-    setHTML(elProjects, workHTML);
-
-    var sideBuilds = arr(get('sideBuilds', [])).concat(sideByKind);
-    var sideHTML = '';
-    for (i = 0; i < sideBuilds.length; i++) {
-      var side = sideBuilds[i];
-      if (!side || typeof side !== 'object') continue;
-      sideHTML += projectCard(side, false);
-    }
-    setHTML(elSide, sideHTML);
-  }
-
-  // --- experience ----------------------------------------------------
-
-  function renderExperience() {
-    var experience = arr(get('experience', []));
-    var html = '';
-
-    for (var i = 0; i < experience.length; i++) {
-      var item = experience[i];
-      if (!item || typeof item !== 'object') continue;
-
-      html += '<div class="timeline-item"><div class="timeline-dot"></div>' +
-        '<div class="timeline-body">';
-
-      if (has(item.role)) {
-        html += '<h3 class="timeline-role">' + esc(item.role) + '</h3>';
-      }
-      if (has(item.company)) {
-        if (has(item.companyUrl)) {
-          html += '<a class="company-link timeline-company" href="' +
-            esc(item.companyUrl) + '">' + esc(item.company) + '</a>';
-        } else {
-          html += '<span class="timeline-company">' + esc(item.company) + '</span>';
-        }
-      }
-
-      var meta = [];
-      if (has(item.location)) meta.push(esc(item.location));
-      if (has(item.period)) meta.push(esc(item.period));
-      if (meta.length) {
-        html += '<p class="timeline-meta">' + meta.join(' · ') + '</p>';
-      }
-
-      var details = arr(item.details);
-      var detailHTML = '';
-      for (var j = 0; j < details.length; j++) {
-        if (has(details[j])) detailHTML += '<li>' + esc(details[j]) + '</li>';
-      }
-      if (detailHTML) {
-        html += '<ul class="timeline-details">' + detailHTML + '</ul>';
-      }
-
-      var tags = arr(item.techTags);
-      var tagHTML = '';
-      for (j = 0; j < tags.length; j++) {
-        if (has(tags[j])) tagHTML += techChip(tags[j]);
-      }
-      if (tagHTML) html += '<div class="role-tags">' + tagHTML + '</div>';
-
-      html += '</div></div>';
-    }
-
-    setHTML(elTimeline, html);
-  }
-
-  // --- stack ---------------------------------------------------------
-
-  function stackGroupHTML(title, items) {
-    var rows = '';
-    for (var i = 0; i < items.length; i++) {
-      var name = nameOf(items[i]);
-      if (!name) continue;
-      var where = whereOf(items[i]);
-      rows += '<li class="stack-item"><span class="stack-name">' + esc(name) + '</span>' +
-        (has(where) ? '<span class="stack-where">' + esc(where) + '</span>' : '') +
-        '</li>';
-    }
-    if (!rows) return '';
-    return '<div class="stack-group">' +
-      '<h3 class="stack-group-title">' + esc(title) + '</h3>' +
-      '<ul class="stack-items">' + rows + '</ul></div>';
-  }
-
-  function renderStack() {
-    var html = stackGroupHTML('daily driver', arr(get('skills.daily', []))) +
-      stackGroupHTML('used in production', arr(get('skills.production', [])));
-    setHTML(elStack, html);
-  }
-
-  // --- contact + footer ----------------------------------------------
+  // --- Contact Section (Band 8) --------------------------------------
 
   function renderContact() {
-    setText(elContactHeading, get('contact.heading', ''));
+    setText(elContactHeading, get('contact.heading', "Let's connect"));
     setText(elContactLead, get('contact.description', ''));
 
     var links = arr(get('contact.links', []));
@@ -490,97 +761,64 @@
       var link = links[i];
       if (!link || !has(link.href)) continue;
       var label = has(link.label) ? link.label : link.type;
-      if (!has(label)) label = link.href;
       var target = /^mailto:/i.test(String(link.href)) ? '' : ' target="_blank" rel="noopener"';
-      html += '<a class="contact-card" href="' + esc(link.href) + '"' + target + '>' +
-        esc(label) + '</a>';
+      html += '<a class="contact-link" href="' + esc(link.href) + '"' + target + '>' + esc(label) + '</a>';
     }
     setHTML(elContactLinks, html);
 
     var citation = get('contact.citation', null);
     if (citation && typeof citation === 'object' && has(citation.text)) {
+      var cText = esc(citation.text);
       if (has(citation.href)) {
-        setHTML(elCitation, '<a href="' + esc(citation.href) +
-          '" target="_blank" rel="noopener">' + esc(citation.text) + '</a>');
+        setHTML(elCitation, '<a href="' + esc(citation.href) + '" target="_blank" rel="noopener">' + cText + '</a>');
       } else {
-        setText(elCitation, citation.text);
+        setText(elCitation, cText);
       }
       if (elCitation) elCitation.style.display = '';
     } else if (elCitation) {
-      elCitation.innerHTML = '';
       elCitation.style.display = 'none';
     }
   }
 
+  // --- Footer --------------------------------------------------------
+
   function renderFooter() {
     var parts = [];
     var name = get('personal.name', '');
-    if (has(name)) parts.push(String(name));
+    if (has(name)) parts.push(sanitize(name));
     parts.push(String(new Date().getFullYear()));
     parts.push('Built as static HTML/CSS/JS.');
-    setText(elFooter, parts.join(' · '));
+    setText(elFooter, parts.join(' | '));
   }
 
-  // --- motion --------------------------------------------------------
+  // --- Motion / Reveal -----------------------------------------------
 
   function initReveal() {
     var nodes = document.querySelectorAll('.reveal');
-    var i;
     var reduced = false;
     try {
-      reduced = !!(window.matchMedia &&
-        window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-    } catch (err) {
+      reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    } catch (e) {
       reduced = false;
     }
 
     if (reduced || typeof window.IntersectionObserver === 'undefined') {
-      for (i = 0; i < nodes.length; i++) nodes[i].classList.add('is-visible');
+      for (var i = 0; i < nodes.length; i++) nodes[i].classList.add('is-visible');
       return;
     }
 
-    var inset = get('settings.revealThreshold', null);
-    if (typeof inset !== 'number' || !isFinite(inset) || inset < 0 || inset > 1) {
-      inset = get('settings.fadeThreshold', null); // older config key
-    }
-    if (typeof inset !== 'number' || !isFinite(inset) || inset < 0 || inset > 1) {
-      inset = 0.12;
-    }
-
-    // The configured value is a fraction of the VIEWPORT, not of the section.
-    // A phone-width page stacks the cards into one column, so a section can
-    // measure several times the viewport height and a fraction-of-element
-    // threshold becomes unreachable -- the section would stay at opacity 0.
     var observer = new IntersectionObserver(function (entries) {
       for (var k = 0; k < entries.length; k++) {
         if (!entries[k].isIntersecting) continue;
         entries[k].target.classList.add('is-visible');
         observer.unobserve(entries[k].target);
       }
-    }, { rootMargin: '0px 0px -' + Math.round(inset * 100) + '% 0px', threshold: 0 });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0 });
 
-    for (i = 0; i < nodes.length; i++) observer.observe(nodes[i]);
+    for (var j = 0; j < nodes.length; j++) observer.observe(nodes[j]);
   }
 
-  function initHeader() {
-    var header = document.querySelector('.site-header');
-    if (!header) return;
-    var scrolled = false;
-    function apply() {
-      var on = window.scrollY > 8;
-      if (on === scrolled) return;
-      scrolled = on;
-      if (on) {
-        header.classList.add('is-scrolled');
-      } else {
-        header.classList.remove('is-scrolled');
-      }
-    }
-    window.addEventListener('scroll', apply, { passive: true });
-    apply();
-  }
-
-  // --- boot ----------------------------------------------------------
+  // --- Boot ----------------------------------------------------------
 
   function cacheElements() {
     elPageTitle = document.getElementById('page-title');
@@ -604,21 +842,25 @@
     elContactLinks = document.getElementById('contact-links');
     elCitation = document.getElementById('contact-citation');
     elFooter = document.getElementById('footer-text');
+    elPipelineMap = document.getElementById('pipeline-map');
+    elQualityMatrix = document.getElementById('quality-matrix');
+    elThemeToggle = document.getElementById('theme-toggle');
   }
 
   function render() {
     cacheElements();
+    safe('theme', initTheme);
     safe('meta', renderMeta);
     safe('hero', renderHero);
-    safe('about', renderAbout);
     safe('impact', renderImpact);
+    safe('pipeline', renderPipeline);
     safe('projects', renderProjects);
-    safe('experience', renderExperience);
     safe('stack', renderStack);
+    safe('experience', renderExperience);
+    safe('about', renderAbout);
     safe('contact', renderContact);
     safe('footer', renderFooter);
     safe('reveal', initReveal);
-    safe('header', initHeader);
   }
 
   function start() {

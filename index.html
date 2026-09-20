@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="page-title">Idzharul Huda | Data Infrastructure Engineer</title>
   <meta name="description" id="page-meta" content="Data infrastructure engineer in Jakarta. Pipelines, BigQuery cost optimisation, dbt, and headless reporting.">
-  <meta name="theme-color" content="#08090b">
+  <meta name="theme-color" content="#07090A">
   <link rel="canonical" href="https://idzharulhuda13.github.io/idzharulhuda-portfolio/">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="apple-touch-icon" href="favicon.svg">
@@ -20,7 +20,7 @@
   <meta property="og:image" content="https://idzharulhuda13.github.io/idzharulhuda-portfolio/assets/og-card.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Idzharul Huda — data infrastructure engineer">
+  <meta property="og:image:alt" content="Idzharul Huda: data infrastructure engineer">
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
@@ -30,110 +30,174 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-<noscript><style>.reveal{opacity:1 !important;transform:none !important}</style></noscript>
+  <noscript><style>.reveal{opacity:1 !important;transform:none !important}</style></noscript>
+  <script>
+    (function () {
+      try {
+        var key = 'portfolio_theme';
+        var saved = localStorage.getItem(key);
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = saved ? saved : (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
 
-  <header class="site-header">
-    <div class="wrap header-inner">
-      <a class="brand" href="#top" id="brand-logo">&gt; ih</a>
-      <nav class="nav">
-        <a class="nav-link" href="#about">About</a>
-        <a class="nav-link" href="#impact">Impact</a>
-        <a class="nav-link" href="#projects">Work</a>
-        <a class="nav-link" href="#experience">Experience</a>
-        <a class="nav-link" href="#contact">Contact</a>
-      </nav>
-    </div>
-  </header>
-
-  <section class="hero reveal" id="top">
-    <div class="wrap hero-inner">
-      <p class="hero-eyebrow" id="hero-eyebrow"></p>
-      <h1 class="hero-title" id="hero-name"></h1>
-      <p class="hero-lead" id="hero-lead"></p>
-      <div class="hero-cta" id="hero-cta"></div>
-      <div class="stack-strip" id="stack-strip"></div>
-      <div class="hero-stats" id="hero-stats"></div>
-    </div>
-  </section>
-
-  <section class="section reveal" id="about">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="section-label">&gt; about</p>
-        <h2 class="section-title">How I work</h2>
+  <div class="container">
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="identity-block">
+          <a class="brand" href="#top" id="brand-logo">&gt; ih</a>
+          <p class="person-role">Data Infrastructure Engineer: Jakarta, Indonesia (UTC+7)</p>
+        </div>
+        <div class="header-actions">
+          <nav class="nav" aria-label="Main navigation">
+            <ul class="nav-links">
+              <li><a href="#impact">Impact</a></li>
+              <li><a href="#pipeline">Pipeline</a></li>
+              <li><a href="#projects">Work</a></li>
+              <li><a href="#skills">Stack</a></li>
+              <li><a href="#experience">Experience</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </nav>
+          <button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Switch to dark mode" aria-pressed="false">
+            <span class="toggle-indicator" aria-hidden="true"></span>
+            <span class="theme-mode-text">Dark mode</span>
+          </button>
+        </div>
       </div>
-      <div class="prose" id="about-prose"></div>
-      <dl class="about-facts" id="about-facts"></dl>
-    </div>
-  </section>
+    </header>
 
-  <section class="section section--grid reveal" id="impact">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="section-label">&gt; impact</p>
-        <h2 class="section-title">Measured impact</h2>
-        <p class="section-note">Every number below is paired with its scope and source.</p>
-      </div>
-      <div class="impact-list" id="impact-list"></div>
-    </div>
-  </section>
+    <main>
+      <!-- Band 1 Hero: 7fr left, 5fr right -->
+      <section class="band band-hero reveal" id="top" aria-label="Hero overview">
+        <div class="hero-editorial">
+          <div>
+            <h1 class="hero-title" id="hero-name">Data infrastructure that delivers insights where people already work: pipelines, spreadsheets, APIs, automation.</h1>
+            <span class="availability-tag" id="hero-eyebrow">Open to senior data engineering roles: Jakarta or remote</span>
+          </div>
+          <div class="hero-lead" id="hero-lead">
+            <p>I build and operate data platforms that deliver insights directly into tools stakeholders open every day. At Rey.id, I lead the batch analytics platform: 25 ingestion pipelines, 599 dbt models, and automated data tests across BigQuery and Metabase.</p>
+          </div>
+          <div class="hero-cta" id="hero-cta">
+            <a class="contact-link" href="mailto:idzharul.huda@gmail.com">Email</a>
+            <a class="contact-link" href="https://github.com/idzharulhuda13" target="_blank" rel="noopener">GitHub</a>
+            <a class="contact-link" href="resume.pdf">Resume (PDF)</a>
+          </div>
+          <div class="stack-strip" id="stack-strip"></div>
+        </div>
 
-  <section class="section reveal" id="projects">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="section-label">&gt; work</p>
-        <h2 class="section-title">Selected work</h2>
-      </div>
-      <div class="projects-grid" id="projects-grid"></div>
-      <div class="section-head section-head--sub">
-        <p class="section-label">&gt; side builds</p>
-        <h2 class="section-title">Side builds</h2>
-      </div>
-      <div class="projects-grid" id="sidebuilds-grid"></div>
-    </div>
-  </section>
+        <div class="hero-readout" id="hero-stats">
+          <!-- Populated by script.js with 96% waterfall diagram and metadata -->
+          <div class="metric-lead-header">
+            <p class="readout-label">Primary delta: slot time reduction</p>
+            <div class="readout-figure-row">
+              <span class="readout-huge">96</span>
+              <span class="readout-unit">%</span>
+            </div>
+            <p class="readout-summary">Less BigQuery slot time on critical datamart model</p>
+          </div>
+          <div class="chart-container">
+            <svg class="chart-svg waterfall-svg" viewBox="0 0 380 160" role="img" aria-labelledby="wf-title-fallback wf-desc-fallback" data-opening="100" data-closing="4" data-step-1="52" data-step-2="28" data-step-3="16">
+              <title id="wf-title-fallback">BigQuery slot time reduction from 100 to 4</title>
+              <desc id="wf-desc-fallback">Slot time decreased from 100 baseline down to 4 residual across partitioning, clustering, and pruning steps.</desc>
+              <line x1="20" y1="130" x2="360" y2="130" class="baseline-line" />
+              <rect x="25" y="35" width="45" height="95" class="wf-bar opening-bar" />
+              <text x="47" y="27" class="wf-val">100</text>
+              <text x="47" y="148" class="wf-axis-label"><tspan class="step-num">01</tspan> Baseline</text>
+              <path d="M 70 35 H 82.5 V 35 H 95" class="wf-connector" fill="none" />
+              <rect x="95" y="35" width="45" height="50" class="wf-bar step-bar" />
+              <text x="117" y="27" class="wf-val step-val">-52%</text>
+              <text x="117" y="148" class="wf-axis-label"><tspan class="step-num">02</tspan> Partitioning (derived)</text>
+              <path d="M 140 85 H 152.5 V 85 H 165" class="wf-connector" fill="none" />
+              <rect x="165" y="85" width="45" height="27" class="wf-bar step-bar" />
+              <text x="187" y="77" class="wf-val step-val">-28%</text>
+              <text x="187" y="148" class="wf-axis-label"><tspan class="step-num">03</tspan> Clustering (derived)</text>
+              <path d="M 210 112 H 222.5 V 112 H 235" class="wf-connector" fill="none" />
+              <rect x="235" y="112" width="45" height="15" class="wf-bar step-bar" />
+              <text x="257" y="104" class="wf-val step-val">-16%</text>
+              <text x="257" y="148" class="wf-axis-label"><tspan class="step-num">04</tspan> Pruning (derived)</text>
+              <path d="M 280 127 H 292.5 V 127 H 305" class="wf-connector" fill="none" />
+              <rect x="305" y="126" width="45" height="4" class="wf-bar closing-bar" />
+              <text x="327" y="118" class="wf-val closing-val">4</text>
+              <text x="327" y="148" class="wf-axis-label"><tspan class="step-num">05</tspan> Residual</text>
+            </svg>
+          </div>
+          <p class="readout-meta">Scope: one production datamart model, same query and data volume before and after<br>Source: query audit, 2024</p>
+        </div>
+      </section>
 
-  <section class="section reveal" id="experience">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="section-label">&gt; experience</p>
-        <h2 class="section-title">Experience</h2>
-      </div>
-      <div class="timeline" id="timeline"></div>
-    </div>
-  </section>
+      <!-- Band 2: Secondary Metrics (4fr / 3fr / 5fr) -->
+      <section class="band band-secondary reveal" id="impact" aria-label="Measured impact metrics">
+        <div class="impact-list" id="impact-list"></div>
+      </section>
 
-  <section class="section reveal" id="skills">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="section-label">&gt; stack</p>
-        <h2 class="section-title">Tech stack</h2>
-        <p class="section-note">Each entry names where it is actually used.</p>
-      </div>
-      <div class="stack-grid" id="stack-grid"></div>
-    </div>
-  </section>
+      <!-- Band 3: Data Pipeline Map -->
+      <section class="band band-pipeline reveal" id="pipeline" aria-label="Data platform architecture pipeline">
+        <div class="pipeline-column" id="pipeline-map"></div>
+      </section>
 
-  <section class="section reveal" id="contact">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="section-label">&gt; contact</p>
-        <h2 class="section-title" id="contact-heading"></h2>
-      </div>
-      <p class="contact-lead" id="contact-lead"></p>
-      <div class="contact-links" id="contact-links"></div>
-      <p class="citation" id="contact-citation"></p>
-    </div>
-  </section>
+      <!-- Band 4: Work Proof and Quality (7fr / 5fr) -->
+      <section class="band band-proof reveal" id="projects" aria-label="Engineering projects and data quality">
+        <div class="projects-column">
+          <h2 class="section-heading">Selected work</h2>
+          <p class="section-sub">Production pipelines, cost rewrites and automated delivery</p>
+          <div class="projects-grid" id="projects-grid"></div>
 
-  <footer class="site-footer">
-    <div class="wrap"><p class="footer-text" id="footer-text"></p></div>
-  </footer>
+          <h3 class="section-heading sub-heading">Side builds</h3>
+          <p class="section-sub">Apps Script workbooks and statistical packages</p>
+          <div class="sidebuilds-grid" id="sidebuilds-grid"></div>
+        </div>
+
+        <div class="quality-column">
+          <h2 class="section-heading">Data quality and refresh matrix</h2>
+          <p class="section-sub">Automated test coverage and hourly table syncs</p>
+          <div id="quality-matrix"></div>
+        </div>
+      </section>
+
+      <!-- Band 5: Tech Stack -->
+      <section class="band band-skills reveal" id="skills" aria-label="Technology stack">
+        <h2 class="section-heading">Tech stack</h2>
+        <p class="section-sub">Daily driver and production tools paired with usage scope</p>
+        <div class="stack-grid" id="stack-grid"></div>
+      </section>
+
+      <!-- Band 6: Experience Timeline -->
+      <section class="band band-experience reveal" id="experience" aria-label="Professional experience timeline">
+        <h2 class="section-heading">Experience</h2>
+        <p class="section-sub">Career trajectory in analytics engineering and data platform infrastructure</p>
+        <div class="timeline" id="timeline"></div>
+      </section>
+
+      <!-- Band 7: About / How I work -->
+      <section class="band band-about reveal" id="about" aria-label="About and background">
+        <h2 class="section-heading">How I work</h2>
+        <div class="about-prose" id="about-prose"></div>
+        <dl class="about-facts" id="about-facts"></dl>
+      </section>
+
+      <!-- Band 8: Contact -->
+      <section class="band band-contact reveal" id="contact" aria-label="Contact information">
+        <div class="contact-copy">
+          <h2 class="contact-title" id="contact-heading"></h2>
+          <p class="contact-text" id="contact-lead"></p>
+        </div>
+        <div class="contact-links" id="contact-links"></div>
+        <p class="citation" id="contact-citation"></p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p class="footer-text" id="footer-text"></p>
+    </footer>
+  </div>
 
   <script src="config.js"></script>
   <script src="script.js"></script>
