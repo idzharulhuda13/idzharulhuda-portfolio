@@ -416,13 +416,17 @@ button:focus-visible,
   line-height: 1.5;
 }
 
-/* ===== Band 2: Secondary Metrics (4fr / 3fr / 5fr) ===== */
+/* ===== Band 2: Secondary Metrics (Three equal columns) ===== */
 .band-secondary {
   display: grid;
-  grid-template-columns: 4fr 3fr 5fr;
+  grid-template-columns: repeat(3, 1fr);
   border: 1px solid var(--card-border);
   background: var(--surface);
-  align-items: start;
+  align-items: stretch;
+}
+
+.impact-list {
+  display: contents;
 }
 
 .cell-metric {
@@ -431,10 +435,33 @@ button:focus-visible,
   flex-direction: column;
   justify-content: space-between;
   gap: 12px;
+  min-width: 0;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .cell-metric + .cell-metric {
   border-left: 1px solid var(--line);
+}
+
+.cell-metric .chart-container {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  margin: 12px 0;
+  min-height: 0;
+}
+
+.cell-metric .chart-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.cell-metric .cell-meta {
+  margin-top: auto;
 }
 
 .cell-figure {
@@ -1228,7 +1255,38 @@ button:focus-visible,
   display: none;
 }
 
-/* ===== Responsive Breakpoints ===== */
+@media (max-width: 1023px) and (min-width: 641px) {
+  .band-secondary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .cell-metric {
+    border-left: none;
+    border-top: none;
+  }
+  .cell-metric:nth-child(2) {
+    border-left: 1px solid var(--line);
+  }
+  .cell-metric:nth-child(3) {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--line);
+    border-left: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .band-secondary {
+    grid-template-columns: 1fr;
+  }
+  .cell-metric {
+    grid-column: auto;
+    border-left: none;
+  }
+  .cell-metric + .cell-metric {
+    border-top: 1px solid var(--line);
+    border-left: none;
+  }
+}
+
 @media (max-width: 960px) {
   .band-hero {
     grid-template-columns: 1fr;
@@ -1240,13 +1298,6 @@ button:focus-visible,
   }
   .hero-readout {
     padding: 28px 20px;
-  }
-  .band-secondary {
-    grid-template-columns: 1fr;
-  }
-  .cell-metric + .cell-metric {
-    border-left: none;
-    border-top: 1px solid var(--line);
   }
   .band-proof {
     grid-template-columns: 1fr;
