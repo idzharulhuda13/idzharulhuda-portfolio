@@ -28,7 +28,7 @@ var PORTFOLIO = {
     headline: "Data infrastructure that delivers insights where people already work — pipelines, spreadsheets, APIs, automation.",
 
     // Mono eyebrow
-    availability: "Open to senior data engineering roles — Jakarta or remote",
+    availability: "Available for data platform consulting",
 
     // Set when a real PDF exists; the CTA is skipped while this is empty
     resumeUrl: "resume.pdf",

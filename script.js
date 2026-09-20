@@ -594,7 +594,7 @@
   // --- Hero Section --------------------------------------------------
 
   function renderHero() {
-    setText(elEyebrow, get('personal.availability', 'Open to senior data engineering roles: Jakarta or remote'));
+    setText(elEyebrow, get('personal.availability', 'Available for data platform consulting'));
     setText(elName, get('personal.headline', 'Data infrastructure that delivers insights where people already work: pipelines, spreadsheets, APIs, automation.'));
     
     var leadText = get('personal.tagline', '');
@@ -884,6 +884,7 @@
       var desc = arr(item.details)[0] || '';
 
       html += '<div class="timeline-card">' +
+        '<span class="timeline-marker" aria-hidden="true"></span>' +
         '<p class="timeline-period">' + per + '</p>' +
         '<h3 class="timeline-role">' + role + '</h3>' +
         '<p class="timeline-company">' + comp + (loc ? ' | ' + loc : '') + '</p>' +
