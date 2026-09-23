@@ -1,58 +1,81 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 420" width="880" height="420" role="img">
   <title>BigQuery pipeline optimization: before and after</title>
   <defs>
-    <marker id="arrow" viewBox="0 0 6 6" refX="6" refY="3" markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M0 0.5L6 3L0 5.5Z" fill="#5f6672"/>
+    <marker id="bq-arrow" viewBox="0 0 6 6" refX="6" refY="3" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0.5L6 3L0 5.5Z" fill="var(--muted)"/>
     </marker>
   </defs>
-  <g font-family="'JetBrains Mono', ui-monospace, monospace">
-    <rect x="0.5" y="0.5" width="879" height="419" rx="6" fill="#0f1115" stroke="#1e232b"/>
+  <style data-arch-theme="1">
+    /* Standalone fallback for image-element rendering: mirrors the Instrument
+       Sheet tokens declared in styles.css :root. Stripped when script.js
+       inlines this SVG into the page, so page tokens take over there. */
+    :root {
+      --ground: #F2F1EC;
+      --surface: #FFFFFF;
+      --ink: #10130F;
+      --muted: #5F6663;
+      --line: #D3D5D0;
+      --signal: #C2410C;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ground: #07090A;
+        --surface: #101315;
+        --ink: #EDEFEC;
+        --muted: #98A09C;
+        --line: #232829;
+        --signal: #FF5A1F;
+      }
+    }
+  </style>
+  <g font-family="'IBM Plex Mono', 'JetBrains Mono', ui-monospace, monospace">
+    <rect x="0" y="0" width="880" height="420" rx="6" fill="var(--surface)"/>
 
-    <rect x="16" y="24" width="394" height="344" rx="6" fill="none" stroke="#1e232b"/>
-    <text x="28" y="56" font-size="13" font-weight="500" fill="#f59e0b">BEFORE</text>
-    <rect x="28" y="64" width="44" height="2" rx="1" fill="#f59e0b"/>
-    <path d="M103 152H121" stroke="#5f6672" fill="none" marker-end="url(#arrow)"/>
-    <path d="M211 152H229" stroke="#5f6672" fill="none" marker-end="url(#arrow)"/>
-    <path d="M319 152H337" stroke="#5f6672" fill="none" marker-end="url(#arrow)"/>
-    <rect x="28" y="118" width="74" height="68" rx="6" fill="#14171c" stroke="#1e232b"/>
-    <text x="65" y="145" font-size="13" fill="#e6e8ec" text-anchor="middle">datamart</text>
-    <text x="65" y="163" font-size="13" fill="#e6e8ec" text-anchor="middle">query</text>
-    <rect x="122" y="118" width="88" height="68" rx="6" fill="#14171c" stroke="#1e232b"/>
-    <text x="166" y="145" font-size="13" fill="#e6e8ec" text-anchor="middle">full table</text>
-    <text x="166" y="163" font-size="13" fill="#e6e8ec" text-anchor="middle">scan</text>
-    <rect x="230" y="118" width="88" height="68" rx="6" fill="#14171c" stroke="#1e232b"/>
-    <text x="274" y="145" font-size="13" fill="#e6e8ec" text-anchor="middle">large data</text>
-    <text x="274" y="163" font-size="13" fill="#e6e8ec" text-anchor="middle">shuffle</text>
-    <rect x="338" y="118" width="60" height="68" rx="6" fill="#14171c" stroke="#1e232b"/>
-    <text x="368" y="157" font-size="13" fill="#e6e8ec" text-anchor="middle">report</text>
-    <text x="213" y="216" font-size="11" fill="#8b929e" text-anchor="middle">1x baseline runtime</text>
-    <text x="213" y="236" font-size="11" fill="#8b929e" text-anchor="middle">slot time index 100</text>
+    <rect x="16" y="24" width="394" height="344" rx="6" fill="none" stroke="var(--line)"/>
+    <text x="28" y="56" font-size="13" font-weight="500" fill="var(--muted)">BEFORE</text>
+    <rect x="28" y="64" width="44" height="2" rx="1" fill="var(--muted)"/>
+    <path d="M102 152H122" stroke="var(--muted)" fill="none" marker-end="url(#bq-arrow)"/>
+    <path d="M210 152H230" stroke="var(--muted)" fill="none" marker-end="url(#bq-arrow)"/>
+    <path d="M318 152H338" stroke="var(--muted)" fill="none" marker-end="url(#bq-arrow)"/>
+    <rect x="28" y="118" width="74" height="68" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+    <text x="65" y="145" font-size="13" fill="var(--ink)" text-anchor="middle">datamart</text>
+    <text x="65" y="163" font-size="13" fill="var(--ink)" text-anchor="middle">query</text>
+    <rect x="122" y="118" width="88" height="68" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+    <text x="166" y="145" font-size="13" fill="var(--ink)" text-anchor="middle">full table</text>
+    <text x="166" y="163" font-size="13" fill="var(--ink)" text-anchor="middle">scan</text>
+    <rect x="230" y="118" width="88" height="68" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+    <text x="274" y="145" font-size="13" fill="var(--ink)" text-anchor="middle">large data</text>
+    <text x="274" y="163" font-size="13" fill="var(--ink)" text-anchor="middle">shuffle</text>
+    <rect x="338" y="118" width="60" height="68" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+    <text x="368" y="157" font-size="13" fill="var(--ink)" text-anchor="middle">report</text>
+    <text x="213" y="216" font-size="11" fill="var(--muted)" text-anchor="middle">1x baseline runtime</text>
+    <text x="213" y="236" font-size="11" fill="var(--muted)" text-anchor="middle">slot time index 100</text>
 
-    <rect x="427" y="24" width="437" height="344" rx="6" fill="none" stroke="#1e232b"/>
-    <text x="436" y="56" font-size="13" font-weight="500" fill="#10b981">AFTER</text>
-    <rect x="436" y="64" width="36" height="2" rx="1" fill="#10b981"/>
-    <path d="M511 152H523" stroke="#5f6672" fill="none" marker-end="url(#arrow)"/>
-    <path d="M627 152H639" stroke="#5f6672" fill="none" marker-end="url(#arrow)"/>
-    <path d="M708 152H720" stroke="#5f6672" fill="none" marker-end="url(#arrow)"/>
-    <path d="M782 152H794" stroke="#5f6672" fill="none" marker-end="url(#arrow)"/>
-    <rect x="436" y="118" width="74" height="68" rx="6" fill="#14171c" stroke="#1e232b"/>
-    <text x="473" y="145" font-size="13" fill="#e6e8ec" text-anchor="middle">datamart</text>
-    <text x="473" y="163" font-size="13" fill="#e6e8ec" text-anchor="middle">query</text>
-    <rect x="524" y="118" width="102" height="68" rx="6" fill="#14171c" stroke="#1e232b"/>
-    <text x="575" y="145" font-size="13" fill="#e6e8ec" text-anchor="middle">partition by</text>
-    <text x="575" y="163" font-size="13" fill="#e6e8ec" text-anchor="middle">event_date</text>
-    <rect x="640" y="118" width="67" height="68" rx="6" fill="#14171c" stroke="#1e232b"/>
-    <text x="674" y="145" font-size="13" fill="#e6e8ec" text-anchor="middle">cluster</text>
-    <text x="674" y="163" font-size="13" fill="#e6e8ec" text-anchor="middle">keys</text>
-    <rect x="721" y="118" width="60" height="68" rx="6" fill="#14171c" stroke="#1e232b"/>
-    <text x="751" y="145" font-size="13" fill="#e6e8ec" text-anchor="middle">pruned</text>
-    <text x="751" y="163" font-size="13" fill="#e6e8ec" text-anchor="middle">scan</text>
-    <rect x="795" y="118" width="60" height="68" rx="6" fill="#14171c" stroke="#1e232b"/>
-    <text x="825" y="157" font-size="13" fill="#e6e8ec" text-anchor="middle">report</text>
-    <text x="645" y="216" font-size="11" fill="#8b929e" text-anchor="middle">9x faster processing</text>
-    <text x="645" y="236" font-size="11" fill="#8b929e" text-anchor="middle">slot time index 4</text>
-    <text x="645" y="256" font-size="11" fill="#8b929e" text-anchor="middle">58% less data shuffled</text>
+    <rect x="427" y="24" width="437" height="344" rx="6" fill="none" stroke="var(--line)"/>
+    <text x="436" y="56" font-size="13" font-weight="500" fill="var(--signal)">AFTER</text>
+    <rect x="436" y="64" width="36" height="2" rx="1" fill="var(--signal)"/>
+    <path d="M510 152H524" stroke="var(--muted)" fill="none" marker-end="url(#bq-arrow)"/>
+    <path d="M626 152H640" stroke="var(--muted)" fill="none" marker-end="url(#bq-arrow)"/>
+    <path d="M707 152H721" stroke="var(--muted)" fill="none" marker-end="url(#bq-arrow)"/>
+    <path d="M781 152H795" stroke="var(--muted)" fill="none" marker-end="url(#bq-arrow)"/>
+    <rect x="436" y="118" width="74" height="68" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+    <text x="473" y="145" font-size="13" fill="var(--ink)" text-anchor="middle">datamart</text>
+    <text x="473" y="163" font-size="13" fill="var(--ink)" text-anchor="middle">query</text>
+    <rect x="524" y="118" width="102" height="68" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+    <text x="575" y="145" font-size="13" fill="var(--ink)" text-anchor="middle">partition by</text>
+    <text x="575" y="163" font-size="13" fill="var(--ink)" text-anchor="middle">event_date</text>
+    <rect x="640" y="118" width="67" height="68" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+    <text x="674" y="145" font-size="13" fill="var(--ink)" text-anchor="middle">cluster</text>
+    <text x="674" y="163" font-size="13" fill="var(--ink)" text-anchor="middle">keys</text>
+    <rect x="721" y="118" width="60" height="68" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+    <text x="751" y="145" font-size="13" fill="var(--ink)" text-anchor="middle">pruned</text>
+    <text x="751" y="163" font-size="13" fill="var(--ink)" text-anchor="middle">scan</text>
+    <rect x="795" y="118" width="60" height="68" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+    <text x="825" y="157" font-size="13" fill="var(--ink)" text-anchor="middle">report</text>
+    <text x="645" y="216" font-size="11" fill="var(--muted)" text-anchor="middle">9x faster processing</text>
+    <text x="645" y="236" font-size="11" fill="var(--muted)" text-anchor="middle">slot time index 4</text>
+    <text x="645" y="256" font-size="11" fill="var(--muted)" text-anchor="middle">58% less data shuffled</text>
 
-    <text x="440" y="394" font-size="11" fill="#8b929e" text-anchor="middle">one production datamart model, same data volume, full-refresh run</text>
+    <text x="440" y="394" font-size="11" fill="var(--muted)" text-anchor="middle">one production datamart model, same data volume, full-refresh run</text>
   </g>
 </svg>
