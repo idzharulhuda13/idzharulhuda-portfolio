@@ -746,6 +746,254 @@
     }
   }
 
+  // --- Case study dialog (native dialog, progressive enhancement) -----
+  // The static page stays the single source of truth: the dialog fetches
+  // projects/<slug>.html and injects its header + main. The link href stays
+  // a real URL, so JS-off and crawlers keep the static page.
+  var csDialog = null;
+  var csTrigger = null;
+  var csCurrentSlug = '';
+  var csInternalClose = false;
+  var csSeq = 0;
+
+  function csSlug(url) {
+    return String(url || '').replace(/^projects\//, '').replace(/\.html$/, '');
+  }
+
+  function csFindProject(slug) {
+    var list = arr(get('projects', [])).concat(arr(get('sideBuilds', [])));
+    for (var i = 0; i < list.length; i++) {
+      var p = list[i];
+      if (p && has(p.detailUrl) && (p.slug === slug || csSlug(p.detailUrl) === slug)) return p;
+    }
+    return null;
+  }
+
+  function csEnsureDialog() {
+    if (csDialog) return csDialog;
+    var d = document.createElement('dialog');
+    d.className = 'case-modal';
+    d.setAttribute('aria-label', 'Case study');
+    var bar = document.createElement('header');
+    bar.className = 'case-modal__bar';
+    var kicker = document.createElement('p');
+    kicker.className = 'case-modal__kicker';
+    kicker.textContent = 'case study';
+    var closeBtn = document.createElement('button');
+    closeBtn.className = 'case-modal__close';
+    closeBtn.type = 'button';
+    closeBtn.textContent = '[ esc ]';
+    bar.appendChild(kicker);
+    bar.appendChild(closeBtn);
+    var body = document.createElement('div');
+    body.className = 'case-modal__body';
+    var foot = document.createElement('footer');
+    foot.className = 'case-modal__foot';
+    var fullLink = document.createElement('a');
+    fullLink.className = 'case-modal__full';
+    fullLink.textContent = 'Open as full page';
+    var hint = document.createElement('span');
+    hint.className = 'case-modal__hint';
+    hint.textContent = 'esc to close';
+    foot.appendChild(fullLink);
+    foot.appendChild(hint);
+    d.appendChild(bar);
+    d.appendChild(body);
+    d.appendChild(foot);
+    closeBtn.addEventListener('click', function () { d.close(); });
+    d.addEventListener('click', function (e) { if (e.target === d) d.close(); });
+    d.addEventListener('close', csOnClose);
+    document.body.appendChild(d);
+    csDialog = d;
+    return d;
+  }
+
+  function csOnClose() {
+    document.documentElement.classList.remove('case-modal-open');
+    if (csDialog && csDialog.open) return;
+    if (csTrigger && document.body.contains(csTrigger)) csTrigger.focus();
+    csTrigger = null;
+    csCurrentSlug = '';
+    if (csInternalClose) { csInternalClose = false; return; }
+    if (window.history && window.history.state && window.history.state.caseStudy) {
+      window.history.back();
+    } else if (window.location.hash.indexOf('#case=') === 0 && window.history && window.history.replaceState) {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+  }
+
+  function csRewriteUrls(root, pageUrl) {
+    if (!root) return;
+    function fix(val) {
+      if (!val || val.charAt(0) === '#' || val.charAt(0) === '/') return val;
+      if (/^[a-z][a-z0-9+.-]*:/i.test(val)) return val;
+      try { return new URL(val, pageUrl).href; } catch (e) { return val; }
+    }
+    var nodes = root.querySelectorAll('[src], [href]');
+    for (var i = 0; i < nodes.length; i++) {
+      var s = nodes[i].getAttribute('src');
+      var h = nodes[i].getAttribute('href');
+      if (s) nodes[i].setAttribute('src', fix(s));
+      if (h) nodes[i].setAttribute('href', fix(h));
+    }
+  }
+
+  // Inline fetched SVG diagrams so page theme tokens cascade into them.
+  // The in-file fallback style is stripped here; on failure the image
+  // element stays as the themed fallback.
+  function csInlineSvgs(root) {
+    if (!root || !root.querySelectorAll) return;
+    var imgs = root.querySelectorAll('img');
+    for (var i = 0; i < imgs.length; i++) {
+      var img = imgs[i];
+      var src = img.getAttribute('src') || '';
+      if (!/\.svg(\?|#|$)/.test(src)) continue;
+      (function (image) {
+        fetch(image.getAttribute('src')).then(function (res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.text();
+        }).then(function (txt) {
+          var node = new DOMParser().parseFromString(txt, 'image/svg+xml').documentElement;
+          if (!node || node.nodeName.toLowerCase() !== 'svg') return;
+          var st = node.querySelector('style[data-arch-theme]');
+          if (st && st.parentNode) st.parentNode.removeChild(st);
+          node.setAttribute('role', 'img');
+          var alt = image.getAttribute('alt');
+          if (alt) node.setAttribute('aria-label', alt);
+          node.removeAttribute('width');
+          node.removeAttribute('height');
+          node.setAttribute('class', 'case-diagram');
+          if (image.parentNode) image.parentNode.replaceChild(node, image);
+        }).catch(function (err) { log('csInlineSvgs', err); });
+      })(img);
+    }
+  }
+
+  function csRender(pageHtml, dialog, targetUrl) {
+    var doc = new DOMParser().parseFromString(pageHtml, 'text/html');
+    var header = doc.querySelector('header.pj-header');
+    var main = doc.querySelector('main.pj-main');
+    if (!main) return false;
+    var h = header ? header.cloneNode(true) : null;
+    if (h) {
+      var drop = h.querySelectorAll('a.pj-back, p.pj-kicker');
+      for (var b = 0; b < drop.length; b++) {
+        if (drop[b].parentNode) drop[b].parentNode.removeChild(drop[b]);
+      }
+    }
+    var m = main.cloneNode(true);
+    var pageUrl = new URL(targetUrl, window.location.href).href;
+    csRewriteUrls(h, pageUrl);
+    csRewriteUrls(m, pageUrl);
+    var body = dialog.querySelector('.case-modal__body');
+    body.innerHTML = '';
+    if (h) body.appendChild(h);
+    body.appendChild(m);
+    var title = body.querySelector('h1.pj-title') || body.querySelector('h1') || body.querySelector('h2');
+    if (title) {
+      if (!title.id) title.id = 'case-modal-heading';
+      dialog.setAttribute('aria-labelledby', title.id);
+      dialog.removeAttribute('aria-label');
+    }
+    csInlineSvgs(body);
+    return true;
+  }
+
+  function csOpen(url, trigger, fromHash) {
+    if (typeof window.HTMLDialogElement === 'undefined') return false;
+    var dialog = csEnsureDialog();
+    if (typeof dialog.showModal !== 'function') return false;
+    csTrigger = trigger || csTrigger || null;
+    csCurrentSlug = csSlug(url);
+    csSeq++;
+    var seq = csSeq;
+    csInternalClose = false;
+    var body = dialog.querySelector('.case-modal__body');
+    var full = dialog.querySelector('.case-modal__full');
+    dialog.setAttribute('aria-label', 'Case study');
+    dialog.removeAttribute('aria-labelledby');
+    if (full) full.setAttribute('href', url);
+    if (body) body.innerHTML = '<div class="case-modal__loading" role="status" aria-live="polite">loading case study</div>';
+    var wasOpen = dialog.open;
+    if (!dialog.open) dialog.showModal();
+    document.documentElement.classList.add('case-modal-open');
+    var closeBtn = dialog.querySelector('.case-modal__close');
+    if (closeBtn) closeBtn.focus();
+    if (!fromHash && window.history && window.history.pushState &&
+        window.location.hash !== '#case=' + csCurrentSlug) {
+      var csState = { caseStudy: csCurrentSlug };
+      var csHash = '#case=' + csCurrentSlug;
+      if (wasOpen && window.history.replaceState) {
+        window.history.replaceState(csState, '', csHash);
+      } else {
+        window.history.pushState(csState, '', csHash);
+      }
+    }
+    var csAbort = (typeof window.AbortController === 'function') ? new window.AbortController() : null;
+    var csTimer = window.setTimeout(function () {
+      if (csAbort) csAbort.abort();
+    }, 15000);
+    fetch(url, csAbort ? { signal: csAbort.signal } : undefined).then(function (res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.text();
+    }).then(function (html) {
+      window.clearTimeout(csTimer);
+      if (seq !== csSeq) return;
+      if (!csRender(html, dialog, url)) throw new Error('no main.pj-main');
+    }).catch(function (err) {
+      window.clearTimeout(csTimer);
+      log('csOpen', err);
+      if (seq !== csSeq) return;
+      if (body) {
+        body.innerHTML = '<div class="case-modal__error" role="alert">' +
+          '<p>Could not load case study inline.</p>' +
+          '<a href="' + esc(url) + '">Open case study page</a>' +
+          '</div>';
+      }
+    });
+    return true;
+  }
+
+  document.addEventListener('click', function (e) {
+    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var el = e.target;
+    var link = null;
+    while (el && el !== document) {
+      if (el.nodeType === 1 && el.tagName === 'A') { link = el; break; }
+      el = el.parentNode;
+    }
+    if (!link) return;
+    if (csDialog && csDialog.contains(link)) return;
+    var href = link.getAttribute('href') || '';
+    if (href.indexOf('projects/') !== 0) return;
+    if (typeof window.HTMLDialogElement === 'undefined') return;
+    if (typeof document.createElement('dialog').showModal !== 'function') return;
+    e.preventDefault();
+    csOpen(href, link, false);
+  });
+
+  function csSyncHash() {
+    var m = /^#case=([a-z0-9-]+)$/.exec(window.location.hash || '');
+    if (!m) {
+      if (csDialog && csDialog.open) csDialog.close();
+      return;
+    }
+    var slug = m[1];
+    var p = csFindProject(slug);
+    if (!p) {
+      if (csDialog && csDialog.open) csDialog.close();
+      return;
+    }
+    if (csDialog && csDialog.open && csCurrentSlug === slug) return;
+    if (csDialog && csDialog.open) {
+      csInternalClose = true;
+      csDialog.close();
+    }
+    csOpen(p.detailUrl, null, true);
+  }
+
+  if (window.addEventListener) window.addEventListener('hashchange', csSyncHash);
+
   // --- Projects and Quality Matrix (Band 4) ---------------------------
 
   function renderProjectRows(list, startIndex) {
@@ -1037,6 +1285,7 @@
     safe('impact', renderImpact);
     safe('pipeline', renderPipeline);
     safe('projects', renderProjects);
+    safe('caseStudy', csSyncHash);
     safe('stack', renderStack);
     safe('experience', renderExperience);
     safe('about', renderAbout);
