@@ -2,7 +2,7 @@
 
 Analytics Engineer portfolio: static HTML, CSS and JavaScript, no build step and no dependencies, deployed to GitHub Pages.
 
-Live: https://idzharulhuda13.github.io/idzharulhuda-portfolio/
+Live: https://idzharulhuda.com/
 
 ## Content
 
@@ -60,4 +60,4 @@ git commit -m "update: ..."
 git push
 ```
 
-The site is live at https://idzharulhuda13.github.io/idzharulhuda-portfolio/ about a minute later.
+The site is live at https://idzharulhuda.com/ about a minute later.
