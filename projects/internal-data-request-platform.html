@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Internal Data Request and Catalogue Platform | Idzharul Huda</title>
+  <meta name="description" content="A platform for teams outside the data function to file, follow and audit data requests, with the asset catalogue and pipeline health in the same place.">
+  <meta name="theme-color" content="#08090b">
+  <link rel="canonical" href="https://idzharulhuda.com/projects/internal-data-request-platform.html">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Internal Data Request and Catalogue Platform | Idzharul Huda">
+  <meta property="og:description" content="A platform for teams outside the data function to file, follow and audit data requests, with the asset catalogue and pipeline health in the same place.">
+  <meta property="og:url" content="https://idzharulhuda.com/projects/internal-data-request-platform.html">
+  <meta property="og:site_name" content="Idzharul Huda">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://idzharulhuda.com/assets/og-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Idzharul Huda - data infrastructure engineer">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Internal Data Request and Catalogue Platform | Idzharul Huda">
+  <meta name="twitter:description" content="A platform for teams outside the data function to file, follow and audit data requests, with the asset catalogue and pipeline health in the same place.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../project.css">
+</head>
+<body class="project-page">
+
+  <header class="pj-header">
+    <a class="pj-back" href="../index.html#projects">&lt;- Back to portfolio</a>
+    <p class="pj-kicker">Case study</p>
+    <h1 class="pj-title">Internal Data Request and Catalogue Platform</h1>
+    <p class="pj-lead">127 requests tracked end to end over three months, with the catalogue and pipeline health in the same place.</p>
+    <dl class="pj-meta">
+      <dt class="pj-meta-label">Role</dt>
+      <dd class="pj-meta-value">Data platform, employer work at Rey.id</dd>
+      <dt class="pj-meta-label">Stack</dt>
+      <dd class="pj-meta-value">FastAPI, Postgres, Jinja, Airflow, dbt</dd>
+    </dl>
+  </header>
+
+  <main class="pj-main">
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Problem and constraints</h2>
+      <p>Teams outside the data function had no way to file or follow a request: it arrived by chat, the catalogue and lineage lived with the data team, and nobody outside data could see whether the previous night's pipelines ran.</p>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Approach</h2>
+      <p>A server-rendered platform that holds no warehouse credentials. Airflow pushes the dbt manifest, run results, catalogue and freshness into it, and the asset graph is reconciled as a snapshot with soft deletes, because a rename and a delete look identical in a manifest. Requests move from intake to triage to a board, with requester email written to an outbox in the same transaction as the status change. Roles are declared per route and enforced by tests, personal-data assets are filtered in SQL, and only metadata is ever displayed.</p>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Measured result</h2>
+      <p>127 requests tracked end to end between July and October 2026, 101 of them delivered, with 854 assets and 1,670 lineage edges kept current and 671 DAG runs monitored every day.</p>
+      <table class="pj-proof">
+        <thead>
+          <tr>
+            <th scope="col">Label</th>
+            <th scope="col">Value</th>
+            <th scope="col">Note</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="pj-proof-label">requests tracked end to end</td>
+            <td class="pj-proof-value">127</td>
+            <td class="pj-proof-note">July to October 2026, each one auditable from intake to delivery</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">assets in the catalogue, with 1,670 lineage edges</td>
+            <td class="pj-proof-value">854</td>
+            <td class="pj-proof-note">refreshed from the nightly dbt manifest, which lands at 03:30 WIB</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">DAG runs monitored in a 24-hour window</td>
+            <td class="pj-proof-value">671</td>
+            <td class="pj-proof-note">Airflow pushes run results, so a failed night is visible the same morning</td>
+          </tr>
+          <tr>
+            <td class="pj-proof-label">automated tests across the platform</td>
+            <td class="pj-proof-value">1,053</td>
+            <td class="pj-proof-note">role checks, personal-data filters and access invariants are pinned by tests</td>          </tr>
+          <tr>
+            <td class="pj-proof-label">requests in a single month</td>
+            <td class="pj-proof-value">49</td>
+            <td class="pj-proof-note">September 2026, 37 of them filed directly in the platform rather than imported from the queue it replaced</td>
+
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="pj-section">
+      <h2 class="pj-h2">Stack</h2>
+      <div class="pj-tags">
+        <span class="tech-chip">FastAPI</span>
+        <span class="tech-chip">Postgres</span>
+        <span class="tech-chip">Jinja</span>
+        <span class="tech-chip">Airflow</span>
+        <span class="tech-chip">dbt</span>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="pj-footer">
+    <a class="pj-back" href="../index.html#projects">&lt;- Back to portfolio</a>
+    <p class="pj-footer-note">Idzharul Huda - Data Infrastructure Engineer - <a class="pj-footer-link" href="https://github.com/idzharulhuda13">GitHub</a></p>
+  </footer>
+
+</body>
+</html>

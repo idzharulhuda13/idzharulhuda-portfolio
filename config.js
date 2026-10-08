@@ -120,6 +120,35 @@ var PORTFOLIO = {
 
   // --- Work projects (kind: "work") ---
   projects: [
+      {
+        title: "Internal Data Request and Catalogue Platform",
+        slug: "internal-data-request-platform",
+        description: "A platform for teams outside the data function to file, follow and audit data requests, with the asset catalogue and pipeline health in the same place. It holds no warehouse credentials: Airflow pushes the manifest, run results, catalogue and freshness into it, and the asset graph is reconciled as a snapshot with soft deletes.",
+        outcome: "127 requests tracked end to end over three months, 49 of them in the busiest month, with 854 assets and 1,670 lineage edges kept current.",
+        tech: ["FastAPI", "Postgres", "Jinja", "Airflow", "dbt"],
+        featured: false,
+        kind: "work",
+        githubUrl: "",
+        detailUrl: "projects/internal-data-request-platform.html",
+        proof: [
+          { value: "127", label: "requests tracked end to end", note: "July to October 2026, each one auditable from intake to delivery" },
+          { value: "854", label: "assets in the catalogue, with 1,670 lineage edges", note: "refreshed from the nightly dbt manifest, which lands at 03:30 WIB" },
+          { value: "671", label: "DAG runs monitored in a 24-hour window", note: "Airflow pushes run results, so a failed night is visible the same morning" },
+          { value: "1,053", label: "automated tests across the platform", note: "role checks, personal-data filters and access invariants are pinned by tests" },
+          { value: "49", label: "requests in a single month", note: "September 2026, 37 of them filed directly in the platform rather than imported from the queue it replaced" }
+        ],
+        archDiagram: "",
+        codeSnippet: null,
+        caseStudy: {
+          problem: "Teams outside the data function had no way to file or follow a request: it arrived by chat, the catalogue and lineage lived with the data team, and nobody outside data could see whether the previous night's pipelines ran.",
+          approach: "A server-rendered platform that holds no warehouse credentials. Airflow pushes the dbt manifest, run results, catalogue and freshness into it, and the asset graph is reconciled as a snapshot with soft deletes. Requests move from intake to triage to a board, with requester email written to an outbox in the same transaction as the status change. Roles are declared per route and enforced by tests, personal-data assets are filtered in SQL, and only metadata is ever displayed.",
+          result: "127 requests tracked end to end between July and October 2026, 101 of them delivered and 49 arriving in the busiest month, with 854 assets and 1,670 lineage edges kept current and 671 DAG runs monitored every day."
+        },
+        metrics: [
+          { value: "127", label: "requests tracked" },
+          { value: "854", label: "catalogued assets" }
+        ]
+      },
     {
       title: "BigQuery Pipeline Optimization",
       slug: "bigquery-pipeline-optimization",
