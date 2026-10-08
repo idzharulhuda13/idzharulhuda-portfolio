@@ -609,6 +609,11 @@
     if (has(github)) {
       cta += '<a class="contact-link" href="' + esc(github) + '" target="_blank" rel="noopener">GitHub</a>';
     }
+    var product = get('personal.productUrl', '');
+    var productLabel = get('personal.productLabel', '');
+    if (has(product) && has(productLabel)) {
+      cta += '<a class="contact-link" href="' + esc(product) + '" target="_blank" rel="noopener">' + esc(productLabel) + '</a>';
+    }
     var resume = get('personal.resumeUrl', '');
     if (has(resume)) {
       cta += '<a class="contact-link" href="' + esc(resume) + '">Resume (PDF)</a>';
