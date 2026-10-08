@@ -25,16 +25,18 @@ var PORTFOLIO = {
     timezone: "Asia/Jakarta (UTC+7)",
 
     // Hero h1 — positioning, not a job title
-    headline: "Data infrastructure that delivers insights where people already work — pipelines, spreadsheets, APIs, automation.",
+    headline: "Data platforms built end to end: ingestion, warehouse, orchestration, and the reports people open every day.",
 
     // Mono eyebrow
-    availability: "Available for data platform consulting",
+    availability: "Independent data and analytics engineering practice",
 
     // Set when a real PDF exists; the CTA is skipped while this is empty
+    productLabel: "RaschLab",
+    productUrl: "https://raschlab.idzharulhuda.com",
     resumeUrl: "resume.pdf",
 
     // Hero lead
-    tagline: "I build the pipelines and the delivery layer around them: BigQuery models, dbt transformations, cost optimisation, and reports that land in tools people already open.",
+    tagline: "I build new data platforms from scratch and fix the ones already running. At Rey.id I lead the batch analytics platform: 121 tables ingested hourly, 599 dbt models, and 908 automated data tests. RaschLab, my psychometric analysis platform, is the product side of the same work.",
 
     // About prose
     bio: [
