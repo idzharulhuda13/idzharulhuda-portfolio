@@ -1714,3 +1714,46 @@ html.case-modal-open { overflow: hidden; }
     padding-right: 16px;
   }
 }
+
+/* ===== Changelog List ===== */
+.changelog-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.changelog-entry {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.changelog-entry:first-child {
+  border-top: 1px solid var(--line);
+}
+
+.changelog-date {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.changelog-text {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink);
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .changelog-entry {
+    padding: 14px 0;
+  }
+}

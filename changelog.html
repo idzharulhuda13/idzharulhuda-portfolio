@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Changelog | Idzharul Huda</title>
+  <meta name="description" content="Dated entries for the practice site and the products behind it, newest first.">
+  <meta name="theme-color" content="#07090A">
+  <link rel="canonical" href="https://idzharulhuda.com/changelog.html">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="apple-touch-icon" href="favicon.svg">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://idzharulhuda.com/changelog.html">
+  <meta property="og:title" content="Changelog | Idzharul Huda">
+  <meta property="og:description" content="Dated entries for the practice site and the products behind it, newest first.">
+  <meta property="og:site_name" content="Idzharul Huda">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://idzharulhuda.com/assets/og-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Idzharul Huda: data infrastructure engineer">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Changelog | Idzharul Huda">
+  <meta name="twitter:description" content="Dated entries for the practice site and the products behind it, newest first.">
+  <meta name="twitter:image" content="https://idzharulhuda.com/assets/og-card.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="project.css">
+  <script>
+    (function () {
+      try {
+        var key = 'portfolio_theme';
+        var saved = localStorage.getItem(key);
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = saved ? saved : (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <div class="container">
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="identity-block">
+          <a class="brand" href="index.html" id="brand-logo">&gt; ih</a>
+          <p class="person-role">Data Infrastructure Engineer: Jakarta, Indonesia (UTC+7)</p>
+        </div>
+        <div class="header-actions">
+          <nav class="nav" aria-label="Main navigation">
+            <ul class="nav-links">
+              <li><a href="index.html#services">Services</a></li>
+              <li><a href="index.html#products">Products</a></li>
+              <li><a href="index.html#projects">Work</a></li>
+              <li><a href="index.html#experience">Experience</a></li>
+              <li><a href="about.html">About</a></li>
+              <li><a href="changelog.html" aria-current="page">Changelog</a></li>
+              <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+          </nav>
+          <button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Switch to dark mode" aria-pressed="false">
+            <span class="toggle-indicator" aria-hidden="true"></span>
+            <span class="theme-mode-text">Dark mode</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main-content" class="container">
+      <section class="band band-about">
+        <h1 class="section-heading">Changelog</h1>
+        <p class="section-sub">Dated entries for this site and the products behind it. Newest first.</p>
+        <ol class="changelog-list">
+          <li class="changelog-entry"><span class="changelog-date">8 October 2026</span><p class="changelog-text">Published a ninth case study, on the internal platform where teams outside a data function file and follow their data requests, with the measured figures attached to it.</p></li>
+          <li class="changelog-entry"><span class="changelog-date">7 October 2026</span><p class="changelog-text">Repositioned this site as a practice: services, products, and the first product in the open.</p></li>
+          <li class="changelog-entry"><span class="changelog-date">3 October 2026</span><p class="changelog-text">RaschLab's web application opened at raschlab.idzharulhuda.com.</p></li>
+          <li class="changelog-entry"><span class="changelog-date">23 September 2026</span><p class="changelog-text">RaschLab web application scaffolded: FastAPI, Postgres, container build.</p></li>
+          <li class="changelog-entry"><span class="changelog-date">14 September 2026</span><p class="changelog-text">This site published at idzharulhuda.com.</p></li>
+          <li class="changelog-entry"><span class="changelog-date">12 September 2026</span><p class="changelog-text">RaschLab started: an engine plan that targets identical numbers to Winsteps on the same input.</p></li>
+          <li class="changelog-entry"><span class="changelog-date">11 May 2026</span><p class="changelog-text">First commit to the repository that later became this site.</p></li>
+        </ol>
+      </section>
+      <section class="band band-contact">
+        <div class="contact-copy">
+          <h2 class="contact-title">Where to look next</h2>
+        </div>
+        <div class="contact-links">
+          <a class="contact-link" href="index.html#services">Services</a>
+          <a class="contact-link" href="index.html#projects">Selected work</a>
+          <a class="contact-link" href="about.html">About</a>
+          <a class="contact-link" href="mailto:hello@idzharulhuda.com">Email</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p class="footer-text" id="footer-text">&copy; 2026 Idzharul Huda. Data and analytics engineering practice, Jakarta.</p>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      var THEME_KEY = 'portfolio_theme';
+      var btn = document.getElementById('theme-toggle');
+
+      function getActiveTheme() {
+        var docTheme = document.documentElement.getAttribute('data-theme');
+        if (docTheme === 'light' || docTheme === 'dark') return docTheme;
+        try {
+          var saved = localStorage.getItem(THEME_KEY);
+          if (saved === 'light' || saved === 'dark') return saved;
+        } catch (e) {}
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        return prefersDark ? 'dark' : 'light';
+      }
+
+      function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        try {
+          localStorage.setItem(THEME_KEY, theme);
+        } catch (e) {}
+        if (btn) {
+          var isDark = theme === 'dark';
+          btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+          btn.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+          var labelSpan = btn.querySelector('.theme-mode-text');
+          if (labelSpan) {
+            labelSpan.textContent = isDark ? 'Light mode' : 'Dark mode';
+          }
+        }
+      }
+
+      if (btn) {
+        applyTheme(getActiveTheme());
+        btn.addEventListener('click', function () {
+          var active = getActiveTheme();
+          var next = active === 'dark' ? 'light' : 'dark';
+          applyTheme(next);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
