@@ -14,7 +14,7 @@ var PORTFOLIO = {
     name: "Idzharul Huda",
     initials: "ih",
     title: "Data Infrastructure Engineer",
-    email: "idzharul.huda@gmail.com",
+    email: "hello@idzharulhuda.com",
     linkedin: "idzharulhuda",
     github: "idzharulhuda13",
     location: "Jakarta, Indonesia",
@@ -428,10 +428,10 @@ var PORTFOLIO = {
 
   // --- Contact ---
   contact: {
-    heading: "Let's connect",
-    description: "I build and maintain data infrastructure that puts reports where people already work. For roles, contract work, or a question about any of the numbers above, email is fastest.",
+    heading: "Work with me",
+    description: "For a new platform build, a rescue of an existing pipeline, or a question about any of the numbers above, email is fastest.",
     links: [
-      { type: "email",    label: "idzharul.huda@gmail.com", href: "mailto:idzharul.huda@gmail.com" },
+      { type: "email",    label: "hello@idzharulhuda.com", href: "mailto:hello@idzharulhuda.com" },
       { type: "linkedin", label: "LinkedIn",                 href: "https://linkedin.com/in/idzharulhuda" },
       { type: "github",   label: "GitHub",                   href: "https://github.com/idzharulhuda13" }
     ],
