@@ -122,7 +122,7 @@ var PORTFOLIO = {
         title: "Internal Data Request and Catalogue Platform",
         slug: "internal-data-request-platform",
         description: "A platform for teams outside the data function to file, follow and audit data requests, with the asset catalogue and pipeline health in the same place. It holds no warehouse credentials: Airflow pushes the manifest, run results, catalogue and freshness into it, and the asset graph is reconciled as a snapshot with soft deletes.",
-        outcome: "127 requests tracked end to end over three months, with 854 assets and 1,670 lineage edges kept current.",
+        outcome: "127 requests tracked end to end over three months, 49 of them in the busiest month, with 854 assets and 1,670 lineage edges kept current.",
         tech: ["FastAPI", "Postgres", "Jinja", "Airflow", "dbt"],
         featured: false,
         kind: "work",
