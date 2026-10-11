@@ -1,5 +1,5 @@
 // ============================================================
-// PORTFOLIO CONFIG — schema v2 (frozen keys, see exec spec section 3)
+// PORTFOLIO CONFIG: schema v2 (frozen keys, see exec spec section 3)
 // Everything on the site is driven by this single object.
 // Content rule: no number appears here that is not already in the
 // pre-v2 config or the writer's brief. Unknown measurements are omitted.
@@ -24,7 +24,7 @@ var PORTFOLIO = {
     focus: "Data infrastructure: analytics engineering, pipeline cost optimisation, and delivery into the tools people already use",
     timezone: "Asia/Jakarta (UTC+7)",
 
-    // Hero h1 — positioning, not a job title
+    // Hero h1: positioning, not a job title
     headline: "Data platforms built end to end: ingestion, warehouse, orchestration, and the reports people open every day.",
 
     // Mono eyebrow
@@ -41,7 +41,7 @@ var PORTFOLIO = {
     // About prose
     bio: [
       {
-        text: "I'm a Data Infrastructure Engineer who builds both the pipelines and the delivery layer around them. I engineer data systems that deliver insights wherever people need them — dashboards, spreadsheets, email, APIs, and chat.",
+        text: "I'm a Data Infrastructure Engineer who builds both the pipelines and the delivery layer around them. I engineer data systems that deliver insights wherever people need them: dashboards, spreadsheets, email, APIs, and chat.",
         highlights: ["the pipelines and the delivery layer around them", "dashboards, spreadsheets, email, APIs, and chat"]
       },
       {
@@ -178,10 +178,10 @@ var PORTFOLIO = {
       ]
     },
     {
-      title: "Dataverse — Conversational AI Analytics",
+      title: "Dataverse: Conversational AI Analytics",
       slug: "dataverse-conversational-ai-analytics",
-      description: "LLM-powered analytics platform that lets users query datasets (CSV, Excel, Parquet) in natural language. Automated data cleaning, SQL generation, and visualization — a headless data product that returns results without a dashboard.",
-      outcome: "Upload a dataset, ask in plain language, get SQL and charts — no analyst in the loop.",
+      description: "LLM-powered analytics platform that lets users query datasets (CSV, Excel, Parquet) in natural language. Automated data cleaning, SQL generation, and visualization: a headless data product that returns results without a dashboard.",
+      outcome: "Upload a dataset, ask in plain language, get SQL and charts: no analyst in the loop.",
       tech: ["LLM", "Python", "Streamlit", "Pandas", "SQL Generation"],
       featured: false,
       kind: "work",
@@ -302,7 +302,7 @@ var PORTFOLIO = {
       title: "Hourly Incentive Reporting Pipeline",
       slug: "hourly-incentive-reporting-pipeline",
       description: "Multi-source sync that pulls eight SQL cards from Metabase and Zoho Analytics into a single Google Sheets workbook on an hourly trigger. The SQL for every card is version-controlled in the repo and the BI tool is only the runner; the sheet tabs are the read surface. Weekly rows are frozen once a week closes, so a late-arriving change shows up as an audited divergence instead of silently rewriting history.",
-      outcome: "Eight analytics feeds, hourly, into one workbook — every divergence audited.",
+      outcome: "Eight analytics feeds, hourly, into one workbook: every divergence audited.",
       tech: ["Google Apps Script", "Metabase", "Zoho Analytics", "SQL", "Google Sheets"],
       featured: false,
       kind: "side",
@@ -325,7 +325,7 @@ var PORTFOLIO = {
     {
       title: "Incentive Performance Dashboard",
       slug: "incentive-performance-dashboard",
-      description: "Google Apps Script web app over the same workbook: pick a week, get per-person and per-team performance — sales, quotes, mechanization, collections, restructuring, targets, achievement percentages, status and bonus. Read-only by design: no business logic in the web app, and the diagnostics panel reports a missing or renamed column instead of quietly returning zeros.",
+      description: "Google Apps Script web app over the same workbook: pick a week, get per-person and per-team performance: sales, quotes, mechanization, collections, restructuring, targets, achievement percentages, status and bonus. Read-only by design: no business logic in the web app, and the diagnostics panel reports a missing or renamed column instead of quietly returning zeros.",
       outcome: "One URL that answers the current incentive week without spreadsheet wrangling.",
       tech: ["Google Apps Script", "JavaScript", "Google Sheets", "Web App"],
       featured: false,
@@ -390,7 +390,7 @@ var PORTFOLIO = {
       details: [
         "Lead the analytics and reporting function and own the batch analytics platform behind client reporting",
         "Run the platform end to end: 25 ingestion pipelines, 21 of them hourly, loading 121 tables (about 2,900 table loads a day) into BigQuery with a change-set merge and a 2-hour look-back window",
-        "Maintain 599 dbt models and 908 automated data tests — 233 models rebuild hourly, 124 daily, all transformation as SQL inside the warehouse (no Spark), run from git through GitHub Actions",
+        "Maintain 599 dbt models and 908 automated data tests: 233 models rebuild hourly, 124 daily, all transformation as SQL inside the warehouse (no Spark), run from git through GitHub Actions",
         "Added a daily completeness check that compares what each pipeline claims it built against what BigQuery actually changed, so a job that reports success but writes nothing is caught",
         "Kept the platform fully on-demand: 3.5 TB scanned a day (about 105 TB a month) with no capacity reservations",
         "Deliver client reports as files staged to Cloud Storage and pushed to SFTP or email, with per-contract password archives and cleanup after each run",
@@ -407,7 +407,7 @@ var PORTFOLIO = {
       details: [
         "Enforced personal-data controls in the platform itself: column-level policy tags on name, email, phone, address, ID and financial fields, 29 tagged models, and a catalogue of 776 tables and 1,473 relationships that blocks personal data from readers without clearance",
         "Built table-level lineage across 776 tables and 1,473 relationships, used daily (column-level lineage and lineage outside dbt are still open gaps)",
-        "Documented the estate honestly: dev and scratch copies account for 88% of stored bytes — expected for a development estate, though 94% of that had not been touched in 90+ days",
+        "Documented the estate honestly: dev and scratch copies account for 88% of stored bytes: expected for a development estate, though 94% of that had not been touched in 90+ days",
         "Optimized datamart model: 9x faster, 96%+ less BigQuery slot time, 58% less data shuffled",
         "Migrated 50+ reports from Google Sheets to BigQuery: daily -> hourly generation, 15 analysts freed from 2+ hours a day of manual reporting",
         "Pioneered the DBT + Metabase framework for 40+ stakeholders to self-serve analytics",
@@ -435,7 +435,7 @@ var PORTFOLIO = {
   ],
 
   // --- Tech stack: two groups, each entry names where it is used ---
-  // The ML and vision tools were moved to the Olvo.ai bullets above — the current role is data platform work.
+  // The ML and vision tools were moved to the Olvo.ai bullets above: the current role is data platform work.
   skills: {
     daily: [
       { name: "SQL", where: "all transformation, 599 dbt models in the warehouse" },
