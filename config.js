@@ -407,7 +407,7 @@ var PORTFOLIO = {
       details: [
         "Enforced personal-data controls in the platform itself: column-level policy tags on name, email, phone, address, ID and financial fields, 29 tagged models, and a catalogue of 776 tables and 1,473 relationships that blocks personal data from readers without clearance",
         "Built table-level lineage across 776 tables and 1,473 relationships, used daily (column-level lineage and lineage outside dbt are still open gaps)",
-        "Documented the estate honestly: dev and scratch copies account for 88% of stored bytes: expected for a development estate, though 94% of that had not been touched in 90+ days",
+        "Documented the estate honestly: dev and scratch copies account for 88% of stored bytes, which is expected for a development estate; 94% of that had not been touched in 90+ days",
         "Optimized datamart model: 9x faster, 96%+ less BigQuery slot time, 58% less data shuffled",
         "Migrated 50+ reports from Google Sheets to BigQuery: daily -> hourly generation, 15 analysts freed from 2+ hours a day of manual reporting",
         "Pioneered the DBT + Metabase framework for 40+ stakeholders to self-serve analytics",
