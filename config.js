@@ -28,7 +28,7 @@ var PORTFOLIO = {
     headline: "Data platforms built end to end: ingestion, warehouse, orchestration, and the reports people open every day.",
 
     // Mono eyebrow
-    availability: "Independent data and analytics engineering practice",
+    availability: "Independent data and analytics engineering practice, run by Idzharul Huda",
 
     // Set when a real PDF exists; the CTA is skipped while this is empty
     productLabel: "RaschLab",
