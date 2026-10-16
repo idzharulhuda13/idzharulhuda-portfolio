@@ -21,7 +21,7 @@ var PORTFOLIO = {
 
     // Not part of the frozen key list; optional extras that the About facts list
     // reads. The renderer skips either one when it is empty.
-    focus: "Data infrastructure: analytics engineering, pipeline cost optimisation, and delivery into the tools people already use",
+    focus: "Data infrastructure: analytics engineering, pipeline cost optimization, and delivery into the tools people already use",
     timezone: "Asia/Jakarta (UTC+7)",
 
     // Hero h1: positioning, not a job title
@@ -45,8 +45,8 @@ var PORTFOLIO = {
         highlights: ["the pipelines and the delivery layer around them", "dashboards, spreadsheets, email, APIs, and chat"]
       },
       {
-        text: "At Rey.id, I delivered a 30% increase in pipeline efficiency, built automated data quality checks that cut manual error resolution by 50%, and pioneered a dbt + Metabase framework that enabled 40+ stakeholders to self-serve analytics.",
-        highlights: ["30% increase in pipeline efficiency", "50%", "40+ stakeholders"]
+        text: "At Rey.id, I cut BigQuery slot time on the reporting datamart by 96% and made the same model run 9x faster, built automated data quality checks that cut manual error resolution by 50%, and pioneered a dbt + Metabase framework that enabled 40+ stakeholders to self-serve analytics.",
+        highlights: ["96% less slot time", "50%", "40+ stakeholders"]
       },
       {
         text: "Previously as an AI Engineer at Olvo.ai, I built OCR and LLM pipelines that digitized thousands of hardcopy documents into structured datasets.",
@@ -97,7 +97,7 @@ var PORTFOLIO = {
       unit: "",
       label: "dbt models in production, with 908 automated data tests",
       scope: "404 models write a physical table each run, 190 are inlined, 5 build incrementally; 233 models rebuild hourly and 124 daily",
-      source: "repo scan and dbt manifest, Sep 2026",
+      source: "platform measurement, Sep 2026",
       delta: null
     },
     {
@@ -105,15 +105,15 @@ var PORTFOLIO = {
       unit: "",
       label: "tables refreshed every hour",
       scope: "about 2,900 table loads a day across 25 ingestion pipelines and 159 source tables in 7 groups; every load is a change-set with a 2-hour look-back window",
-      source: "declared schedules and pipeline repo, Sep 2026",
+      source: "platform measurement, Sep 2026",
       delta: null
     },
     {
       value: "3.5",
       unit: "TB/day",
       label: "scanned in the warehouse, fully on-demand",
-      scope: "about 105 TB a month with no capacity reservations; the warehouse holds 2.7 TB and 1.5 bn rows across roughly 3,800 tables in 28 datasets",
-      source: "BigQuery query and storage billing, Aug-Sep 2026",
+      scope: "about 105 TB a month; the warehouse holds 2.7 TB and 1.5 bn rows across roughly 3,800 tables in 28 datasets",
+      source: "platform measurement, Aug-Sep 2026",
       delta: null
     }
   ],
@@ -235,7 +235,7 @@ var PORTFOLIO = {
       title: "OCR + LLM Document Digitization",
       slug: "ocr-llm-document-digitization",
       description: "Digitized thousands of hardcopy documents using OCR, YOLO, and GPT-4, with a 70% efficiency improvement. Built the real-time demo app used in the client evaluation.",
-      outcome: "Thousands of hardcopy documents digitised, 70% efficiency gain, client evaluation demo shipped.",
+      outcome: "Thousands of hardcopy documents digitized, 70% efficiency gain, client evaluation demo shipped.",
       tech: ["Python", "YOLO", "GPT-4", "OCR", "Streamlit"],
       featured: false,
       kind: "work",
@@ -341,7 +341,7 @@ var PORTFOLIO = {
       codeSnippet: null,
       caseStudy: {
         problem: "Weekly incentive and achievement numbers lived in a spreadsheet that only one person could read correctly: a renamed column, a reordered tab or a date format mismatch silently turned real numbers into zeros, and a person with no team assignment dropped out of the report entirely.",
-        approach: "Built a web app that reads the workbook by column name, normalises week formats and parses both Indonesian and US number formats, keeps people without a matching team in an explicit unassigned bucket, and surfaces a diagnostics list when an expected column is missing or empty instead of rendering a plausible zero.",
+        approach: "Built a web app that reads the workbook by column name, normalizes week formats and parses both Indonesian and US number formats, keeps people without a matching team in an explicit unassigned bucket, and surfaces a diagnostics list when an expected column is missing or empty instead of rendering a plausible zero.",
         result: "Anyone can open one URL, pick a week and read their own numbers, with the failure modes that used to corrupt the spreadsheet now reported loudly instead of silently."
       }
     },
@@ -392,7 +392,7 @@ var PORTFOLIO = {
         "Run the platform end to end: 25 ingestion pipelines, 21 of them hourly, loading 121 tables (about 2,900 table loads a day) into BigQuery with a change-set merge and a 2-hour look-back window",
         "Maintain 599 dbt models and 908 automated data tests: 233 models rebuild hourly, 124 daily, all transformation as SQL inside the warehouse (no Spark), run from git through GitHub Actions",
         "Added a daily completeness check that compares what each pipeline claims it built against what BigQuery actually changed, so a job that reports success but writes nothing is caught",
-        "Kept the platform fully on-demand: 3.5 TB scanned a day (about 105 TB a month) with no capacity reservations",
+        "Kept the platform fully on-demand: 3.5 TB scanned a day (about 105 TB a month)",
         "Deliver client reports as files staged to Cloud Storage and pushed to SFTP or email, with per-contract password archives and cleanup after each run",
         "Instrumented the storage estate (2.7 TB, 1.5 bn rows, about 3,800 tables) and kept storage and processing inside the Jakarta region for Indonesian PDP and ISO 27001 alignment"
       ],
@@ -439,7 +439,7 @@ var PORTFOLIO = {
   skills: {
     daily: [
       { name: "SQL", where: "all transformation, 599 dbt models in the warehouse" },
-      { name: "dbt", where: "the modelling layer, run from CI" },
+      { name: "dbt", where: "the modeling layer, run from CI" },
       { name: "BigQuery", where: "2.7 TB stored, 3.5 TB scanned a day" },
       { name: "Airflow", where: "21 hourly pipelines, self-hosted on Kubernetes" },
       { name: "Looker Studio", where: "primary BI surface for the business" },

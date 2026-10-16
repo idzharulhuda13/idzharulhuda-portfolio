@@ -714,7 +714,7 @@
       generatePipelineSVG() +
       '<p class="cell-meta">' +
         'Scope: ' + esc(m121.scope || '25 ingestion pipelines loading 121 tables into BigQuery with 599 dbt models') + '<br>' +
-        'Source: ' + esc(m121.source || 'declared schedules and pipeline repo, Sep 2026') +
+        'Source: ' + esc(m121.source || 'platform measurement, Sep 2026') +
       '</p>';
     setHTML(elPipelineMap, html);
 
@@ -1039,7 +1039,7 @@
         '<td><span class="project-name"><span class="step-num">' + numStr + '</span> ' + title + '</span>' +
           '<div class="project-tech">' + techStr + '</div></td>' +
         '<td class="project-delta">' + deltaStr + '</td>' +
-        '<td>' + (links || '<span class="project-tech">Internal</span>') + '</td>' +
+        '<td>' + (links || '<span class="tag-internal" role="note" aria-label="Internal system, not published"><svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M4 5.2V3.9a2 2 0 0 1 4 0v1.3" fill="none" stroke="currentColor" stroke-width="1.1"/><rect x="3" y="5.2" width="6" height="4.6" rx="1" fill="none" stroke="currentColor" stroke-width="1.1"/></svg>Internal</span>') + '</td>' +
       '</tr>';
     }
 
@@ -1094,7 +1094,7 @@
         '</figure>' +
         '<p class="cell-meta">' +
           'Scope: ' + esc(m599.scope || '404 physical tables, 190 inlined views, 5 incremental') + '<br>' +
-          'Source: ' + esc(m599.source || 'repo scan and dbt manifest, Sep 2026') +
+          'Source: ' + esc(m599.source || 'platform measurement, Sep 2026') +
         '</p>';
       setHTML(elQualityMatrix, qHTML);
     }
