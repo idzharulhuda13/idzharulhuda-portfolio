@@ -1625,6 +1625,20 @@ html.case-modal-open { overflow: hidden; }
   box-sizing: border-box;
 }
 
+@media (min-width: 1151px) {
+  #products {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 32px;
+    align-items: start;
+  }
+
+  #products .band-head,
+  #products .pr-note {
+    grid-column: 1 / -1;
+  }
+}
+
 .pr-flag-main {
   max-width: 72ch;
   display: flex;
@@ -1683,6 +1697,29 @@ html.case-modal-open { overflow: hidden; }
   flex-wrap: wrap;
   gap: 10px;
   margin: 4px 0 0;
+}
+
+.pr-thumb {
+  margin: 18px 0 0;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  padding: 14px 16px 12px;
+  box-sizing: border-box;
+  max-width: 640px;
+}
+
+.pr-thumb svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.pr-thumb figcaption {
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--muted);
 }
 
 .pr-note {
