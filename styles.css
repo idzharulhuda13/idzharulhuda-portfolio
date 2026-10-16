@@ -1625,6 +1625,20 @@ html.case-modal-open { overflow: hidden; }
   box-sizing: border-box;
 }
 
+@media (min-width: 1151px) {
+  #products {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 32px;
+    align-items: start;
+  }
+
+  #products .band-head,
+  #products .pr-note {
+    grid-column: 1 / -1;
+  }
+}
+
 .pr-flag-main {
   max-width: 72ch;
   display: flex;
