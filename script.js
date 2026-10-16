@@ -409,7 +409,7 @@
       '<text x="669" y="63" class="pipe-node-sub">Data catalogue</text>' +
       '<circle cx="655" cy="136" r="5.5" class="pipe-node-shape" />' +
       '<text x="669" y="134" class="pipe-node-label"><tspan class="step-num">09</tspan> BI surfaces</text>' +
-      '<text x="669" y="145" class="pipe-node-sub">Looker and Metabase</text>' +
+      '<text x="669" y="145" class="pipe-node-sub">Looker Studio + Metabase</text>' +
       '</svg>';
 
     // Phone layout: 4 stage rows stacked vertically, viewBox 360x350.
@@ -441,7 +441,7 @@
       ' Stage 01 Sources: Postgres (OLTP database), Webhook APIs (Partner streams), Event logs (Telemetry feeds).' +
       ' Stage 02 Ingestion: Airflow (21 hourly pipelines), Cloud Storage (Raw staging lake).' +
       ' Stage 03 Warehouse and models: BigQuery (Central data warehouse), dbt models (599 models, 908 tests).' +
-      ' Stage 04 Governance and BI: Dataplex (Data catalogue), BI surfaces (Looker and Metabase).</desc>' +
+      ' Stage 04 Governance and BI: Dataplex (Data catalogue), BI surfaces (Looker Studio + Metabase).</desc>' +
 
       // Stage 01: Sources
       '<text x="6" y="20" class="pipe-stage-label pipe-stage-label-phone">' +
@@ -523,7 +523,7 @@
       '<text x="270" y="332" class="pipe-node-label pipe-node-label-phone">' +
         '<tspan class="step-num">09</tspan> BI surfaces' +
       '</text>' +
-      '<text x="270" y="347" class="pipe-node-sub pipe-node-sub-phone">Looker + Metabase</text>' +
+      '<text x="270" y="347" class="pipe-node-sub pipe-node-sub-phone">Looker Studio + Metabase</text>' +
       '</svg>';
 
     return '<div class="pipeline-svg-pair">' + desktopSVG + phoneSVG + '</div>';
@@ -1114,7 +1114,7 @@
       var where = whereOf(allSkills[i]);
       html += '<div class="skill-badge">' +
         '<span class="skill-name">' + esc(name) + '</span>' +
-        (has(where) ? '<span class="skill-count">' + esc(where) + '</span>' : '') +
+        (has(where) ? ' <span class="skill-count">' + esc(where) + '</span>' : '') +
       '</div>';
     }
     setHTML(elStack, html);
