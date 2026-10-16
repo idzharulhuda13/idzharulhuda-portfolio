@@ -346,10 +346,10 @@ var PORTFOLIO = {
       }
     },
     {
-      title: "RaschLab",
+      title: "RaschLab engine",
       slug: "raschlab",
-      description: "A Python toolkit that reproduces the output of a legacy item-response-analysis tool on real assessment datasets, so old and new results can be compared row by row instead of by eye.",
-      outcome: "A Python toolkit that reproduces a legacy item-response tool's output on real datasets.",
+      description: "The Python engine behind RaschLab, the web platform listed under Products: it reproduces the output of a legacy item-response-analysis tool on real assessment datasets, so old and new results can be compared row by row instead of by eye.",
+      outcome: "The engine behind RaschLab, checked row by row against a legacy tool on real datasets.",
       tech: ["Python", "Item Response Theory", "Rasch model", "Statistical parity"],
       featured: false,
       kind: "side",
