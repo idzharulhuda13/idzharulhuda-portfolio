@@ -96,7 +96,7 @@ var PORTFOLIO = {
       value: "599",
       unit: "",
       label: "dbt models in production, with 908 automated data tests",
-      scope: "404 models write a physical table each run, 190 are inlined, 5 build incrementally; 233 rebuild hourly and 124 daily",
+      scope: "404 models write a physical table each run, 190 are inlined, 5 build incrementally; 233 models rebuild hourly and 124 daily",
       source: "repo scan and dbt manifest, Sep 2026",
       delta: null
     },
@@ -112,7 +112,7 @@ var PORTFOLIO = {
       value: "3.5",
       unit: "TB/day",
       label: "scanned in the warehouse, fully on-demand",
-      scope: "about 105 TB a month with no capacity reservations; the warehouse holds 2.7 TB and 1.5 bn rows across roughly 3,800 tables",
+      scope: "about 105 TB a month with no capacity reservations; the warehouse holds 2.7 TB and 1.5 bn rows across roughly 3,800 tables in 28 datasets",
       source: "BigQuery query and storage billing, Aug-Sep 2026",
       delta: null
     }
@@ -405,8 +405,8 @@ var PORTFOLIO = {
       location: "Jakarta, Indonesia",
       period: "Aug 2022 - Aug 2026",
       details: [
-        "Enforced personal-data controls in the platform itself: column-level policy tags on name, email, phone, address, ID and financial fields, 29 tagged models, and a catalogue of 776 tables and 1,473 relationships that blocks personal data from readers without clearance",
-        "Built table-level lineage across 776 tables and 1,473 relationships, used daily (column-level lineage and lineage outside dbt are still open gaps)",
+        "Enforced personal-data controls in the platform itself: column-level policy tags on name, email, phone, address, ID and financial fields, 29 tagged models, and a Dataplex catalogue of 776 tables and 1,473 relationships that blocks personal data from readers without clearance",
+        "Built table-level lineage in that catalogue across 776 tables and 1,473 relationships, used daily (column-level lineage and lineage outside dbt are still open gaps)",
         "Documented the estate honestly: dev and scratch copies account for 88% of stored bytes, which is expected for a development estate; 94% of that had not been touched in 90+ days",
         "Optimized datamart model: 9x faster, 96%+ less BigQuery slot time, 58% less data shuffled",
         "Migrated 50+ reports from Google Sheets to BigQuery: daily -> hourly generation, 15 analysts freed from 2+ hours a day of manual reporting",
