@@ -1685,6 +1685,29 @@ html.case-modal-open { overflow: hidden; }
   margin: 4px 0 0;
 }
 
+.pr-thumb {
+  margin: 18px 0 0;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  padding: 14px 16px 12px;
+  box-sizing: border-box;
+  max-width: 640px;
+}
+
+.pr-thumb svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.pr-thumb figcaption {
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
 .pr-note {
   padding: 16px 24px;
   font-family: var(--font-mono);
