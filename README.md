@@ -12,7 +12,7 @@ what the site says. Top-level keys:
 
 - `personal`: name, initials, headline, availability, title, email, LinkedIn, GitHub, location, resume URL, tagline and bio paragraphs.
 - `metrics`: the impact rows: one value per row, each with its scope and source, plus an optional before/after delta.
-- `projects`: work projects: title, description, outcome, tech, kind, githubUrl, detailUrl.
+- `projects`: work projects: title, description, outcome, tech, githubUrl, detailUrl.
 - `sideBuilds`: side projects, same object shape as `projects`; may be empty.
 - `experience`: roles with company, company URL, location, period, detail bullets and tech tags.
 - `skills`: the tech stack, split into `daily` and `production` groups; each item carries the place it is actually used.
