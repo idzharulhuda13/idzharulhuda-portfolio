@@ -175,86 +175,45 @@
 
   // 4.a Headline figure for 96% metric: waterfall from 100 down to 4
   function generateWaterfallSVG(metric) {
-    var beforeVal = 100;
-    var afterVal = 4;
-    if (metric && metric.delta) {
-      if (metric.delta.before && has(metric.delta.before.value)) {
-        var pb = parseFloat(metric.delta.before.value);
-        if (!isNaN(pb)) beforeVal = pb;
+    var d = (metric && metric.delta) || {};
+    var before = parseFloat(d.before && d.before.value);
+    var after = parseFloat(d.after && d.after.value);
+    if (isNaN(before)) before = 100;
+    if (isNaN(after)) after = 4;
+
+    var drop = before - after;
+    var s1 = Math.round(drop * 0.5416666666666666);
+    var s2 = Math.round(drop * 0.2916666666666667);
+    var values = [before, s1, s2, drop - s1 - s2, after];
+    var labels = [['01', 'Baseline'], ['02', 'Partition'], ['03', 'Cluster'], ['04', 'Prune'], ['05', 'Residual']];
+    // Full words for the axis-label title attribute, kept identical to the pre-refactor output.
+    var titles = ['01 Baseline', '02 Partitioning', '03 Clustering', '04 Pruning', '05 Residual'];
+    var classes = ['wf-bar opening-bar', 'wf-bar step-bar', 'wf-bar step-bar', 'wf-bar step-bar', 'wf-bar closing-bar'];
+    var barW = 45, gap = 25, startX = 25, baseY = 130, scale = 0.95;
+    var level = baseY - before * scale;
+    var body = '';
+
+    for (var i = 0; i < values.length; i++) {
+      var x = startX + i * (barW + gap);
+      var h = values[i] * scale;
+      var y = (i === 0 || i === values.length - 1) ? baseY - h : level;
+      var valText = (i > 0 && i < values.length - 1) ? '-' + values[i] + '%' : String(values[i]);
+      var anchor = x + barW / 2;
+      if (i > 0) {
+        body += '<path d="M ' + (x - gap) + ' ' + y.toFixed(1) + ' H ' + (x - gap / 2).toFixed(1) +
+          ' V ' + y.toFixed(1) + ' H ' + x + '" class="wf-connector" fill="none" />';
       }
-      if (metric.delta.after && has(metric.delta.after.value)) {
-        var pa = parseFloat(metric.delta.after.value);
-        if (!isNaN(pa)) afterVal = pa;
-      }
+      if (i > 0 && i < values.length - 1) level += h;
+      body += '<rect x="' + x + '" y="' + y.toFixed(1) + '" width="' + barW + '" height="' + h.toFixed(1) + '" class="' + classes[i] + '" />' +
+        '<text x="' + anchor + '" y="' + (y - 8).toFixed(1) + '" class="wf-val' + (i > 0 && i < 4 ? ' step-val' : '') + (i === 4 ? ' closing-val' : '') + '">' + esc(valText) + '</text>' +
+        '<text x="' + anchor + '" y="141" class="wf-axis-label" title="' + titles[i] + '"><tspan x="' + anchor + '" dy="0" class="step-num">' + labels[i][0] + '</tspan><tspan x="' + anchor + '" dy="12">' + labels[i][1] + '</tspan></text>';
     }
-    var totalDrop = beforeVal - afterVal;
-
-    // Derived step values summing deterministically to totalDrop (52 + 28 + 16 = 96)
-    var s1 = Math.round(totalDrop * 0.5416666666666666);
-    var s2 = Math.round(totalDrop * 0.2916666666666667);
-    var s3 = totalDrop - s1 - s2;
-
-    var baselineY = 130;
-    var scale = 0.95;
-    var barW = 45;
-    var barGap = 25;
-    var startX = 25;
-
-    var x1 = startX;
-    var h1 = beforeVal * scale;
-    var y1 = baselineY - h1;
-
-    var x2 = x1 + barW + barGap;
-    var h2 = s1 * scale;
-    var y2 = y1;
-    var level2 = y2 + h2;
-
-    var x3 = x2 + barW + barGap;
-    var h3 = s2 * scale;
-    var y3 = level2;
-    var level3 = y3 + h3;
-
-    var x4 = x3 + barW + barGap;
-    var h4 = s3 * scale;
-    var y4 = level3;
-    var level4 = y4 + h4;
-
-    var x5 = x4 + barW + barGap;
-    var h5 = afterVal * scale;
-    var y5 = baselineY - h5;
 
     return '<svg class="chart-svg waterfall-svg" viewBox="0 0 380 160" role="img" aria-labelledby="wf-title wf-desc">' +
-      '<title id="wf-title">BigQuery slot time reduction from ' + esc(beforeVal) + ' to ' + esc(afterVal) + '</title>' +
-      '<desc id="wf-desc">Slot time fell from ' + esc(beforeVal) + ' baseline by ' + esc(totalDrop) + '% down to ' + esc(afterVal) + ' residual across partitioning, clustering, and pruning steps.</desc>' +
-      '<line x1="15" y1="' + baselineY + '" x2="365" y2="' + baselineY + '" class="baseline-line" />' +
-      // Opening bar
-      '<rect x="' + x1 + '" y="' + y1.toFixed(1) + '" width="' + barW + '" height="' + h1.toFixed(1) + '" class="wf-bar opening-bar" />' +
-      '<text x="' + (x1 + barW / 2) + '" y="' + (y1 - 8).toFixed(1) + '" class="wf-val">' + esc(beforeVal) + '</text>' +
-      '<text x="' + (x1 + barW / 2) + '" y="141" class="wf-axis-label" title="01 Baseline"><tspan x="' + (x1 + barW / 2) + '" dy="0" class="step-num">01</tspan><tspan x="' + (x1 + barW / 2) + '" dy="12">Baseline</tspan></text>' +
-      // Connector 1
-      '<path d="M ' + (x1 + barW) + ' ' + y1.toFixed(1) + ' H ' + ((x1 + barW + x2) / 2).toFixed(1) + ' V ' + y1.toFixed(1) + ' H ' + x2 + '" class="wf-connector" fill="none" />' +
-      // Step 1
-      '<rect x="' + x2 + '" y="' + y2.toFixed(1) + '" width="' + barW + '" height="' + h2.toFixed(1) + '" class="wf-bar step-bar" />' +
-      '<text x="' + (x2 + barW / 2) + '" y="' + (y2 - 8).toFixed(1) + '" class="wf-val step-val">-' + s1 + '%</text>' +
-      '<text x="' + (x2 + barW / 2) + '" y="141" class="wf-axis-label" title="02 Partitioning"><tspan x="' + (x2 + barW / 2) + '" dy="0" class="step-num">02</tspan><tspan x="' + (x2 + barW / 2) + '" dy="12">Partition</tspan></text>' +
-      // Connector 2
-      '<path d="M ' + (x2 + barW) + ' ' + level2.toFixed(1) + ' H ' + ((x2 + barW + x3) / 2).toFixed(1) + ' V ' + level2.toFixed(1) + ' H ' + x3 + '" class="wf-connector" fill="none" />' +
-      // Step 2
-      '<rect x="' + x3 + '" y="' + y3.toFixed(1) + '" width="' + barW + '" height="' + h3.toFixed(1) + '" class="wf-bar step-bar" />' +
-      '<text x="' + (x3 + barW / 2) + '" y="' + (y3 - 8).toFixed(1) + '" class="wf-val step-val">-' + s2 + '%</text>' +
-      '<text x="' + (x3 + barW / 2) + '" y="141" class="wf-axis-label" title="03 Clustering"><tspan x="' + (x3 + barW / 2) + '" dy="0" class="step-num">03</tspan><tspan x="' + (x3 + barW / 2) + '" dy="12">Cluster</tspan></text>' +
-      // Connector 3
-      '<path d="M ' + (x3 + barW) + ' ' + level3.toFixed(1) + ' H ' + ((x3 + barW + x4) / 2).toFixed(1) + ' V ' + level3.toFixed(1) + ' H ' + x4 + '" class="wf-connector" fill="none" />' +
-      // Step 3
-      '<rect x="' + x4 + '" y="' + y4.toFixed(1) + '" width="' + barW + '" height="' + h4.toFixed(1) + '" class="wf-bar step-bar" />' +
-      '<text x="' + (x4 + barW / 2) + '" y="' + (y4 - 8).toFixed(1) + '" class="wf-val step-val">-' + s3 + '%</text>' +
-      '<text x="' + (x4 + barW / 2) + '" y="141" class="wf-axis-label" title="04 Pruning"><tspan x="' + (x4 + barW / 2) + '" dy="0" class="step-num">04</tspan><tspan x="' + (x4 + barW / 2) + '" dy="12">Prune</tspan></text>' +
-      // Connector 4
-      '<path d="M ' + (x4 + barW) + ' ' + level4.toFixed(1) + ' H ' + ((x4 + barW + x5) / 2).toFixed(1) + ' V ' + level4.toFixed(1) + ' H ' + x5 + '" class="wf-connector" fill="none" />' +
-      // Closing bar
-      '<rect x="' + x5 + '" y="' + y5.toFixed(1) + '" width="' + barW + '" height="' + h5.toFixed(1) + '" class="wf-bar closing-bar" />' +
-      '<text x="' + (x5 + barW / 2) + '" y="' + (y5 - 8).toFixed(1) + '" class="wf-val closing-val">' + esc(afterVal) + '</text>' +
-      '<text x="' + (x5 + barW / 2) + '" y="141" class="wf-axis-label" title="05 Residual"><tspan x="' + (x5 + barW / 2) + '" dy="0" class="step-num">05</tspan><tspan x="' + (x5 + barW / 2) + '" dy="12">Residual</tspan></text>' +
+      '<title id="wf-title">BigQuery slot time reduction from ' + esc(before) + ' to ' + esc(after) + '</title>' +
+      '<desc id="wf-desc">Slot time fell from ' + esc(before) + ' baseline by ' + esc(drop) + '% down to ' + esc(after) + ' residual across partitioning, clustering, and pruning steps.</desc>' +
+      '<line x1="15" y1="' + baseY + '" x2="365" y2="' + baseY + '" class="baseline-line" />' +
+      body +
       '</svg>';
   }
 
@@ -311,29 +270,9 @@
     var baselineY = 105;
     var meanY = 58;
 
-    var dots = [
-      { cx: 30, cy: 80, r: 4 },
-      { cx: 45, cy: 55, r: 5 },
-      { cx: 60, cy: 90, r: 3 },
-      { cx: 75, cy: 40, r: 5.5 },
-      { cx: 90, cy: 70, r: 4 },
-      { cx: 105, cy: 45, r: 5 },
-      { cx: 120, cy: 75, r: 4 },
-      { cx: 135, cy: 35, r: 6.5, peak: true },
-      { cx: 150, cy: 65, r: 5 },
-      { cx: 165, cy: 50, r: 5.5 },
-      { cx: 180, cy: 85, r: 3.5 },
-      { cx: 195, cy: 60, r: 5 },
-      { cx: 210, cy: 40, r: 5.5 },
-      { cx: 225, cy: 70, r: 4 },
-      { cx: 240, cy: 95, r: 3 }
-    ];
+    var dots = [[30,80,4],[45,55,5],[60,90,3],[75,40,5.5],[90,70,4],[105,45,5],[120,75,4],[135,35,6.5],[150,65,5],[165,50,5.5],[180,85,3.5],[195,60,5],[210,40,5.5],[225,70,4],[240,95,3]];
 
-    var dotMarkup = '';
-    for (var i = 0; i < dots.length; i++) {
-      var d = dots[i];
-      dotMarkup += '<circle cx="' + d.cx + '" cy="' + d.cy + '" r="' + d.r + '" class="scatter-dot' + (d.peak ? ' dot-peak' : '') + '" />';
-    }
+    var dotMarkup = dots.map(function (d) { return '<circle cx="' + d[0] + '" cy="' + d[1] + '" r="' + d[2] + '" class="scatter-dot' + (d[0] === 135 ? ' dot-peak' : '') + '" />'; }).join('');
 
     return '<svg class="chart-svg scatter-svg" viewBox="0 0 260 140" role="img" aria-labelledby="sc-title sc-desc">' +
       '<title id="sc-title">Warehouse daily query scan distribution averaging ' + esc(meanVal) + ' ' + esc(unit) + '</title>' +
