@@ -297,7 +297,9 @@
   // Node copy lives here once. hub (emphasis class) and r (marker size) are
   // independent facts: BigQuery is both a hub and the larger marker, dbt models
   // is a hub at the default size. phoneLabel/phoneSub are only set where the
-  // narrow layout needs shorter wording.
+  // narrow layout needs shorter wording, and tight marks the whole closing row
+  // of the phone layout: the 353 unit viewBox squeezes it, so both nodes in that
+  // row share the smaller label/sub offsets.
   var PIPE_NODES = [
     { id: '01', label: 'Postgres (OLTP)', sub: 'OLTP database', hub: false, r: 5.5, phoneLabel: 'Postgres' },
     { id: '02', label: 'Webhook APIs', sub: 'Partner streams', hub: false, r: 5.5, phoneLabel: 'Webhooks' },
@@ -306,8 +308,8 @@
     { id: '05', label: 'Cloud Storage', sub: 'Raw staging lake', hub: false, r: 5.5 },
     { id: '06', label: 'BigQuery', sub: 'Central data warehouse', hub: true, r: 6.5, phoneSub: 'Central warehouse' },
     { id: '07', label: 'dbt models', sub: '599 models, 908 tests', hub: true, r: 5.5 },
-    { id: '08', label: 'Dataplex', sub: 'Data catalogue', hub: false, r: 5.5 },
-    { id: '09', label: 'BI surfaces', sub: 'Looker Studio + Metabase', hub: false, r: 5.5 }
+    { id: '08', label: 'Dataplex', sub: 'Data catalogue', hub: false, r: 5.5, tight: true },
+    { id: '09', label: 'BI surfaces', sub: 'Looker Studio + Metabase', hub: false, r: 5.5, tight: true }
   ];
 
   // Circle centres, one entry per row of PIPE_NODES, in the same order.
@@ -337,11 +339,12 @@
         '" class="pipe-node-shape' + (n.hub ? ' hub' : '') + '" />';
       if (phone) {
         // Rows 1-3 carry the label 16 units and the sub 30 below the circle; the
-        // closing row is squeezed by the 353 unit viewBox, so it uses 14 and 29.
-        var closing = i === PIPE_NODES.length - 1;
-        out += '<text x="' + cx + '" y="' + (cy + (closing ? 14 : 16)) + '" class="pipe-node-label pipe-node-label-phone">' +
+        // closing row (n.tight) is squeezed by the 353 unit viewBox, so it uses
+        // 14 and 29 for every node in that row.
+        var tight = !!n.tight;
+        out += '<text x="' + cx + '" y="' + (cy + (tight ? 14 : 16)) + '" class="pipe-node-label pipe-node-label-phone">' +
           '<tspan class="step-num">' + n.id + '</tspan> ' + label + '</text>' +
-          '<text x="' + cx + '" y="' + (cy + (closing ? 29 : 30)) + '" class="pipe-node-sub pipe-node-sub-phone">' + sub + '</text>';
+          '<text x="' + cx + '" y="' + (cy + (tight ? 29 : 30)) + '" class="pipe-node-sub pipe-node-sub-phone">' + sub + '</text>';
       } else {
         out += '<text x="' + (cx + 14) + '" y="' + (cy - 2) + '" class="pipe-node-label">' +
           '<tspan class="step-num">' + n.id + '</tspan> ' + label + '</text>' +
