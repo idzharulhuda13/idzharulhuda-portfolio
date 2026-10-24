@@ -56,15 +56,6 @@ var PORTFOLIO = {
         text: "My goal is to create scalable, trustworthy data systems that empower teams to move faster with confidence.",
         highlights: []
       }
-    ],
-
-    // Kept for backwards compatibility with pre-v2 configs; no longer rendered in v2.
-    roles: [
-      "Data Infrastructure Engineer",
-      "SQL & DBT Developer",
-      "BigQuery Cost Optimizer",
-      "AI & LLM Pipeline Builder",
-      "Self-Serve Analytics Architect"
     ]
   },
 
@@ -470,10 +461,5 @@ var PORTFOLIO = {
       text: "Published cost-effectiveness study: telehealth-powered managed care was 7x more cost-effective than conventional care for acute respiratory infection (ARI).",
       href: ""
     }
-  },
-
-  // --- Visual settings (v2) ---
-  settings: {
-    revealThreshold: 0.12   // fraction of viewport the section top must cross before it fades in
   }
 };
