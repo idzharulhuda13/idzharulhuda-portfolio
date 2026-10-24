@@ -12,15 +12,15 @@ what the site says. Top-level keys:
 
 - `personal`: name, initials, headline, availability, title, email, LinkedIn, GitHub, location, resume URL, tagline and bio paragraphs.
 - `metrics`: the impact rows: one value per row, each with its scope and source, plus an optional before/after delta.
-- `projects`: work projects: title, description, outcome, tech, featured flag, proof points, links, optional architecture diagram, code snippet and case study.
+- `projects`: work projects: title, description, outcome, tech, kind, githubUrl, detailUrl.
 - `sideBuilds`: side projects, same object shape as `projects`; may be empty.
 - `experience`: roles with company, company URL, location, period, detail bullets and tech tags.
 - `skills`: the tech stack, split into `daily` and `production` groups; each item carries the place it is actually used.
 - `contact`: contact section heading, description, links and the optional citation.
-- `settings`: `revealThreshold`, the scroll-reveal trigger point.
 
 Rules the content follows: every figure is traceable to a real measurement and paired with
-its scope and source, no placeholder text, English only, no emoji.
+its scope and source, no placeholder text, English only, no emoji. Case-study prose lives in
+the projects folder HTML files, and `config.js` holds only what the index page renders.
 
 ## Structure
 
