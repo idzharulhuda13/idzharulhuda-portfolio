@@ -223,12 +223,7 @@
     var h5 = afterVal * scale;
     var y5 = baselineY - h5;
 
-    return '<svg class="chart-svg waterfall-svg" viewBox="0 0 380 160" role="img" aria-labelledby="wf-title wf-desc"' +
-      ' data-opening="' + Math.round(beforeVal) + '"' +
-      ' data-closing="' + Math.round(afterVal) + '"' +
-      ' data-step-1="' + s1 + '"' +
-      ' data-step-2="' + s2 + '"' +
-      ' data-step-3="' + s3 + '">' +
+    return '<svg class="chart-svg waterfall-svg" viewBox="0 0 380 160" role="img" aria-labelledby="wf-title wf-desc">' +
       '<title id="wf-title">BigQuery slot time reduction from ' + esc(beforeVal) + ' to ' + esc(afterVal) + '</title>' +
       '<desc id="wf-desc">Slot time fell from ' + esc(beforeVal) + ' baseline by ' + esc(totalDrop) + '% down to ' + esc(afterVal) + ' residual across partitioning, clustering, and pruning steps.</desc>' +
       '<line x1="15" y1="' + baselineY + '" x2="365" y2="' + baselineY + '" class="baseline-line" />' +
@@ -635,10 +630,10 @@
     var statsHTML = '<div class="metric-lead-header">' +
       '<p class="readout-label">Primary delta: slot time reduction</p>' +
       '<div class="readout-figure-row">' +
-        '<span class="readout-huge">' + esc(m96.value || '96') + '</span>' +
-        '<span class="readout-unit">' + esc(m96.unit || '%') + '</span>' +
+        '<span class="readout-huge">' + esc(m96.value) + '</span>' +
+        '<span class="readout-unit">' + esc(m96.unit) + '</span>' +
       '</div>' +
-      '<p class="readout-summary">' + esc(m96.label || 'less BigQuery slot time on the datamart the reports depend on') + '</p>' +
+      '<p class="readout-summary">' + esc(m96.label) + '</p>' +
       '</div>' +
       '<div class="chart-container">' + generateWaterfallSVG(m96) + '</div>' +
       '<p class="readout-meta">' +
@@ -661,8 +656,8 @@
     // Cell 1: 9x Faster
     html += '<div class="cell-metric">' +
       '<div>' +
-        '<div class="cell-figure">' + esc(m9x.value || '9') + '<span class="cell-unit">' + esc(m9x.unit || 'x') + '</span></div>' +
-        '<p class="cell-desc">' + esc(m9x.label || 'faster processing on that same datamart model') + '</p>' +
+        '<div class="cell-figure">' + esc(m9x.value) + '<span class="cell-unit">' + esc(m9x.unit) + '</span></div>' +
+        '<p class="cell-desc">' + esc(m9x.label) + '</p>' +
       '</div>' +
       '<div class="chart-container">' + generateTwoBarSVG(m9x) + '</div>' +
       '<p class="cell-meta">' +
@@ -674,8 +669,8 @@
     // Cell 2: 599 dbt Models
     html += '<div class="cell-metric">' +
       '<div>' +
-        '<div class="cell-figure">' + esc(m599.value || '599') + '<span class="cell-unit"> models</span></div>' +
-        '<p class="cell-desc">' + esc(m599.label || 'dbt models in production, with 908 automated data tests') + '</p>' +
+        '<div class="cell-figure">' + esc(m599.value) + '<span class="cell-unit"> models</span></div>' +
+        '<p class="cell-desc">' + esc(m599.label) + '</p>' +
       '</div>' +
       '<div class="chart-container">' + generateMaterializationSVG(m599) + '</div>' +
       '<p class="cell-meta">' +
@@ -687,8 +682,8 @@
     // Cell 3: 3.5 TB/day Warehouse Scans
     html += '<div class="cell-metric">' +
       '<div>' +
-        '<div class="cell-figure">' + esc(m35.value || '3.5') + '<span class="cell-unit"> ' + esc(m35.unit || 'TB/day') + '</span></div>' +
-        '<p class="cell-desc">' + esc(m35.label || 'scanned in the warehouse, fully on-demand') + '</p>' +
+        '<div class="cell-figure">' + esc(m35.value) + '<span class="cell-unit"> ' + esc(m35.unit) + '</span></div>' +
+        '<p class="cell-desc">' + esc(m35.label) + '</p>' +
       '</div>' +
       '<div class="chart-container">' + generateScatterSVG(m35) + '</div>' +
       '<p class="cell-meta">' +
@@ -713,8 +708,8 @@
       '</div>' +
       generatePipelineSVG() +
       '<p class="cell-meta">' +
-        'Scope: ' + esc(m121.scope || '25 ingestion pipelines loading 121 tables into BigQuery with 599 dbt models') + '<br>' +
-        'Source: ' + esc(m121.source || 'platform measurement, Sep 2026') +
+        'Scope: ' + esc(m121.scope) + '<br>' +
+        'Source: ' + esc(m121.source) +
       '</p>';
     setHTML(elPipelineMap, html);
 
@@ -761,8 +756,7 @@
       var p = list[i];
       if (!p || typeof p !== 'object') continue;
 
-      var rawTitle = p.title || '';
-      var title = esc(rawTitle.replace(/^(\d+[\.\:\-\s]+|[•\-\>]\s*)/, ''));
+      var title = esc(p.title || '');
 
       var numStr = (idx < 10 ? '0' : '') + idx;
       idx++;
@@ -807,21 +801,10 @@
   }
 
   function renderProjects() {
-    var projects = arr(get('projects', []));
-    var work = [];
-    var side = [];
-
-    for (var i = 0; i < projects.length; i++) {
-      if (projects[i] && projects[i].kind === 'side') {
-        side.push(projects[i]);
-      } else if (projects[i]) {
-        work.push(projects[i]);
-      }
-    }
+    var work = arr(get('projects', []));
+    var sideBuilds = arr(get('sideBuilds', []));
 
     setHTML(elProjects, renderProjectRows(work, 1));
-
-    var sideBuilds = arr(get('sideBuilds', [])).concat(side);
     setHTML(elSide, renderProjectRows(sideBuilds, 1 + work.length));
 
     if (elQualityMatrix) {
@@ -832,9 +815,9 @@
       // Tests count: 908 (referenced in m599.label); tables count: from m121.value.
       // Note text for each matrix comes from the corresponding metric scope in config.js.
       var testsCount = 908;
-      var tablesCount = parseInt(String(m121.value || '121'), 10) || 121;
-      var testsNote = esc(m599.scope || '404 write a physical table each run, 190 inlined, 5 incremental');
-      var tablesNote = esc(m121.scope || '233 rebuild hourly and 124 daily, about 2,900 table loads a day');
+      var tablesCount = parseInt(String(m121.value), 10) || 0;
+      var testsNote = esc(m599.scope);
+      var tablesNote = esc(m121.scope);
 
       var qHTML =
         '<figure class="quality-figure">' +
@@ -846,8 +829,8 @@
           '<figcaption class="quality-note">' + tablesNote + '</figcaption>' +
         '</figure>' +
         '<p class="cell-meta">' +
-          'Scope: ' + esc(m599.scope || '404 physical tables, 190 inlined views, 5 incremental') + '<br>' +
-          'Source: ' + esc(m599.source || 'platform measurement, Sep 2026') +
+          'Scope: ' + esc(m599.scope) + '<br>' +
+          'Source: ' + esc(m599.source) +
         '</p>';
       setHTML(elQualityMatrix, qHTML);
     }
