@@ -795,7 +795,35 @@ button:focus-visible,
   font-size: 13px;
   color: var(--ink);
   line-height: 1.5;
-  flex-grow: 1;
+}
+
+/* Results under the lead line. The tick is a hairline rule, not a bullet glyph:
+   the sheet language in this stylesheet draws with rules, not with icons. */
+.timeline-points {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.timeline-points li {
+  position: relative;
+  padding-left: 14px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.timeline-points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 6px;
+  height: 1px;
+  background: var(--line);
 }
 
 /* ===== Band 7: About ===== */

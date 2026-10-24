@@ -757,6 +757,10 @@
 
   // --- Experience Section (Band 6) -----------------------------------
 
+  // Results rendered under the lead line of each role. The timeline is three
+  // columns wide, so this cap is what keeps the three cards the same height.
+  var EXPERIENCE_POINTS_PER_ROLE = 2;
+
   function renderExperience() {
     var exp = arr(get('experience', []));
     var html = '';
@@ -769,7 +773,17 @@
       var comp = esc(item.company);
       var loc = esc(item.location);
       var per = esc(item.period);
-      var desc = arr(item.details)[0] || '';
+      var all = arr(item.details);
+      var desc = all[0] || '';
+      // The band is three columns wide, so each card carries the lead line plus
+      // two results: more would stretch one column and leave the other two empty
+      // below it. Bullets are ordered strongest evidence first in config.js.
+      var points = all.slice(1, EXPERIENCE_POINTS_PER_ROLE + 1);
+      var list = '';
+      for (var j = 0; j < points.length; j++) {
+        if (!has(points[j])) continue;
+        list += '<li>' + esc(points[j]) + '</li>';
+      }
 
       html += '<div class="timeline-card">' +
         '<span class="timeline-marker" aria-hidden="true"></span>' +
@@ -777,6 +791,7 @@
         '<h3 class="timeline-role">' + role + '</h3>' +
         '<p class="timeline-company">' + comp + (loc ? ' | ' + loc : '') + '</p>' +
         '<p class="timeline-desc">' + esc(desc) + '</p>' +
+        (list ? '<ul class="timeline-points">' + list + '</ul>' : '') +
       '</div>';
     }
     setHTML(elTimeline, html);

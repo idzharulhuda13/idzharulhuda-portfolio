@@ -206,6 +206,9 @@ var PORTFOLIO = {
   ],
 
   // --- Experience ---
+  // The timeline renders details[0] as the lead line plus the next two entries as
+  // results (EXPERIENCE_POINTS_PER_ROLE in script.js). Order each list strongest
+  // evidence first; anything past the third entry is a record, not a display.
   experience: [
     {
       role: "Analytics and Reporting Lead",
@@ -232,12 +235,12 @@ var PORTFOLIO = {
       period: "Aug 2022 - Aug 2026",
       details: [
         "Enforced personal-data controls in the platform itself: column-level policy tags on name, email, phone, address, ID and financial fields, 29 tagged models, and a Dataplex catalogue of 776 tables and 1,473 relationships that blocks personal data from readers without clearance",
+        "Boosted report accuracy by 13% (82% -> 95%) by automating CHISS workflows with dynamic master mapping",
+        "Migrated 50+ reports from Google Sheets to BigQuery: daily -> hourly generation, 15 analysts freed from 2+ hours a day of manual reporting",
         "Built table-level lineage in that catalogue across 776 tables and 1,473 relationships, used daily (column-level lineage and lineage outside dbt are still open gaps)",
         "Documented the estate honestly: dev and scratch copies account for 88% of stored bytes, which is expected for a development estate; 94% of that had not been touched in 90+ days",
         "Optimized datamart model: 9x faster, 96%+ less BigQuery slot time, 58% less data shuffled",
-        "Migrated 50+ reports from Google Sheets to BigQuery: daily -> hourly generation, 15 analysts freed from 2+ hours a day of manual reporting",
         "Pioneered the DBT + Metabase framework for 40+ stakeholders to self-serve analytics",
-        "Boosted report accuracy by 13% (82% -> 95%) by automating CHISS workflows with dynamic master mapping",
         "Built data quality checks and automated discrepancy detection - 50% less manual error resolution",
         "Enforced ISO 27001:2022 aligned data handling standards across analytics workflows",
         "Built 10+ automated dashboards for marketing, operations, and finance teams"
@@ -252,9 +255,9 @@ var PORTFOLIO = {
       period: "Apr 2024 - Jan 2025",
       details: [
         "Digitized thousands of hardcopy documents using OCR, YOLO, and GPT-4 - 70% efficiency improvement",
+        "Automated claims verification and pricing audits - 60% less manual review workload",
         "Designed an LLM-based embedding system to standardize hospital formularies across institutions",
-        "Built a real-time client demo app with Streamlit for the client evaluation",
-        "Automated claims verification and pricing audits - 60% less manual review workload"
+        "Built a real-time client demo app with Streamlit for the client evaluation"
       ],
       techTags: ["Python", "YOLO", "OCR", "GPT-4", "Streamlit"]
     }
