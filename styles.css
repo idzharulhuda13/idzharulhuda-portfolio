@@ -23,7 +23,6 @@
   --chart-4: #15803D;
 
   --grid-pat: rgba(16, 19, 15, 0.05);
-  --card-border: #D3D5D0;
 
   /* Typography */
   --font-display: 'Archivo Black', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -51,7 +50,6 @@
   --t-fast: 120ms ease-out;
   --text: var(--ink);
   --accent: var(--signal);
-  --surface-2: var(--surface);
   --scrim: rgba(7, 9, 10, 0.78);
 }
 
@@ -72,28 +70,6 @@
   --chart-4: #4ADE80;
 
   --grid-pat: rgba(237, 239, 236, 0.02);
-  --card-border: #232829;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --ground: #07090A;
-    --surface: #101315;
-    --ink: #EDEFEC;
-    --muted: #98A09C;
-    --line: #232829;
-    --signal: #FF5A1F;
-    --pos: #4ADE80;
-    --neg: #FF6B5E;
-
-    --chart-1: #EDEFEC;
-    --chart-2: #FF5A1F;
-    --chart-3: #6B7370;
-    --chart-4: #4ADE80;
-
-    --grid-pat: rgba(237, 239, 236, 0.02);
-    --card-border: #232829;
-  }
 }
 
 /* ===== Reset and base ===== */
@@ -295,7 +271,7 @@ button:focus-visible,
 /* ===== Bands Common ===== */
 .band {
   margin-bottom: 24px;
-  border: 1px solid var(--card-border);
+  border: 1px solid var(--line);
   background: var(--surface);
 }
 
@@ -1099,70 +1075,6 @@ button:focus-visible,
   stroke: var(--chart-1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .wf-bar.opening-bar {
-    fill: rgba(107, 115, 112, 0.25);
-    stroke: var(--chart-3);
-  }
-  :root:not([data-theme="light"]) .wf-bar.step-bar {
-    fill: rgba(237, 239, 236, 0.15);
-    stroke: var(--chart-1);
-  }
-  :root:not([data-theme="light"]) .wf-bar.closing-bar {
-    fill: rgba(255, 90, 31, 0.35);
-    stroke: var(--chart-2);
-  }
-
-  :root:not([data-theme="light"]) .speed-bar.speed-base {
-    fill: rgba(107, 115, 112, 0.25);
-    stroke: var(--chart-3);
-  }
-  :root:not([data-theme="light"]) .speed-bar.speed-opt {
-    fill: rgba(255, 90, 31, 0.35);
-    stroke: var(--chart-2);
-  }
-
-  :root:not([data-theme="light"]) .model-bar.bar-table {
-    fill: rgba(255, 90, 31, 0.35);
-    stroke: var(--chart-2);
-  }
-  :root:not([data-theme="light"]) .model-bar.bar-view {
-    fill: rgba(107, 115, 112, 0.25);
-    stroke: var(--chart-3);
-  }
-  :root:not([data-theme="light"]) .model-bar.bar-incr {
-    fill: rgba(237, 239, 236, 0.2);
-    stroke: var(--chart-1);
-  }
-
-  :root:not([data-theme="light"]) .scatter-dot {
-    fill: rgba(107, 115, 112, 0.4);
-    stroke: var(--chart-3);
-  }
-  :root:not([data-theme="light"]) .scatter-dot.dot-peak {
-    fill: rgba(255, 90, 31, 0.6);
-    stroke: var(--chart-2);
-  }
-
-  :root:not([data-theme="light"]) .pipe-node-shape {
-    fill: var(--chart-3);
-    stroke: var(--chart-3);
-  }
-  :root:not([data-theme="light"]) .pipe-node-shape.hub {
-    fill: var(--chart-2);
-    stroke: var(--chart-2);
-  }
-
-  :root:not([data-theme="light"]) .cell-test {
-    fill: var(--chart-4);
-    stroke: var(--chart-4);
-  }
-  :root:not([data-theme="light"]) .cell-table {
-    fill: var(--chart-1);
-    stroke: var(--chart-1);
-  }
-}
-
 /* Typography inside SVG: 12px mono, muted labels outside shapes */
 .pipe-node-label {
   font-family: var(--font-mono);
@@ -1463,7 +1375,7 @@ button:focus-visible,
 
 .sv-card {
   background: var(--surface);
-  border: 1px solid var(--card-border);
+  border: 1px solid var(--line);
   padding: 20px;
   display: flex;
   flex-direction: column;
