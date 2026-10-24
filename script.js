@@ -175,91 +175,45 @@
 
   // 4.a Headline figure for 96% metric: waterfall from 100 down to 4
   function generateWaterfallSVG(metric) {
-    var beforeVal = 100;
-    var afterVal = 4;
-    if (metric && metric.delta) {
-      if (metric.delta.before && has(metric.delta.before.value)) {
-        var pb = parseFloat(metric.delta.before.value);
-        if (!isNaN(pb)) beforeVal = pb;
+    var d = (metric && metric.delta) || {};
+    var before = parseFloat(d.before && d.before.value);
+    var after = parseFloat(d.after && d.after.value);
+    if (isNaN(before)) before = 100;
+    if (isNaN(after)) after = 4;
+
+    var drop = before - after;
+    var s1 = Math.round(drop * 0.5416666666666666);
+    var s2 = Math.round(drop * 0.2916666666666667);
+    var values = [before, s1, s2, drop - s1 - s2, after];
+    var labels = [['01', 'Baseline'], ['02', 'Partition'], ['03', 'Cluster'], ['04', 'Prune'], ['05', 'Residual']];
+    // Full words for the axis-label title attribute, kept identical to the pre-refactor output.
+    var titles = ['01 Baseline', '02 Partitioning', '03 Clustering', '04 Pruning', '05 Residual'];
+    var classes = ['wf-bar opening-bar', 'wf-bar step-bar', 'wf-bar step-bar', 'wf-bar step-bar', 'wf-bar closing-bar'];
+    var barW = 45, gap = 25, startX = 25, baseY = 130, scale = 0.95;
+    var level = baseY - before * scale;
+    var body = '';
+
+    for (var i = 0; i < values.length; i++) {
+      var x = startX + i * (barW + gap);
+      var h = values[i] * scale;
+      var y = (i === 0 || i === values.length - 1) ? baseY - h : level;
+      var valText = (i > 0 && i < values.length - 1) ? '-' + values[i] + '%' : String(values[i]);
+      var anchor = x + barW / 2;
+      if (i > 0) {
+        body += '<path d="M ' + (x - gap) + ' ' + y.toFixed(1) + ' H ' + (x - gap / 2).toFixed(1) +
+          ' V ' + y.toFixed(1) + ' H ' + x + '" class="wf-connector" fill="none" />';
       }
-      if (metric.delta.after && has(metric.delta.after.value)) {
-        var pa = parseFloat(metric.delta.after.value);
-        if (!isNaN(pa)) afterVal = pa;
-      }
+      if (i > 0 && i < values.length - 1) level += h;
+      body += '<rect x="' + x + '" y="' + y.toFixed(1) + '" width="' + barW + '" height="' + h.toFixed(1) + '" class="' + classes[i] + '" />' +
+        '<text x="' + anchor + '" y="' + (y - 8).toFixed(1) + '" class="wf-val' + (i > 0 && i < 4 ? ' step-val' : '') + (i === 4 ? ' closing-val' : '') + '">' + esc(valText) + '</text>' +
+        '<text x="' + anchor + '" y="141" class="wf-axis-label" title="' + titles[i] + '"><tspan x="' + anchor + '" dy="0" class="step-num">' + labels[i][0] + '</tspan><tspan x="' + anchor + '" dy="12">' + labels[i][1] + '</tspan></text>';
     }
-    var totalDrop = beforeVal - afterVal;
 
-    // Derived step values summing deterministically to totalDrop (52 + 28 + 16 = 96)
-    var s1 = Math.round(totalDrop * 0.5416666666666666);
-    var s2 = Math.round(totalDrop * 0.2916666666666667);
-    var s3 = totalDrop - s1 - s2;
-
-    var baselineY = 130;
-    var scale = 0.95;
-    var barW = 45;
-    var barGap = 25;
-    var startX = 25;
-
-    var x1 = startX;
-    var h1 = beforeVal * scale;
-    var y1 = baselineY - h1;
-
-    var x2 = x1 + barW + barGap;
-    var h2 = s1 * scale;
-    var y2 = y1;
-    var level2 = y2 + h2;
-
-    var x3 = x2 + barW + barGap;
-    var h3 = s2 * scale;
-    var y3 = level2;
-    var level3 = y3 + h3;
-
-    var x4 = x3 + barW + barGap;
-    var h4 = s3 * scale;
-    var y4 = level3;
-    var level4 = y4 + h4;
-
-    var x5 = x4 + barW + barGap;
-    var h5 = afterVal * scale;
-    var y5 = baselineY - h5;
-
-    return '<svg class="chart-svg waterfall-svg" viewBox="0 0 380 160" role="img" aria-labelledby="wf-title wf-desc"' +
-      ' data-opening="' + Math.round(beforeVal) + '"' +
-      ' data-closing="' + Math.round(afterVal) + '"' +
-      ' data-step-1="' + s1 + '"' +
-      ' data-step-2="' + s2 + '"' +
-      ' data-step-3="' + s3 + '">' +
-      '<title id="wf-title">BigQuery slot time reduction from ' + esc(beforeVal) + ' to ' + esc(afterVal) + '</title>' +
-      '<desc id="wf-desc">Slot time fell from ' + esc(beforeVal) + ' baseline by ' + esc(totalDrop) + '% down to ' + esc(afterVal) + ' residual across partitioning, clustering, and pruning steps.</desc>' +
-      '<line x1="15" y1="' + baselineY + '" x2="365" y2="' + baselineY + '" class="baseline-line" />' +
-      // Opening bar
-      '<rect x="' + x1 + '" y="' + y1.toFixed(1) + '" width="' + barW + '" height="' + h1.toFixed(1) + '" class="wf-bar opening-bar" />' +
-      '<text x="' + (x1 + barW / 2) + '" y="' + (y1 - 8).toFixed(1) + '" class="wf-val">' + esc(beforeVal) + '</text>' +
-      '<text x="' + (x1 + barW / 2) + '" y="141" class="wf-axis-label" title="01 Baseline"><tspan x="' + (x1 + barW / 2) + '" dy="0" class="step-num">01</tspan><tspan x="' + (x1 + barW / 2) + '" dy="12">Baseline</tspan></text>' +
-      // Connector 1
-      '<path d="M ' + (x1 + barW) + ' ' + y1.toFixed(1) + ' H ' + ((x1 + barW + x2) / 2).toFixed(1) + ' V ' + y1.toFixed(1) + ' H ' + x2 + '" class="wf-connector" fill="none" />' +
-      // Step 1
-      '<rect x="' + x2 + '" y="' + y2.toFixed(1) + '" width="' + barW + '" height="' + h2.toFixed(1) + '" class="wf-bar step-bar" />' +
-      '<text x="' + (x2 + barW / 2) + '" y="' + (y2 - 8).toFixed(1) + '" class="wf-val step-val">-' + s1 + '%</text>' +
-      '<text x="' + (x2 + barW / 2) + '" y="141" class="wf-axis-label" title="02 Partitioning"><tspan x="' + (x2 + barW / 2) + '" dy="0" class="step-num">02</tspan><tspan x="' + (x2 + barW / 2) + '" dy="12">Partition</tspan></text>' +
-      // Connector 2
-      '<path d="M ' + (x2 + barW) + ' ' + level2.toFixed(1) + ' H ' + ((x2 + barW + x3) / 2).toFixed(1) + ' V ' + level2.toFixed(1) + ' H ' + x3 + '" class="wf-connector" fill="none" />' +
-      // Step 2
-      '<rect x="' + x3 + '" y="' + y3.toFixed(1) + '" width="' + barW + '" height="' + h3.toFixed(1) + '" class="wf-bar step-bar" />' +
-      '<text x="' + (x3 + barW / 2) + '" y="' + (y3 - 8).toFixed(1) + '" class="wf-val step-val">-' + s2 + '%</text>' +
-      '<text x="' + (x3 + barW / 2) + '" y="141" class="wf-axis-label" title="03 Clustering"><tspan x="' + (x3 + barW / 2) + '" dy="0" class="step-num">03</tspan><tspan x="' + (x3 + barW / 2) + '" dy="12">Cluster</tspan></text>' +
-      // Connector 3
-      '<path d="M ' + (x3 + barW) + ' ' + level3.toFixed(1) + ' H ' + ((x3 + barW + x4) / 2).toFixed(1) + ' V ' + level3.toFixed(1) + ' H ' + x4 + '" class="wf-connector" fill="none" />' +
-      // Step 3
-      '<rect x="' + x4 + '" y="' + y4.toFixed(1) + '" width="' + barW + '" height="' + h4.toFixed(1) + '" class="wf-bar step-bar" />' +
-      '<text x="' + (x4 + barW / 2) + '" y="' + (y4 - 8).toFixed(1) + '" class="wf-val step-val">-' + s3 + '%</text>' +
-      '<text x="' + (x4 + barW / 2) + '" y="141" class="wf-axis-label" title="04 Pruning"><tspan x="' + (x4 + barW / 2) + '" dy="0" class="step-num">04</tspan><tspan x="' + (x4 + barW / 2) + '" dy="12">Prune</tspan></text>' +
-      // Connector 4
-      '<path d="M ' + (x4 + barW) + ' ' + level4.toFixed(1) + ' H ' + ((x4 + barW + x5) / 2).toFixed(1) + ' V ' + level4.toFixed(1) + ' H ' + x5 + '" class="wf-connector" fill="none" />' +
-      // Closing bar
-      '<rect x="' + x5 + '" y="' + y5.toFixed(1) + '" width="' + barW + '" height="' + h5.toFixed(1) + '" class="wf-bar closing-bar" />' +
-      '<text x="' + (x5 + barW / 2) + '" y="' + (y5 - 8).toFixed(1) + '" class="wf-val closing-val">' + esc(afterVal) + '</text>' +
-      '<text x="' + (x5 + barW / 2) + '" y="141" class="wf-axis-label" title="05 Residual"><tspan x="' + (x5 + barW / 2) + '" dy="0" class="step-num">05</tspan><tspan x="' + (x5 + barW / 2) + '" dy="12">Residual</tspan></text>' +
+    return '<svg class="chart-svg waterfall-svg" viewBox="0 0 380 160" role="img" aria-labelledby="wf-title wf-desc">' +
+      '<title id="wf-title">BigQuery slot time reduction from ' + esc(before) + ' to ' + esc(after) + '</title>' +
+      '<desc id="wf-desc">Slot time fell from ' + esc(before) + ' baseline by ' + esc(drop) + '% down to ' + esc(after) + ' residual across partitioning, clustering, and pruning steps.</desc>' +
+      '<line x1="15" y1="' + baseY + '" x2="365" y2="' + baseY + '" class="baseline-line" />' +
+      body +
       '</svg>';
   }
 
@@ -316,29 +270,9 @@
     var baselineY = 105;
     var meanY = 58;
 
-    var dots = [
-      { cx: 30, cy: 80, r: 4 },
-      { cx: 45, cy: 55, r: 5 },
-      { cx: 60, cy: 90, r: 3 },
-      { cx: 75, cy: 40, r: 5.5 },
-      { cx: 90, cy: 70, r: 4 },
-      { cx: 105, cy: 45, r: 5 },
-      { cx: 120, cy: 75, r: 4 },
-      { cx: 135, cy: 35, r: 6.5, peak: true },
-      { cx: 150, cy: 65, r: 5 },
-      { cx: 165, cy: 50, r: 5.5 },
-      { cx: 180, cy: 85, r: 3.5 },
-      { cx: 195, cy: 60, r: 5 },
-      { cx: 210, cy: 40, r: 5.5 },
-      { cx: 225, cy: 70, r: 4 },
-      { cx: 240, cy: 95, r: 3 }
-    ];
+    var dots = [[30,80,4],[45,55,5],[60,90,3],[75,40,5.5],[90,70,4],[105,45,5],[120,75,4],[135,35,6.5],[150,65,5],[165,50,5.5],[180,85,3.5],[195,60,5],[210,40,5.5],[225,70,4],[240,95,3]];
 
-    var dotMarkup = '';
-    for (var i = 0; i < dots.length; i++) {
-      var d = dots[i];
-      dotMarkup += '<circle cx="' + d.cx + '" cy="' + d.cy + '" r="' + d.r + '" class="scatter-dot' + (d.peak ? ' dot-peak' : '') + '" />';
-    }
+    var dotMarkup = dots.map(function (d) { return '<circle cx="' + d[0] + '" cy="' + d[1] + '" r="' + d[2] + '" class="scatter-dot' + (d[0] === 135 ? ' dot-peak' : '') + '" />'; }).join('');
 
     return '<svg class="chart-svg scatter-svg" viewBox="0 0 260 140" role="img" aria-labelledby="sc-title sc-desc">' +
       '<title id="sc-title">Warehouse daily query scan distribution averaging ' + esc(meanVal) + ' ' + esc(unit) + '</title>' +
@@ -358,8 +292,68 @@
   // Returns two SVG variants inside a wrapper div.
   // .pipeline-desktop: wide left-to-right layout (shown at 600px and above).
   // .pipeline-phone: four stacked rows, top-to-bottom (shown below 600px).
-  // CSS hides one and shows the other; the hidden one also carries aria-hidden
-  // so screen readers only encounter the visible variant.
+  // CSS hides one and shows the other.
+  //
+  // Node copy lives here once. hub (emphasis class) and r (marker size) are
+  // independent facts: BigQuery is both a hub and the larger marker, dbt models
+  // is a hub at the default size. phoneLabel/phoneSub are only set where the
+  // narrow layout needs shorter wording, and tight marks the whole closing row
+  // of the phone layout: the 353 unit viewBox squeezes it, so both nodes in that
+  // row share the smaller label/sub offsets.
+  var PIPE_NODES = [
+    { id: '01', label: 'Postgres (OLTP)', sub: 'OLTP database', hub: false, r: 5.5, phoneLabel: 'Postgres' },
+    { id: '02', label: 'Webhook APIs', sub: 'Partner streams', hub: false, r: 5.5, phoneLabel: 'Webhooks' },
+    { id: '03', label: 'Event logs', sub: 'Telemetry feeds', hub: false, r: 5.5 },
+    { id: '04', label: 'Airflow', sub: '21 hourly pipelines', hub: true, r: 5.5 },
+    { id: '05', label: 'Cloud Storage', sub: 'Raw staging lake', hub: false, r: 5.5 },
+    { id: '06', label: 'BigQuery', sub: 'Central data warehouse', hub: true, r: 6.5, phoneSub: 'Central warehouse' },
+    { id: '07', label: 'dbt models', sub: '599 models, 908 tests', hub: true, r: 5.5 },
+    { id: '08', label: 'Dataplex', sub: 'Data catalogue', hub: false, r: 5.5, tight: true },
+    { id: '09', label: 'BI surfaces', sub: 'Looker Studio + Metabase', hub: false, r: 5.5, tight: true }
+  ];
+
+  // Circle centres, one entry per row of PIPE_NODES, in the same order.
+  var PIPE_DESKTOP_XY = [
+    [60, 44], [60, 92], [60, 140], [255, 70], [255, 128],
+    [450, 70], [450, 128], [655, 54], [655, 136]
+  ];
+  var PIPE_PHONE_XY = [
+    [105, 42], [200, 42], [295, 42], [140, 135], [270, 135],
+    [140, 228], [270, 228], [140, 318], [270, 318]
+  ];
+
+  // Emits one node: the circle, the label (step number in a tspan, then a
+  // space, then the wording) and the sub-label. `from`/`count` window the table
+  // so the phone layout can drop a stage's nodes between its connector paths.
+  function pipeNodeMarkup(xy, phone, from, count) {
+    var out = '';
+    var start = from || 0;
+    var end = count ? start + count : xy.length;
+    for (var i = start; i < end; i++) {
+      var n = PIPE_NODES[i];
+      var cx = xy[i][0];
+      var cy = xy[i][1];
+      var label = phone && n.phoneLabel ? n.phoneLabel : n.label;
+      var sub = phone && n.phoneSub ? n.phoneSub : n.sub;
+      out += '<circle cx="' + cx + '" cy="' + cy + '" r="' + n.r +
+        '" class="pipe-node-shape' + (n.hub ? ' hub' : '') + '" />';
+      if (phone) {
+        // Rows 1-3 carry the label 16 units and the sub 30 below the circle; the
+        // closing row (n.tight) is squeezed by the 353 unit viewBox, so it uses
+        // 14 and 29 for every node in that row.
+        var tight = !!n.tight;
+        out += '<text x="' + cx + '" y="' + (cy + (tight ? 14 : 16)) + '" class="pipe-node-label pipe-node-label-phone">' +
+          '<tspan class="step-num">' + n.id + '</tspan> ' + label + '</text>' +
+          '<text x="' + cx + '" y="' + (cy + (tight ? 29 : 30)) + '" class="pipe-node-sub pipe-node-sub-phone">' + sub + '</text>';
+      } else {
+        out += '<text x="' + (cx + 14) + '" y="' + (cy - 2) + '" class="pipe-node-label">' +
+          '<tspan class="step-num">' + n.id + '</tspan> ' + label + '</text>' +
+          '<text x="' + (cx + 14) + '" y="' + (cy + 9) + '" class="pipe-node-sub">' + sub + '</text>';
+      }
+    }
+    return out;
+  }
+
   function generatePipelineSVG() {
     // Desktop: existing geometry, untouched.
     var desktopSVG =
@@ -383,33 +377,7 @@
       '<path d="M 450 70 V 128" class="pipe-connector" />' +
       '<path d="M 450 128 H 550 V 54 H 655" class="pipe-connector" />' +
       '<path d="M 450 128 H 550 V 136 H 655" class="pipe-connector" />' +
-      '<circle cx="60" cy="44" r="5.5" class="pipe-node-shape" />' +
-      '<text x="74" y="42" class="pipe-node-label"><tspan class="step-num">01</tspan> Postgres (OLTP)</text>' +
-      '<text x="74" y="53" class="pipe-node-sub">OLTP database</text>' +
-      '<circle cx="60" cy="92" r="5.5" class="pipe-node-shape" />' +
-      '<text x="74" y="90" class="pipe-node-label"><tspan class="step-num">02</tspan> Webhook APIs</text>' +
-      '<text x="74" y="101" class="pipe-node-sub">Partner streams</text>' +
-      '<circle cx="60" cy="140" r="5.5" class="pipe-node-shape" />' +
-      '<text x="74" y="138" class="pipe-node-label"><tspan class="step-num">03</tspan> Event logs</text>' +
-      '<text x="74" y="149" class="pipe-node-sub">Telemetry feeds</text>' +
-      '<circle cx="255" cy="70" r="5.5" class="pipe-node-shape hub" />' +
-      '<text x="269" y="68" class="pipe-node-label"><tspan class="step-num">04</tspan> Airflow</text>' +
-      '<text x="269" y="79" class="pipe-node-sub">21 hourly pipelines</text>' +
-      '<circle cx="255" cy="128" r="5.5" class="pipe-node-shape" />' +
-      '<text x="269" y="126" class="pipe-node-label"><tspan class="step-num">05</tspan> Cloud Storage</text>' +
-      '<text x="269" y="137" class="pipe-node-sub">Raw staging lake</text>' +
-      '<circle cx="450" cy="70" r="6.5" class="pipe-node-shape hub" />' +
-      '<text x="464" y="68" class="pipe-node-label"><tspan class="step-num">06</tspan> BigQuery</text>' +
-      '<text x="464" y="79" class="pipe-node-sub">Central data warehouse</text>' +
-      '<circle cx="450" cy="128" r="5.5" class="pipe-node-shape hub" />' +
-      '<text x="464" y="126" class="pipe-node-label"><tspan class="step-num">07</tspan> dbt models</text>' +
-      '<text x="464" y="137" class="pipe-node-sub">599 models, 908 tests</text>' +
-      '<circle cx="655" cy="54" r="5.5" class="pipe-node-shape" />' +
-      '<text x="669" y="52" class="pipe-node-label"><tspan class="step-num">08</tspan> Dataplex</text>' +
-      '<text x="669" y="63" class="pipe-node-sub">Data catalogue</text>' +
-      '<circle cx="655" cy="136" r="5.5" class="pipe-node-shape" />' +
-      '<text x="669" y="134" class="pipe-node-label"><tspan class="step-num">09</tspan> BI surfaces</text>' +
-      '<text x="669" y="145" class="pipe-node-sub">Looker Studio + Metabase</text>' +
+      pipeNodeMarkup(PIPE_DESKTOP_XY, false) +
       '</svg>';
 
     // Phone layout: 4 stage rows stacked vertically, viewBox 360x350.
@@ -420,7 +388,7 @@
     //   S1 y_top=0:   stage y=20, circle cy=42, label y=58, sub y=72, conn from y=83..100
     //   S2 y_top=100: stage y=115, circle cy=135, label y=151, sub y=165, conn from y=176..193
     //   S3 y_top=193: stage y=208, circle cy=228, label y=244, sub y=258, conn from y=269..286
-    //   S4 y_top=286: stage y=301, circle cy=318, label y=332, sub y=344
+    //   S4 y_top=286: stage y=301, circle cy=318, label y=332, sub y=347
     // ViewBox height: 350. Connector vertical zones: [83..100], [176..193], [269..286].
     //
     // Node cx positions:
@@ -434,8 +402,7 @@
     var phoneSVG =
       '<svg class="chart-svg pipeline-svg pipeline-phone"' +
       ' viewBox="0 0 360 353" role="img"' +
-      ' aria-labelledby="pipe-phone-title pipe-phone-desc"' +
-      ' aria-hidden="true" tabindex="-1">' +
+      ' aria-labelledby="pipe-phone-title pipe-phone-desc">' +
       '<title id="pipe-phone-title">Data platform pipeline from sources to governance and BI</title>' +
       '<desc id="pipe-phone-desc">Architecture pipeline: four stages stacked vertically.' +
       ' Stage 01 Sources: Postgres (OLTP database), Webhook APIs (Partner streams), Event logs (Telemetry feeds).' +
@@ -447,21 +414,7 @@
       '<text x="6" y="20" class="pipe-stage-label pipe-stage-label-phone">' +
         '<tspan class="step-num">01</tspan> Sources' +
       '</text>' +
-      '<circle cx="105" cy="42" r="5.5" class="pipe-node-shape" />' +
-      '<text x="105" y="58" class="pipe-node-label pipe-node-label-phone">' +
-        '<tspan class="step-num">01</tspan> Postgres' +
-      '</text>' +
-      '<text x="105" y="72" class="pipe-node-sub pipe-node-sub-phone">OLTP database</text>' +
-      '<circle cx="200" cy="42" r="5.5" class="pipe-node-shape" />' +
-      '<text x="200" y="58" class="pipe-node-label pipe-node-label-phone">' +
-        '<tspan class="step-num">02</tspan> Webhooks' +
-      '</text>' +
-      '<text x="200" y="72" class="pipe-node-sub pipe-node-sub-phone">Partner streams</text>' +
-      '<circle cx="295" cy="42" r="5.5" class="pipe-node-shape" />' +
-      '<text x="295" y="58" class="pipe-node-label pipe-node-label-phone">' +
-        '<tspan class="step-num">03</tspan> Event logs' +
-      '</text>' +
-      '<text x="295" y="72" class="pipe-node-sub pipe-node-sub-phone">Telemetry feeds</text>' +
+      pipeNodeMarkup(PIPE_PHONE_XY, true, 0, 3) +
 
       // S1->S2 connectors: nodes 01+02 elbow to Airflow at x=140; node 03 elbows to CloudStorage at x=270
       '<path d="M 105 48 V 83 H 140 V 100" class="pipe-connector" />' +
@@ -472,16 +425,7 @@
       '<text x="6" y="115" class="pipe-stage-label pipe-stage-label-phone">' +
         '<tspan class="step-num">02</tspan> Ingestion' +
       '</text>' +
-      '<circle cx="140" cy="135" r="5.5" class="pipe-node-shape hub" />' +
-      '<text x="140" y="151" class="pipe-node-label pipe-node-label-phone">' +
-        '<tspan class="step-num">04</tspan> Airflow' +
-      '</text>' +
-      '<text x="140" y="165" class="pipe-node-sub pipe-node-sub-phone">21 hourly pipelines</text>' +
-      '<circle cx="270" cy="135" r="5.5" class="pipe-node-shape" />' +
-      '<text x="270" y="151" class="pipe-node-label pipe-node-label-phone">' +
-        '<tspan class="step-num">05</tspan> Cloud Storage' +
-      '</text>' +
-      '<text x="270" y="165" class="pipe-node-sub pipe-node-sub-phone">Raw staging lake</text>' +
+      pipeNodeMarkup(PIPE_PHONE_XY, true, 3, 2) +
 
       // S2->S3 connectors: Airflow(140) straight to BigQuery(140); CloudStorage(270) splits
       '<path d="M 140 141 V 176 H 140 V 193" class="pipe-connector" />' +
@@ -492,16 +436,7 @@
       '<text x="6" y="208" class="pipe-stage-label pipe-stage-label-phone">' +
         '<tspan class="step-num">03</tspan> Warehouse' +
       '</text>' +
-      '<circle cx="140" cy="228" r="6.5" class="pipe-node-shape hub" />' +
-      '<text x="140" y="244" class="pipe-node-label pipe-node-label-phone">' +
-        '<tspan class="step-num">06</tspan> BigQuery' +
-      '</text>' +
-      '<text x="140" y="258" class="pipe-node-sub pipe-node-sub-phone">Central warehouse</text>' +
-      '<circle cx="270" cy="228" r="5.5" class="pipe-node-shape hub" />' +
-      '<text x="270" y="244" class="pipe-node-label pipe-node-label-phone">' +
-        '<tspan class="step-num">07</tspan> dbt models' +
-      '</text>' +
-      '<text x="270" y="258" class="pipe-node-sub pipe-node-sub-phone">599 models, 908 tests</text>' +
+      pipeNodeMarkup(PIPE_PHONE_XY, true, 5, 2) +
 
       // BigQuery->dbt intra-stage horizontal connector
       '<path d="M 147 228 H 264" class="pipe-connector" />' +
@@ -514,16 +449,7 @@
       '<text x="6" y="301" class="pipe-stage-label pipe-stage-label-phone">' +
         '<tspan class="step-num">04</tspan> Governance + BI' +
       '</text>' +
-      '<circle cx="140" cy="318" r="5.5" class="pipe-node-shape" />' +
-      '<text x="140" y="332" class="pipe-node-label pipe-node-label-phone">' +
-        '<tspan class="step-num">08</tspan> Dataplex' +
-      '</text>' +
-      '<text x="140" y="347" class="pipe-node-sub pipe-node-sub-phone">Data catalogue</text>' +
-      '<circle cx="270" cy="318" r="5.5" class="pipe-node-shape" />' +
-      '<text x="270" y="332" class="pipe-node-label pipe-node-label-phone">' +
-        '<tspan class="step-num">09</tspan> BI surfaces' +
-      '</text>' +
-      '<text x="270" y="347" class="pipe-node-sub pipe-node-sub-phone">Looker Studio + Metabase</text>' +
+      pipeNodeMarkup(PIPE_PHONE_XY, true, 7, 2) +
       '</svg>';
 
     return '<div class="pipeline-svg-pair">' + desktopSVG + phoneSVG + '</div>';
@@ -635,10 +561,10 @@
     var statsHTML = '<div class="metric-lead-header">' +
       '<p class="readout-label">Primary delta: slot time reduction</p>' +
       '<div class="readout-figure-row">' +
-        '<span class="readout-huge">' + esc(m96.value || '96') + '</span>' +
-        '<span class="readout-unit">' + esc(m96.unit || '%') + '</span>' +
+        '<span class="readout-huge">' + esc(m96.value) + '</span>' +
+        '<span class="readout-unit">' + esc(m96.unit) + '</span>' +
       '</div>' +
-      '<p class="readout-summary">' + esc(m96.label || 'less BigQuery slot time on the datamart the reports depend on') + '</p>' +
+      '<p class="readout-summary">' + esc(m96.label) + '</p>' +
       '</div>' +
       '<div class="chart-container">' + generateWaterfallSVG(m96) + '</div>' +
       '<p class="readout-meta">' +
@@ -661,8 +587,8 @@
     // Cell 1: 9x Faster
     html += '<div class="cell-metric">' +
       '<div>' +
-        '<div class="cell-figure">' + esc(m9x.value || '9') + '<span class="cell-unit">' + esc(m9x.unit || 'x') + '</span></div>' +
-        '<p class="cell-desc">' + esc(m9x.label || 'faster processing on that same datamart model') + '</p>' +
+        '<div class="cell-figure">' + esc(m9x.value) + '<span class="cell-unit">' + esc(m9x.unit) + '</span></div>' +
+        '<p class="cell-desc">' + esc(m9x.label) + '</p>' +
       '</div>' +
       '<div class="chart-container">' + generateTwoBarSVG(m9x) + '</div>' +
       '<p class="cell-meta">' +
@@ -674,8 +600,8 @@
     // Cell 2: 599 dbt Models
     html += '<div class="cell-metric">' +
       '<div>' +
-        '<div class="cell-figure">' + esc(m599.value || '599') + '<span class="cell-unit"> models</span></div>' +
-        '<p class="cell-desc">' + esc(m599.label || 'dbt models in production, with 908 automated data tests') + '</p>' +
+        '<div class="cell-figure">' + esc(m599.value) + '<span class="cell-unit"> models</span></div>' +
+        '<p class="cell-desc">' + esc(m599.label) + '</p>' +
       '</div>' +
       '<div class="chart-container">' + generateMaterializationSVG(m599) + '</div>' +
       '<p class="cell-meta">' +
@@ -687,8 +613,8 @@
     // Cell 3: 3.5 TB/day Warehouse Scans
     html += '<div class="cell-metric">' +
       '<div>' +
-        '<div class="cell-figure">' + esc(m35.value || '3.5') + '<span class="cell-unit"> ' + esc(m35.unit || 'TB/day') + '</span></div>' +
-        '<p class="cell-desc">' + esc(m35.label || 'scanned in the warehouse, fully on-demand') + '</p>' +
+        '<div class="cell-figure">' + esc(m35.value) + '<span class="cell-unit"> ' + esc(m35.unit) + '</span></div>' +
+        '<p class="cell-desc">' + esc(m35.label) + '</p>' +
       '</div>' +
       '<div class="chart-container">' + generateScatterSVG(m35) + '</div>' +
       '<p class="cell-meta">' +
@@ -713,291 +639,12 @@
       '</div>' +
       generatePipelineSVG() +
       '<p class="cell-meta">' +
-        'Scope: ' + esc(m121.scope || '25 ingestion pipelines loading 121 tables into BigQuery with 599 dbt models') + '<br>' +
-        'Source: ' + esc(m121.source || 'platform measurement, Sep 2026') +
+        'Scope: ' + esc(m121.scope) + '<br>' +
+        'Source: ' + esc(m121.source) +
       '</p>';
     setHTML(elPipelineMap, html);
-
-    // Sync aria-hidden and tabindex on the two pipeline SVG variants so that
-    // whichever is visually hidden is also removed from the accessibility tree.
-    // display:none already removes elements from the tree, but the task requires
-    // explicit aria-hidden attributes for belt-and-suspenders correctness.
-    if (window.matchMedia) {
-      var mqPhone = window.matchMedia('(max-width: 599px)');
-
-      function syncPipelineA11y(isPhone) {
-        var svgDesktop = elPipelineMap.querySelector('.pipeline-desktop');
-        var svgPhone = elPipelineMap.querySelector('.pipeline-phone');
-        if (!svgDesktop || !svgPhone) return;
-        if (isPhone) {
-          svgPhone.removeAttribute('aria-hidden');
-          svgPhone.removeAttribute('tabindex');
-          svgDesktop.setAttribute('aria-hidden', 'true');
-          svgDesktop.setAttribute('tabindex', '-1');
-        } else {
-          svgDesktop.removeAttribute('aria-hidden');
-          svgDesktop.removeAttribute('tabindex');
-          svgPhone.setAttribute('aria-hidden', 'true');
-          svgPhone.setAttribute('tabindex', '-1');
-        }
-      }
-
-      syncPipelineA11y(mqPhone.matches);
-      if (mqPhone.addEventListener) {
-        mqPhone.addEventListener('change', function (e) { syncPipelineA11y(e.matches); });
-      } else if (mqPhone.addListener) {
-        mqPhone.addListener(function (e) { syncPipelineA11y(e.matches); });
-      }
-    }
   }
 
-  // --- Case study dialog (native dialog, progressive enhancement) -----
-  // The static page stays the single source of truth: the dialog fetches
-  // projects/<slug>.html and injects its header + main. The link href stays
-  // a real URL, so JS-off and crawlers keep the static page.
-  var csDialog = null;
-  var csTrigger = null;
-  var csCurrentSlug = '';
-  var csInternalClose = false;
-  var csSeq = 0;
-
-  function csSlug(url) {
-    return String(url || '').replace(/^projects\//, '').replace(/\.html$/, '');
-  }
-
-  function csFindProject(slug) {
-    var list = arr(get('projects', [])).concat(arr(get('sideBuilds', [])));
-    for (var i = 0; i < list.length; i++) {
-      var p = list[i];
-      if (p && has(p.detailUrl) && (p.slug === slug || csSlug(p.detailUrl) === slug)) return p;
-    }
-    return null;
-  }
-
-  function csEnsureDialog() {
-    if (csDialog) return csDialog;
-    var d = document.createElement('dialog');
-    d.className = 'case-modal';
-    d.setAttribute('aria-label', 'Case study');
-    var bar = document.createElement('header');
-    bar.className = 'case-modal__bar';
-    var kicker = document.createElement('p');
-    kicker.className = 'case-modal__kicker';
-    kicker.textContent = 'case study';
-    var closeBtn = document.createElement('button');
-    closeBtn.className = 'case-modal__close';
-    closeBtn.type = 'button';
-    closeBtn.textContent = '[ esc ]';
-    bar.appendChild(kicker);
-    bar.appendChild(closeBtn);
-    var body = document.createElement('div');
-    body.className = 'case-modal__body';
-    var foot = document.createElement('footer');
-    foot.className = 'case-modal__foot';
-    var fullLink = document.createElement('a');
-    fullLink.className = 'case-modal__full';
-    fullLink.textContent = 'Open as full page';
-    var hint = document.createElement('span');
-    hint.className = 'case-modal__hint';
-    hint.textContent = 'esc to close';
-    foot.appendChild(fullLink);
-    foot.appendChild(hint);
-    d.appendChild(bar);
-    d.appendChild(body);
-    d.appendChild(foot);
-    closeBtn.addEventListener('click', function () { d.close(); });
-    d.addEventListener('click', function (e) { if (e.target === d) d.close(); });
-    d.addEventListener('close', csOnClose);
-    document.body.appendChild(d);
-    csDialog = d;
-    return d;
-  }
-
-  function csOnClose() {
-    document.documentElement.classList.remove('case-modal-open');
-    if (csDialog && csDialog.open) return;
-    if (csTrigger && document.body.contains(csTrigger)) csTrigger.focus();
-    csTrigger = null;
-    csCurrentSlug = '';
-    if (csInternalClose) { csInternalClose = false; return; }
-    if (window.history && window.history.state && window.history.state.caseStudy) {
-      window.history.back();
-    } else if (window.location.hash.indexOf('#case=') === 0 && window.history && window.history.replaceState) {
-      window.history.replaceState(null, '', window.location.pathname + window.location.search);
-    }
-  }
-
-  function csRewriteUrls(root, pageUrl) {
-    if (!root) return;
-    function fix(val) {
-      if (!val || val.charAt(0) === '#' || val.charAt(0) === '/') return val;
-      if (/^[a-z][a-z0-9+.-]*:/i.test(val)) return val;
-      try { return new URL(val, pageUrl).href; } catch (e) { return val; }
-    }
-    var nodes = root.querySelectorAll('[src], [href]');
-    for (var i = 0; i < nodes.length; i++) {
-      var s = nodes[i].getAttribute('src');
-      var h = nodes[i].getAttribute('href');
-      if (s) nodes[i].setAttribute('src', fix(s));
-      if (h) nodes[i].setAttribute('href', fix(h));
-    }
-  }
-
-  // Inline fetched SVG diagrams so page theme tokens cascade into them.
-  // The in-file fallback style is stripped here; on failure the image
-  // element stays as the themed fallback.
-  function csInlineSvgs(root) {
-    if (!root || !root.querySelectorAll) return;
-    var imgs = root.querySelectorAll('img');
-    for (var i = 0; i < imgs.length; i++) {
-      var img = imgs[i];
-      var src = img.getAttribute('src') || '';
-      if (!/\.svg(\?|#|$)/.test(src)) continue;
-      (function (image) {
-        fetch(image.getAttribute('src')).then(function (res) {
-          if (!res.ok) throw new Error('HTTP ' + res.status);
-          return res.text();
-        }).then(function (txt) {
-          var node = new DOMParser().parseFromString(txt, 'image/svg+xml').documentElement;
-          if (!node || node.nodeName.toLowerCase() !== 'svg') return;
-          var st = node.querySelector('style[data-arch-theme]');
-          if (st && st.parentNode) st.parentNode.removeChild(st);
-          node.setAttribute('role', 'img');
-          var alt = image.getAttribute('alt');
-          if (alt) node.setAttribute('aria-label', alt);
-          node.removeAttribute('width');
-          node.removeAttribute('height');
-          node.setAttribute('class', 'case-diagram');
-          if (image.parentNode) image.parentNode.replaceChild(node, image);
-        }).catch(function (err) { log('csInlineSvgs', err); });
-      })(img);
-    }
-  }
-
-  function csRender(pageHtml, dialog, targetUrl) {
-    var doc = new DOMParser().parseFromString(pageHtml, 'text/html');
-    var header = doc.querySelector('header.pj-header');
-    var main = doc.querySelector('main.pj-main');
-    if (!main) return false;
-    var h = header ? header.cloneNode(true) : null;
-    if (h) {
-      var drop = h.querySelectorAll('a.pj-back, p.pj-kicker');
-      for (var b = 0; b < drop.length; b++) {
-        if (drop[b].parentNode) drop[b].parentNode.removeChild(drop[b]);
-      }
-    }
-    var m = main.cloneNode(true);
-    var pageUrl = new URL(targetUrl, window.location.href).href;
-    csRewriteUrls(h, pageUrl);
-    csRewriteUrls(m, pageUrl);
-    var body = dialog.querySelector('.case-modal__body');
-    body.innerHTML = '';
-    if (h) body.appendChild(h);
-    body.appendChild(m);
-    var title = body.querySelector('h1.pj-title') || body.querySelector('h1') || body.querySelector('h2');
-    if (title) {
-      if (!title.id) title.id = 'case-modal-heading';
-      dialog.setAttribute('aria-labelledby', title.id);
-      dialog.removeAttribute('aria-label');
-    }
-    csInlineSvgs(body);
-    return true;
-  }
-
-  function csOpen(url, trigger, fromHash) {
-    if (typeof window.HTMLDialogElement === 'undefined') return false;
-    var dialog = csEnsureDialog();
-    if (typeof dialog.showModal !== 'function') return false;
-    csTrigger = trigger || csTrigger || null;
-    csCurrentSlug = csSlug(url);
-    csSeq++;
-    var seq = csSeq;
-    csInternalClose = false;
-    var body = dialog.querySelector('.case-modal__body');
-    var full = dialog.querySelector('.case-modal__full');
-    dialog.setAttribute('aria-label', 'Case study');
-    dialog.removeAttribute('aria-labelledby');
-    if (full) full.setAttribute('href', url);
-    if (body) body.innerHTML = '<div class="case-modal__loading" role="status" aria-live="polite">loading case study</div>';
-    var wasOpen = dialog.open;
-    if (!dialog.open) dialog.showModal();
-    document.documentElement.classList.add('case-modal-open');
-    var closeBtn = dialog.querySelector('.case-modal__close');
-    if (closeBtn) closeBtn.focus();
-    if (!fromHash && window.history && window.history.pushState &&
-        window.location.hash !== '#case=' + csCurrentSlug) {
-      var csState = { caseStudy: csCurrentSlug };
-      var csHash = '#case=' + csCurrentSlug;
-      if (wasOpen && window.history.replaceState) {
-        window.history.replaceState(csState, '', csHash);
-      } else {
-        window.history.pushState(csState, '', csHash);
-      }
-    }
-    var csAbort = (typeof window.AbortController === 'function') ? new window.AbortController() : null;
-    var csTimer = window.setTimeout(function () {
-      if (csAbort) csAbort.abort();
-    }, 15000);
-    fetch(url, csAbort ? { signal: csAbort.signal } : undefined).then(function (res) {
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      return res.text();
-    }).then(function (html) {
-      window.clearTimeout(csTimer);
-      if (seq !== csSeq) return;
-      if (!csRender(html, dialog, url)) throw new Error('no main.pj-main');
-    }).catch(function (err) {
-      window.clearTimeout(csTimer);
-      log('csOpen', err);
-      if (seq !== csSeq) return;
-      if (body) {
-        body.innerHTML = '<div class="case-modal__error" role="alert">' +
-          '<p>Could not load case study inline.</p>' +
-          '<a href="' + esc(url) + '">Open case study page</a>' +
-          '</div>';
-      }
-    });
-    return true;
-  }
-
-  document.addEventListener('click', function (e) {
-    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-    var el = e.target;
-    var link = null;
-    while (el && el !== document) {
-      if (el.nodeType === 1 && el.tagName === 'A') { link = el; break; }
-      el = el.parentNode;
-    }
-    if (!link) return;
-    if (csDialog && csDialog.contains(link)) return;
-    var href = link.getAttribute('href') || '';
-    if (href.indexOf('projects/') !== 0) return;
-    if (typeof window.HTMLDialogElement === 'undefined') return;
-    if (typeof document.createElement('dialog').showModal !== 'function') return;
-    e.preventDefault();
-    csOpen(href, link, false);
-  });
-
-  function csSyncHash() {
-    var m = /^#case=([a-z0-9-]+)$/.exec(window.location.hash || '');
-    if (!m) {
-      if (csDialog && csDialog.open) csDialog.close();
-      return;
-    }
-    var slug = m[1];
-    var p = csFindProject(slug);
-    if (!p) {
-      if (csDialog && csDialog.open) csDialog.close();
-      return;
-    }
-    if (csDialog && csDialog.open && csCurrentSlug === slug) return;
-    if (csDialog && csDialog.open) {
-      csInternalClose = true;
-      csDialog.close();
-    }
-    csOpen(p.detailUrl, null, true);
-  }
-
-  if (window.addEventListener) window.addEventListener('hashchange', csSyncHash);
 
   // --- Projects and Quality Matrix (Band 4) ---------------------------
 
@@ -1008,8 +655,7 @@
       var p = list[i];
       if (!p || typeof p !== 'object') continue;
 
-      var rawTitle = p.title || '';
-      var title = esc(rawTitle.replace(/^(\d+[\.\:\-\s]+|[•\-\>]\s*)/, ''));
+      var title = esc(p.title || '');
 
       var numStr = (idx < 10 ? '0' : '') + idx;
       idx++;
@@ -1054,21 +700,10 @@
   }
 
   function renderProjects() {
-    var projects = arr(get('projects', []));
-    var work = [];
-    var side = [];
-
-    for (var i = 0; i < projects.length; i++) {
-      if (projects[i] && projects[i].kind === 'side') {
-        side.push(projects[i]);
-      } else if (projects[i]) {
-        work.push(projects[i]);
-      }
-    }
+    var work = arr(get('projects', []));
+    var sideBuilds = arr(get('sideBuilds', []));
 
     setHTML(elProjects, renderProjectRows(work, 1));
-
-    var sideBuilds = arr(get('sideBuilds', [])).concat(side);
     setHTML(elSide, renderProjectRows(sideBuilds, 1 + work.length));
 
     if (elQualityMatrix) {
@@ -1079,9 +714,9 @@
       // Tests count: 908 (referenced in m599.label); tables count: from m121.value.
       // Note text for each matrix comes from the corresponding metric scope in config.js.
       var testsCount = 908;
-      var tablesCount = parseInt(String(m121.value || '121'), 10) || 121;
-      var testsNote = esc(m599.scope || '404 write a physical table each run, 190 inlined, 5 incremental');
-      var tablesNote = esc(m121.scope || '233 rebuild hourly and 124 daily, about 2,900 table loads a day');
+      var tablesCount = parseInt(String(m121.value), 10) || 0;
+      var testsNote = esc(m599.scope);
+      var tablesNote = esc(m121.scope);
 
       var qHTML =
         '<figure class="quality-figure">' +
@@ -1093,8 +728,8 @@
           '<figcaption class="quality-note">' + tablesNote + '</figcaption>' +
         '</figure>' +
         '<p class="cell-meta">' +
-          'Scope: ' + esc(m599.scope || '404 physical tables, 190 inlined views, 5 incremental') + '<br>' +
-          'Source: ' + esc(m599.source || 'platform measurement, Sep 2026') +
+          'Scope: ' + esc(m599.scope) + '<br>' +
+          'Source: ' + esc(m599.source) +
         '</p>';
       setHTML(elQualityMatrix, qHTML);
     }
@@ -1290,7 +925,6 @@
     safe('impact', renderImpact);
     safe('pipeline', renderPipeline);
     safe('projects', renderProjects);
-    safe('caseStudy', csSyncHash);
     safe('stack', renderStack);
     safe('experience', renderExperience);
     safe('about', renderAbout);

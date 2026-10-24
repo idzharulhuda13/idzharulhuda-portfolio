@@ -56,15 +56,6 @@ var PORTFOLIO = {
         text: "My goal is to create scalable, trustworthy data systems that empower teams to move faster with confidence.",
         highlights: []
       }
-    ],
-
-    // Kept for backwards compatibility with pre-v2 configs; no longer rendered in v2.
-    roles: [
-      "Data Infrastructure Engineer",
-      "SQL & DBT Developer",
-      "BigQuery Cost Optimizer",
-      "AI & LLM Pipeline Builder",
-      "Self-Serve Analytics Architect"
     ]
   },
 
@@ -122,177 +113,59 @@ var PORTFOLIO = {
   projects: [
       {
         title: "Internal Data Request and Catalogue Platform",
-        slug: "internal-data-request-platform",
         description: "A platform for teams outside the data function to file, follow and audit data requests, with the asset catalogue and pipeline health in the same place. It holds no warehouse credentials: Airflow pushes the manifest, run results, catalogue and freshness into it, and the asset graph is reconciled as a snapshot with soft deletes.",
         outcome: "127 requests tracked end to end over three months, 49 of them in the busiest month, with 854 assets and 1,670 lineage edges kept current.",
         tech: ["FastAPI", "Postgres", "Jinja", "Airflow", "dbt"],
-        featured: false,
-        kind: "work",
         githubUrl: "",
-        detailUrl: "projects/internal-data-request-platform.html",
-        proof: [
-          { value: "127", label: "requests tracked end to end", note: "July to October 2026, each one auditable from intake to delivery" },
-          { value: "854", label: "assets in the catalogue, with 1,670 lineage edges", note: "refreshed from the nightly dbt manifest, which lands at 03:30 WIB" },
-          { value: "671", label: "DAG runs monitored in a 24-hour window", note: "Airflow pushes run results, so a failed night is visible the same morning" },
-          { value: "1,053", label: "automated tests across the platform", note: "role checks, personal-data filters and access invariants are pinned by tests" },
-          { value: "49", label: "requests in a single month", note: "September 2026, 37 of them filed directly in the platform rather than imported from the queue it replaced" }
-        ],
-        archDiagram: "",
-        codeSnippet: null,
-        caseStudy: {
-          problem: "Teams outside the data function had no way to file or follow a request: it arrived by chat, the catalogue and lineage lived with the data team, and nobody outside data could see whether the previous night's pipelines ran.",
-          approach: "A server-rendered platform that holds no warehouse credentials. Airflow pushes the dbt manifest, run results, catalogue and freshness into it, and the asset graph is reconciled as a snapshot with soft deletes. Requests move from intake to triage to a board, with requester email written to an outbox in the same transaction as the status change. Roles are declared per route and enforced by tests, personal-data assets are filtered in SQL, and only metadata is ever displayed.",
-          result: "127 requests tracked end to end between July and October 2026, 101 of them delivered and 49 arriving in the busiest month, with 854 assets and 1,670 lineage edges kept current and 671 DAG runs monitored every day."
-        },
-        metrics: [
-          { value: "127", label: "requests tracked" },
-          { value: "854", label: "catalogued assets" }
-        ]
+        detailUrl: "projects/internal-data-request-platform.html"
       },
     {
       title: "BigQuery Pipeline Optimization",
-      slug: "bigquery-pipeline-optimization",
       description: "Optimized a datamart model to run 9x faster, cutting BigQuery slot time by 96%+ and data shuffled by 58%. Redesigned the partitioning strategy on event_date and added clustering keys on high-cardinality filter columns to bring compute cost down.",
       outcome: "One datamart model: 9x faster, 96% less slot time, 58% less data shuffled.",
       tech: ["BigQuery", "SQL", "Partitioning", "Clustering", "Cost Optimization"],
-      featured: true,
-      kind: "work",
       githubUrl: "",
-      detailUrl: "projects/bigquery-pipeline-optimization.html",
-      proof: [
-        { value: "9x", label: "faster processing", note: "one production datamart model, same data volume, full-refresh run" },
-        { value: "96%", label: "less BigQuery slot time", note: "same model and query, measured before and after the rewrite" },
-        { value: "58%", label: "less data shuffled", note: "after repartitioning on event_date and adding clustering keys" },
-        { value: "30%", label: "overall pipeline efficiency gain", note: "across the reporting layer the model feeds" }
-      ],
-      archDiagram: "assets/arch/bigquery-pipeline-optimization.svg",
-      codeSnippet: null,
-      caseStudy: {
-        problem: "A critical datamart query was consuming 96%+ of BigQuery slot time, bottlenecking every report downstream of it and driving cloud cost up.",
-        approach: "Read EXPLAIN ANALYZE output to find full table scans. Redesigned partitioning on event_date, added clustering keys on the high-cardinality filter columns, and restructured CTEs to reduce data shuffled.",
-        result: "The same model and data volume now runs 9x faster, with 96% less slot time and 58% less data shuffled, and overall pipeline efficiency up 30%."
-      },
-      metrics: [
-        { value: "96%", label: "slot time reduction" },
-        { value: "9x", label: "faster processing" }
-      ]
+      detailUrl: "projects/bigquery-pipeline-optimization.html"
     },
     {
       title: "Dataverse: Conversational AI Analytics",
-      slug: "dataverse-conversational-ai-analytics",
       description: "LLM-powered analytics platform that lets users query datasets (CSV, Excel, Parquet) in natural language. Automated data cleaning, SQL generation, and visualization: a headless data product that returns results without a dashboard.",
       outcome: "Upload a dataset, ask in plain language, get SQL and charts: no analyst in the loop.",
       tech: ["LLM", "Python", "Streamlit", "Pandas", "SQL Generation"],
-      featured: false,
-      kind: "work",
       githubUrl: "https://github.com/idzharulhuda13/dataverse",
-      detailUrl: "projects/dataverse-conversational-ai-analytics.html",
-      proof: [
-        { value: "191", label: "commits shipped", note: "single public repo, multi-agent analytics app" },
-        { value: "5", label: "specialist agents", note: "cleaning, enrichment, SQL generation and visualization over uploaded CSV, Excel and Parquet" }
-      ],
-      archDiagram: "assets/arch/dataverse-conversational-ai-analytics.svg",
-      codeSnippet: null,
-      caseStudy: {
-        problem: "Business users needed ad-hoc analysis but lacked SQL skills, so analysts spent hours writing queries for simple questions like 'show me sales by region last quarter.'",
-        approach: "Built a multi-agent system with cleaning, enrichment, SQL generation, and visualization specialists. Users upload any dataset and ask questions in natural language; the system handles data cleaning, generates SQL, and returns charts.",
-        result: "Enabled non-technical users to explore data without analyst intervention, removing the repetitive reporting requests that made up the ad-hoc queue."
-      },
-      metrics: [
-        { value: "191", label: "commits shipped" },
-        { value: "5", label: "specialist agents" }
-      ]
+      detailUrl: "projects/dataverse-conversational-ai-analytics.html"
     },
     {
       title: "DBT + Metabase Self-Serve Analytics",
-      slug: "dbt-metabase-self-serve-analytics",
       description: "Pioneered a dbt + Metabase framework enabling 40+ stakeholders to self-serve analytics without analyst intervention. Migrated 50+ reports from manual Google Sheets workflows to automated BigQuery pipelines.",
       outcome: "50+ reports moved to BigQuery, daily to hourly, with 40+ stakeholders self-serving.",
       tech: ["dbt", "BigQuery", "Metabase", "SQL"],
-      featured: false,
-      kind: "work",
       githubUrl: "https://github.com/idzharulhuda13/Analytics-Engineering-Portfolio",
-      detailUrl: "projects/dbt-metabase-self-serve-analytics.html",
-      proof: [
-        { value: "50+", label: "reports migrated", note: "from manual Google Sheets workflows to scheduled BigQuery models with dbt transformations" },
-        { value: "40+", label: "stakeholders self-serving", note: "querying dbt models and Metabase dashboards without an analyst" },
-        { value: "15", label: "analysts previously running manual reports", note: "2+ hours a day each before the migration" },
-        { value: "daily to hourly", label: "report refresh cadence", note: "the same reports after moving off hand-assembled Google Sheets" }
-      ],
-      archDiagram: "assets/arch/dbt-metabase-self-serve-analytics.svg",
-      codeSnippet: null,
-      caseStudy: {
-        problem: "15 analysts spent 2+ hours daily running manual reports from Google Sheets. Stakeholders couldn't access data until afternoon reports were ready.",
-        approach: "Migrated 50+ reports to BigQuery with dbt transformations (staging, intermediate, marts). Built automated data quality checks. Deployed Metabase for self-serve exploration.",
-        result: "Reports run hourly instead of daily. 40+ stakeholders self-serve. 30% overall pipeline efficiency gain. Looker Studio is the primary BI surface today, with Metabase kept for its dedicated dataset and refresh job."
-      },
-      metrics: [
-        { value: "40+", label: "stakeholders enabled" },
-        { value: "0", label: "analyst intervention" }
-      ]
+      detailUrl: "projects/dbt-metabase-self-serve-analytics.html"
     },
     {
       title: "OCR + LLM Document Digitization",
-      slug: "ocr-llm-document-digitization",
       description: "Digitized thousands of hardcopy documents using OCR, YOLO, and GPT-4, with a 70% efficiency improvement. Built the real-time demo app used in the client evaluation.",
       outcome: "Thousands of hardcopy documents digitized, 70% efficiency gain, client evaluation demo shipped.",
       tech: ["Python", "YOLO", "GPT-4", "OCR", "Streamlit"],
-      featured: false,
-      kind: "work",
       githubUrl: "",
-      detailUrl: "",
-      proof: [
-        { value: "70%", label: "efficiency improvement", note: "OCR + YOLO + GPT-4 pipeline over thousands of hardcopy documents" },
-        { value: "60%", label: "less manual review", note: "claims verification and pricing audits" }
-      ],
-      archDiagram: "",
-      codeSnippet: null,
-      caseStudy: null,
-      metrics: [
-        { value: "70%", label: "efficiency improvement" }
-      ]
+      detailUrl: ""
     },
     {
       title: "Automated Data Quality Framework",
-      slug: "automated-data-quality-framework",
       description: "Built end-to-end data quality checks and automated discrepancy detection, cutting manual error resolution by 50%. Enforced ISO 27001:2022 aligned data handling standards across analytics workflows.",
       outcome: "Automated checks and discrepancy detection: 50% less manual error resolution.",
       tech: ["dbt tests", "BigQuery", "Python", "Airflow"],
-      featured: false,
-      kind: "work",
       githubUrl: "",
-      detailUrl: "",
-      proof: [
-        { value: "50%", label: "less manual error resolution", note: "automated data quality checks and discrepancy detection across the reporting workflows" },
-        { value: "13%", label: "accuracy improvement", note: "82% to 95% on CHISS report workflows, via dynamic master mapping" }
-      ],
-      archDiagram: "",
-      codeSnippet: null,
-      caseStudy: null,
-      metrics: [
-        { value: "50%", label: "less manual work" },
-        { value: "13%", label: "accuracy boost" }
-      ]
+      detailUrl: ""
     },
     {
       title: "Telehealth Cost-Effectiveness Study",
-      slug: "telehealth-cost-effectiveness-study",
       description: "Published paper showing telehealth-powered managed care was 7x more cost-effective than conventional care for Acute Respiratory Infection (ARI).",
       outcome: "Telehealth managed care at 7x the cost-effectiveness of conventional care for ARI.",
       tech: ["Research", "Statistical Analysis"],
-      featured: false,
-      kind: "work",
       githubUrl: "",
-      detailUrl: "projects/telehealth-cost-effectiveness-study.html",
-      proof: [
-        { value: "7x", label: "more cost-effective", note: "telehealth managed care vs conventional care for acute respiratory infection (ARI)" }
-      ],
-      archDiagram: "",
-      codeSnippet: null,
-      caseStudy: null,
-      metrics: [
-        { value: "7x", label: "more cost-effective" }
-      ]
+      detailUrl: "projects/telehealth-cost-effectiveness-study.html"
     }
   ],
 
@@ -300,82 +173,35 @@ var PORTFOLIO = {
   sideBuilds: [
     {
       title: "Hourly Incentive Reporting Pipeline",
-      slug: "hourly-incentive-reporting-pipeline",
       description: "Multi-source sync that pulls eight SQL cards from Metabase and Zoho Analytics into a single Google Sheets workbook on an hourly trigger. The SQL for every card is version-controlled in the repo and the BI tool is only the runner; the sheet tabs are the read surface. Weekly rows are frozen once a week closes, so a late-arriving change shows up as an audited divergence instead of silently rewriting history.",
       outcome: "Eight analytics feeds, hourly, into one workbook: every divergence audited.",
       tech: ["Google Apps Script", "Metabase", "Zoho Analytics", "SQL", "Google Sheets"],
-      featured: false,
-      kind: "side",
       githubUrl: "",
-      detailUrl: "projects/hourly-incentive-reporting-pipeline.html",
-      proof: [
-        { value: "8", label: "SQL cards synced hourly", note: "each card mapped to one sheet tab; the query text lives in the repo, not in the BI card" },
-        { value: "hourly", label: "refresh cadence", note: "installable Apps Script time trigger, one write path per tab" },
-        { value: "~12,400", label: "known-state rows per day no longer rewritten", note: "divergence state is stored once with first_seen and last_seen instead of re-writing 518 rows on every run" },
-        { value: "2,000", label: "row cap that forced a migration", note: "one card sat at 1,566 rows of the query endpoint's 2,000-row cap, growing about 32 rows a day, so it moved to a full export" }
-      ],
-      archDiagram: "",
-      codeSnippet: null,
-      caseStudy: {
-        problem: "Incentive numbers were assembled by hand across several tools, so a wrong row could sit in the report unnoticed and a corrected week could silently change a number somebody had already been paid against.",
-        approach: "Moved every source query into version control and let the pipeline run on an hourly trigger: Metabase and Zoho cards compute, the sync writes raw tabs, the sheet computes the aggregates, and the dashboard only reads. Added a divergence layer that compares frozen weeks against their source, and reconciliation queries that must return zero difference before the reporting console is treated as authoritative.",
-        result: "Numbers became auditable end to end: each divergence carries a first_seen and last_seen, only real changes are logged (instead of thousands of rows of already-known state every day), and a card that outgrew the query endpoint's row cap was migrated to a full export with a written runbook."
-      }
+      detailUrl: "projects/hourly-incentive-reporting-pipeline.html"
     },
     {
       title: "Incentive Performance Dashboard",
-      slug: "incentive-performance-dashboard",
       description: "Google Apps Script web app over the same workbook: pick a week, get per-person and per-team performance: sales, quotes, mechanization, collections, restructuring, targets, achievement percentages, status and bonus. Read-only by design: no business logic in the web app, and the diagnostics panel reports a missing or renamed column instead of quietly returning zeros.",
       outcome: "One URL that answers the current incentive week without spreadsheet wrangling.",
       tech: ["Google Apps Script", "JavaScript", "Google Sheets", "Web App"],
-      featured: false,
-      kind: "side",
       githubUrl: "",
-      detailUrl: "projects/incentive-performance-dashboard.html",
-      proof: [
-        { value: "3", label: "source tabs read per request", note: "per-person scoreboard, per-team scoreboard, and the email database used to join records" },
-        { value: "0", label: "write paths from the dashboard", note: "read-only: aggregation happens in the sheet, the app only renders" },
-        { value: "weekly", label: "reporting granularity", note: "matches the cadence the incentive targets are set on" }
-      ],
-      archDiagram: "",
-      codeSnippet: null,
-      caseStudy: {
-        problem: "Weekly incentive and achievement numbers lived in a spreadsheet that only one person could read correctly: a renamed column, a reordered tab or a date format mismatch silently turned real numbers into zeros, and a person with no team assignment dropped out of the report entirely.",
-        approach: "Built a web app that reads the workbook by column name, normalizes week formats and parses both Indonesian and US number formats, keeps people without a matching team in an explicit unassigned bucket, and surfaces a diagnostics list when an expected column is missing or empty instead of rendering a plausible zero.",
-        result: "Anyone can open one URL, pick a week and read their own numbers, with the failure modes that used to corrupt the spreadsheet now reported loudly instead of silently."
-      }
+      detailUrl: "projects/incentive-performance-dashboard.html"
     },
     {
       title: "RaschLab engine",
-      slug: "raschlab",
       description: "The Python engine behind RaschLab, the web platform listed under Products: it reproduces the output of a legacy item-response-analysis tool on real assessment datasets, so old and new results can be compared row by row instead of by eye.",
       outcome: "The engine behind RaschLab, checked row by row against a legacy tool on real datasets.",
       tech: ["Python", "Item Response Theory", "Rasch model", "Statistical parity"],
-      featured: false,
-      kind: "side",
       githubUrl: "",
-      detailUrl: "projects/raschlab.html",
-      proof: [],
-      archDiagram: "",
-      codeSnippet: null,
-      caseStudy: null,
-      metrics: []
+      detailUrl: "projects/raschlab.html"
     },
     {
       title: "Clinic Incentives Dashboard",
-      slug: "clinic-incentives-dashboard",
       description: "Google Apps Script and Sheets dashboard for a dental clinic: a Config tab holds the targets and period settings, and the incentive figures are computed by formulas off the entry data rather than by hand.",
       outcome: "Apps Script + Sheets dashboard with a Config tab and formula-driven incentive targets.",
       tech: ["Google Apps Script", "Google Sheets", "Formula dashboard"],
-      featured: false,
-      kind: "side",
       githubUrl: "",
-      detailUrl: "projects/clinic-incentives-dashboard.html",
-      proof: [],
-      archDiagram: "",
-      codeSnippet: null,
-      caseStudy: null,
-      metrics: []
+      detailUrl: "projects/clinic-incentives-dashboard.html"
     }
   ],
 
@@ -470,10 +296,5 @@ var PORTFOLIO = {
       text: "Published cost-effectiveness study: telehealth-powered managed care was 7x more cost-effective than conventional care for acute respiratory infection (ARI).",
       href: ""
     }
-  },
-
-  // --- Visual settings (v2) ---
-  settings: {
-    revealThreshold: 0.12   // fraction of viewport the section top must cross before it fades in
   }
 };

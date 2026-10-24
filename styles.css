@@ -23,7 +23,6 @@
   --chart-4: #15803D;
 
   --grid-pat: rgba(16, 19, 15, 0.05);
-  --card-border: #D3D5D0;
 
   /* Typography */
   --font-display: 'Archivo Black', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -51,7 +50,6 @@
   --t-fast: 120ms ease-out;
   --text: var(--ink);
   --accent: var(--signal);
-  --surface-2: var(--surface);
   --scrim: rgba(7, 9, 10, 0.78);
 }
 
@@ -72,9 +70,13 @@
   --chart-4: #4ADE80;
 
   --grid-pat: rgba(237, 239, 236, 0.02);
-  --card-border: #232829;
 }
 
+/* System preference, for pages that ask for nothing: the static project pages
+   under projects/ carry no script and never set data-theme, so this block is the
+   only thing that makes them dark. It is not a duplicate of the block above: the
+   index overrides it in both directions because the head bootstrap always sets an
+   explicit data-theme. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --ground: #07090A;
@@ -92,7 +94,6 @@
     --chart-4: #4ADE80;
 
     --grid-pat: rgba(237, 239, 236, 0.02);
-    --card-border: #232829;
   }
 }
 
@@ -128,10 +129,6 @@ body {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  width: 100%;
-}
-
-.wrap {
   width: 100%;
 }
 
@@ -299,7 +296,7 @@ button:focus-visible,
 /* ===== Bands Common ===== */
 .band {
   margin-bottom: 24px;
-  border: 1px solid var(--card-border);
+  border: 1px solid var(--line);
   background: var(--surface);
 }
 
@@ -443,8 +440,6 @@ button:focus-visible,
 .band-secondary {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  border: 1px solid var(--card-border);
-  background: var(--surface);
   align-items: stretch;
 }
 
@@ -519,12 +514,6 @@ button:focus-visible,
 }
 
 /* ===== Band 3: Data Platform Pipeline ===== */
-.band-pipeline {
-  margin-bottom: 24px;
-  border: 1px solid var(--card-border);
-  background: var(--surface);
-}
-
 .pipeline-column {
   padding: 28px 24px;
 }
@@ -575,14 +564,6 @@ button:focus-visible,
   font-size: 12px;
   color: var(--muted);
   margin-bottom: 16px;
-}
-
-.projects-table-wrap,
-.sidebuilds-table-wrap {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 .proof-table {
@@ -693,17 +674,7 @@ button:focus-visible,
 
 /* ===== Band 5: Skills / Stack ===== */
 .band-skills {
-  margin-bottom: 24px;
   padding: 24px;
-  border: 1px solid var(--card-border);
-  background: var(--surface);
-}
-
-.skills-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 12px;
 }
 
 .skill-badge {
@@ -731,10 +702,7 @@ button:focus-visible,
 
 /* ===== Band 6: Experience Timeline ===== */
 .band-experience {
-  margin-bottom: 24px;
   padding: 28px 24px;
-  border: 1px solid var(--card-border);
-  background: var(--surface);
 }
 
 .experience-header {
@@ -764,8 +732,7 @@ button:focus-visible,
   margin-top: 20px;
 }
 
-.timeline,
-.timeline-strip {
+.timeline {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
@@ -774,8 +741,7 @@ button:focus-visible,
   margin-top: 0;
 }
 
-.timeline::before,
-.timeline-strip::before {
+.timeline::before {
   content: "";
   position: absolute;
   top: -2px;
@@ -834,10 +800,7 @@ button:focus-visible,
 
 /* ===== Band 7: About ===== */
 .band-about {
-  margin-bottom: 24px;
   padding: 28px 24px;
-  border: 1px solid var(--card-border);
-  background: var(--surface);
 }
 
 .about-prose {
@@ -879,15 +842,11 @@ button:focus-visible,
 /* ===== Band 8: Contact ===== */
 .band-contact {
   padding: 24px;
-  border-top: 2px solid var(--ink);
-  border: 1px solid var(--card-border);
-  background: var(--surface);
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-  margin-bottom: 24px;
 }
 
 .contact-copy {
@@ -1141,70 +1100,6 @@ button:focus-visible,
   stroke: var(--chart-1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .wf-bar.opening-bar {
-    fill: rgba(107, 115, 112, 0.25);
-    stroke: var(--chart-3);
-  }
-  :root:not([data-theme="light"]) .wf-bar.step-bar {
-    fill: rgba(237, 239, 236, 0.15);
-    stroke: var(--chart-1);
-  }
-  :root:not([data-theme="light"]) .wf-bar.closing-bar {
-    fill: rgba(255, 90, 31, 0.35);
-    stroke: var(--chart-2);
-  }
-
-  :root:not([data-theme="light"]) .speed-bar.speed-base {
-    fill: rgba(107, 115, 112, 0.25);
-    stroke: var(--chart-3);
-  }
-  :root:not([data-theme="light"]) .speed-bar.speed-opt {
-    fill: rgba(255, 90, 31, 0.35);
-    stroke: var(--chart-2);
-  }
-
-  :root:not([data-theme="light"]) .model-bar.bar-table {
-    fill: rgba(255, 90, 31, 0.35);
-    stroke: var(--chart-2);
-  }
-  :root:not([data-theme="light"]) .model-bar.bar-view {
-    fill: rgba(107, 115, 112, 0.25);
-    stroke: var(--chart-3);
-  }
-  :root:not([data-theme="light"]) .model-bar.bar-incr {
-    fill: rgba(237, 239, 236, 0.2);
-    stroke: var(--chart-1);
-  }
-
-  :root:not([data-theme="light"]) .scatter-dot {
-    fill: rgba(107, 115, 112, 0.4);
-    stroke: var(--chart-3);
-  }
-  :root:not([data-theme="light"]) .scatter-dot.dot-peak {
-    fill: rgba(255, 90, 31, 0.6);
-    stroke: var(--chart-2);
-  }
-
-  :root:not([data-theme="light"]) .pipe-node-shape {
-    fill: var(--chart-3);
-    stroke: var(--chart-3);
-  }
-  :root:not([data-theme="light"]) .pipe-node-shape.hub {
-    fill: var(--chart-2);
-    stroke: var(--chart-2);
-  }
-
-  :root:not([data-theme="light"]) .cell-test {
-    fill: var(--chart-4);
-    stroke: var(--chart-4);
-  }
-  :root:not([data-theme="light"]) .cell-table {
-    fill: var(--chart-1);
-    stroke: var(--chart-1);
-  }
-}
-
 /* Typography inside SVG: 12px mono, muted labels outside shapes */
 .pipe-node-label {
   font-family: var(--font-mono);
@@ -1316,12 +1211,6 @@ button:focus-visible,
   font-weight: 400;
 }
 
-.svg-footnote {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  fill: var(--muted);
-}
-
 /* Empty containers */
 .hero-cta:empty,
 .stack-strip:empty,
@@ -1349,13 +1238,11 @@ button:focus-visible,
   .timeline-axis {
     display: none;
   }
-  .timeline,
-  .timeline-strip {
+  .timeline {
     display: block;
     margin-top: 0;
   }
-  .timeline::before,
-  .timeline-strip::before {
+  .timeline::before {
     display: none;
   }
   .timeline-card {
@@ -1480,104 +1367,6 @@ button:focus-visible,
   }
 }
 
-/* ===== Case study dialog (Goal A) =====
-   Native dialog elevated from the Instrument Sheet surface: hairline border,
-   no shadow (house rule: hairlines, no shadows), the backdrop veil carries
-   the elevation. Radius --r-md (6px) matches the diagram frame rx. */
-dialog.case-modal {
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  inset: 0;
-  margin: auto;
-  width: min(880px, calc(100vw - 32px));
-  max-height: min(86vh, 920px);
-  padding: 0;
-  background: var(--surface);
-  color: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: var(--r-md);
-  box-shadow: none;
-  overflow: hidden;
-}
-dialog.case-modal:not([open]) { display: none; }
-dialog.case-modal[open] { animation: case-modal-appear 160ms ease-out; }
-dialog.case-modal::backdrop { background: var(--scrim); }
-dialog.case-modal[open]::backdrop { animation: case-modal-backdrop-appear 160ms ease-out; }
-@keyframes case-modal-appear {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes case-modal-backdrop-appear {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-.case-modal__bar {
-  display: flex; align-items: center; justify-content: space-between;
-  flex-shrink: 0; padding: var(--sp-8) var(--sp-24);
-  background: var(--surface); border-bottom: 1px solid var(--line);
-}
-.case-modal__kicker {
-  margin: 0; font-family: var(--font-mono); font-size: var(--fs-mono-s);
-  font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em;
-  line-height: 1; color: var(--muted);
-}
-.case-modal__close {
-  display: inline-flex; align-items: center; justify-content: center;
-  min-width: 44px; min-height: 44px; padding: 0 var(--sp-8);
-  background: transparent; border: 0; font-family: var(--font-mono);
-  font-size: var(--fs-mono); line-height: 1; color: var(--muted);
-  cursor: pointer; transition: color var(--t-fast);
-}
-.case-modal__close:hover { color: var(--ink); }
-.case-modal__body {
-  flex: 1 1 auto; overflow-y: auto; overflow-x: hidden;
-  padding: var(--sp-32) var(--sp-24) var(--sp-48);
-  overscroll-behavior: contain;
-}
-.case-modal__body .pj-header,
-.case-modal__body .pj-main {
-  max-width: 72ch; margin-left: auto; margin-right: auto;
-  padding-left: 0; padding-right: 0;
-}
-.case-modal__body .pj-back { display: none; }
-.case-modal__body .case-diagram { display: block; width: 100%; height: auto; }
-.case-modal__loading,
-.case-modal__error {
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: center; min-height: 280px;
-  padding: var(--sp-48) var(--sp-24); gap: var(--sp-16);
-  font-family: var(--font-mono); font-size: var(--fs-mono);
-  color: var(--muted); text-align: center;
-}
-.case-modal__error a {
-  font-family: var(--font-mono); font-size: var(--fs-mono);
-  text-decoration: underline; text-underline-offset: 4px;
-}
-.case-modal__foot {
-  display: flex; align-items: center; justify-content: space-between;
-  flex-shrink: 0; gap: var(--sp-16); padding: var(--sp-8) var(--sp-24);
-  background: var(--surface); border-top: 1px solid var(--line);
-}
-.case-modal__full {
-  display: inline-flex; align-items: center; min-height: 44px;
-  font-family: var(--font-mono); font-size: var(--fs-mono);
-}
-.case-modal__hint {
-  font-family: var(--font-mono); font-size: var(--fs-mono-s); color: var(--muted);
-}
-html.case-modal-open { overflow: hidden; }
-@media (max-width: 560px) {
-  dialog.case-modal {
-    width: 100%; max-width: 100vw;
-    height: 100vh; height: 100dvh; max-height: 100vh; max-height: 100dvh;
-    margin: 0; border: 0; border-radius: 0;
-  }
-  .case-modal__bar, .case-modal__foot { padding: var(--sp-8) var(--sp-16); }
-  .case-modal__body { padding: var(--sp-16); }
-  .case-modal__body .pj-header, .case-modal__body .pj-main { max-width: 100%; }
-}
-
 /* ===== Services and Products bands (v2) ===== */
 .band-head {
   padding: 24px 24px 20px;
@@ -1611,7 +1400,7 @@ html.case-modal-open { overflow: hidden; }
 
 .sv-card {
   background: var(--surface);
-  border: 1px solid var(--card-border);
+  border: 1px solid var(--line);
   padding: 20px;
   display: flex;
   flex-direction: column;
