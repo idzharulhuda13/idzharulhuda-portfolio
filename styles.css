@@ -72,6 +72,31 @@
   --grid-pat: rgba(237, 239, 236, 0.02);
 }
 
+/* System preference, for pages that ask for nothing: the static project pages
+   under projects/ carry no script and never set data-theme, so this block is the
+   only thing that makes them dark. It is not a duplicate of the block above: the
+   index overrides it in both directions because the head bootstrap always sets an
+   explicit data-theme. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #07090A;
+    --surface: #101315;
+    --ink: #EDEFEC;
+    --muted: #98A09C;
+    --line: #232829;
+    --signal: #FF5A1F;
+    --pos: #4ADE80;
+    --neg: #FF6B5E;
+
+    --chart-1: #EDEFEC;
+    --chart-2: #FF5A1F;
+    --chart-3: #6B7370;
+    --chart-4: #4ADE80;
+
+    --grid-pat: rgba(237, 239, 236, 0.02);
+  }
+}
+
 /* ===== Reset and base ===== */
 *,
 *::before,
