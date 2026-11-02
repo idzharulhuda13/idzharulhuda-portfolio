@@ -1,0 +1,457 @@
+/* ==========================================================================
+   Option C: Clay Studio. Loads after the shared base (styles.css).
+   A warm, consultancy read: sand ground, an italic display serif for the big
+   moments, a clean grotesk for reading, and clay as the one accent. Content
+   sits on soft panels, so each engagement reads as a finished piece of work.
+   Dial: ENERGY 2 / RHYTHM 3 / MOTION 2 (reveal + hover lift on panels).
+
+   Reasons (one line each):
+   - Instrument Serif italic: one expressive voice for headlines and the big
+     figures; it says "practice", not "dashboard".
+   - Hanken Grotesk: quiet, readable body that lets the serif lead.
+   - Clay #A6461F: warm, distinct from health-tech blue, marks results only.
+   - Panels with 8px radius: engagements are discrete pieces; radius stays one
+     value across the page.
+   ========================================================================== */
+
+:root,
+:root[data-theme="light"] {
+  --paper: #EFE9DF;
+  --surface: #FAF7F1;
+  --panel: #F7F2E9;
+  --ink: #231E19;
+  --ink-soft: #463F37;
+  --muted: #5C5349;
+  --line: #DDD3C4;
+  --line-strong: #231E19;
+  --accent: #A6461F;
+  --accent-ink: #FFF8F0;
+  --hl: rgba(166, 70, 31, 0.12);
+
+  --chart-1: #231E19;
+  --chart-2: #A6461F;
+  --chart-3: #CDBFAA;
+  --chart-4: #5E7461;
+
+  --font-head: 'Instrument Serif', Georgia, serif;
+  --font-serif: 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'Fragment Mono', ui-monospace, Menlo, Consolas, monospace;
+  --head-weight: 400;
+  --head-style: normal;
+  --name-style: italic;
+  --r: 8px;
+  --fs-body: 17px;
+  --fs-lead: 20px;
+}
+
+:root[data-theme="dark"] {
+  --paper: #1A1714;
+  --surface: #24201B;
+  --panel: #221E1A;
+  --ink: #F1EAE0;
+  --ink-soft: #D9D0C3;
+  --muted: #ADA293;
+  --line: #3A332C;
+  --line-strong: #F1EAE0;
+  --accent: #E8875C;
+  --accent-ink: #1A1714;
+  --hl: rgba(232, 135, 92, 0.16);
+  --chart-1: #F1EAE0;
+  --chart-2: #E8875C;
+  --chart-3: #4A4239;
+  --chart-4: #9DB59F;
+}
+
+h1, h2, h3 {
+  letter-spacing: -0.01em;
+  line-height: 1.02;
+}
+
+.site-header {
+  background: var(--paper);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  border-radius: 50%;
+  width: 44px;
+  padding: 0;
+  font-family: var(--font-head);
+  font-style: italic;
+  font-size: 18px;
+  background: var(--ink);
+  color: var(--paper);
+  border: 0;
+}
+
+.theme-toggle-btn {
+  border-radius: 999px;
+}
+
+.band {
+  border-top: 0;
+}
+
+.band-head::before,
+.pipeline-header::before,
+.projects-column > .section-heading:first-child::before,
+.band-skills > .section-heading:first-child::before,
+.experience-title-group::before,
+.band-about > .section-heading:first-child::before,
+.band-contact .contact-copy::before {
+  content: counter(band, decimal-leading-zero) "\00A0\00A0\2014\00A0\00A0";
+  content: counter(band, decimal-leading-zero);
+  font-family: var(--font-head);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--accent);
+}
+
+.band-title,
+.section-heading {
+  font-size: clamp(38px, 4.6vw, 64px);
+}
+
+.band-lead,
+.section-sub {
+  font-style: normal;
+  font-size: 18px;
+}
+
+/* Hero: centred statement, readout panel below on desktop right */
+.band-hero {
+  grid-template-columns: 6fr 5fr;
+  align-items: start;
+}
+
+.hero-title {
+  font-size: clamp(44px, 5vw, 76px);
+  line-height: 1.02;
+  max-width: 17ch;
+  text-wrap: balance;
+}
+
+.hero-title::first-line {
+  font-style: normal;
+}
+
+.availability-tag {
+  font-style: normal;
+  font-size: 15px;
+}
+
+.availability-tag::before {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.hero-cta .contact-link:first-child {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: 999px;
+}
+
+.hero-cta .contact-link:first-child:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.hero-readout {
+  border: 0;
+  border-radius: var(--r);
+  background: var(--surface);
+  padding: clamp(24px, 3vw, 40px);
+}
+
+.readout-label::before {
+  content: "";
+}
+
+.readout-figure-row {
+  font-style: italic;
+}
+
+.readout-huge {
+  font-size: clamp(110px, 11vw, 168px);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+}
+
+.readout-unit {
+  font-size: 72px;
+  font-weight: 400;
+}
+
+.readout-summary {
+  font-style: normal;
+}
+
+.readout-meta,
+.cell-meta,
+.quality-note {
+  border-top: 1px solid var(--line);
+}
+
+/* Services: four panels with varied emphasis (first one leads) */
+.sv-grid {
+  grid-template-columns: 1.3fr 1fr 1fr;
+  gap: 12px;
+  border-top: 0;
+}
+
+.sv-card,
+.sv-card:nth-child(even) {
+  padding: var(--sp-32);
+  border: 0;
+  border-radius: var(--r);
+  background: var(--surface);
+}
+
+.sv-card:first-child {
+  grid-row: span 2;
+  background: #231E19;
+  color: #F1EAE0;
+  --ink-soft: #D9D0C3;
+  --muted: #B3A897;
+}
+
+.sv-card:first-child .sv-title {
+  font-size: 40px;
+}
+
+.sv-card:last-child {
+  grid-column: span 2;
+}
+
+.sv-title {
+  font-size: 28px;
+}
+
+.sv-title::before {
+  content: counter(sv, decimal-leading-zero);
+  font-family: var(--font-mono);
+}
+
+/* Products: panels */
+.pr-flag {
+  border-top: 0;
+  background: var(--surface);
+  border-radius: var(--r);
+  padding: clamp(24px, 4vw, 56px);
+  margin-bottom: 12px;
+}
+
+.pr-name {
+  font-size: clamp(48px, 5.6vw, 80px);
+}
+
+.pr-points li::before {
+  content: "\2022";
+  font-size: 18px;
+  padding-top: 0;
+}
+
+.pr-links .contact-link:first-child {
+  border-radius: 999px;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.pr-links .contact-link:first-child:hover {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.pr-thumb {
+  border: 0;
+  border-radius: var(--r);
+  background: var(--paper);
+}
+
+.pr-note {
+  border-top: 0;
+  padding-top: var(--sp-16);
+}
+
+/* Impact */
+.band-secondary {
+  padding-top: var(--sp-48);
+}
+
+.impact-list {
+  gap: 12px;
+  border: 0;
+}
+
+.cell-metric,
+.cell-metric + .cell-metric {
+  background: var(--surface);
+  border-radius: var(--r);
+  border-left: 0;
+  padding: var(--sp-32);
+  transition: transform 220ms ease-out;
+}
+
+.cell-metric:hover {
+  transform: translateY(-3px);
+}
+
+.cell-figure {
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(72px, 7.4vw, 110px);
+  color: var(--accent);
+}
+
+.cell-metric > div:first-child::before {
+  color: var(--muted);
+}
+
+/* Pipeline */
+.band-pipeline {
+  padding-top: var(--sp-48);
+}
+
+.pipeline-column {
+  border: 0;
+  border-radius: var(--r);
+  background: #231E19;
+  color: #F1EAE0;
+  --ink: #F1EAE0;
+  --ink-soft: #D9D0C3;
+  --muted: #B3A897;
+  --surface: #2C2621;
+  --line: #3A332C;
+  --accent: #E8875C;
+}
+
+:root[data-theme="dark"] .pipeline-column {
+  background: #24201B;
+}
+
+.pipe-node-shape.hub {
+  fill: var(--accent);
+  stroke: var(--accent);
+}
+
+/* Work */
+.proof-table th {
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.project-name {
+  font-size: 26px;
+}
+
+.quality-column {
+  border-left: 0;
+  background: var(--surface);
+  border-radius: var(--r);
+  padding: var(--sp-32);
+}
+
+.quality-figure .chart-container {
+  border: 0;
+  background: var(--paper);
+  border-radius: 6px;
+}
+
+/* Stack: chips instead of a ledger */
+.stack-grid {
+  border-top: 0;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.stack-grid .skill-badge {
+  background: var(--surface);
+  border-radius: var(--r);
+  border-bottom: 0;
+  padding: 18px 22px;
+}
+
+.stack-grid .skill-name {
+  font-family: var(--font-head);
+  font-size: 26px;
+}
+
+/* Experience */
+.timeline {
+  border-top: 1px solid var(--line-strong);
+}
+
+.timeline-role {
+  font-size: 32px;
+}
+
+.timeline-company {
+  font-style: normal;
+  color: var(--accent);
+}
+
+.timeline-points li::before {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  top: 0.65em;
+}
+
+/* About */
+.about-prose p {
+  font-size: 20px;
+}
+
+/* Contact: dark closing panel */
+.band-contact {
+  background: #231E19;
+  color: #F1EAE0;
+  border-radius: var(--r);
+  padding: clamp(32px, 6vw, 80px);
+  margin: var(--sp-48) 0;
+  border-top: 0;
+  --ink: #F1EAE0;
+  --ink-soft: #D9D0C3;
+  --muted: #B3A897;
+  --line: #4A4239;
+  --line-strong: #F1EAE0;
+  --accent: #E8875C;
+}
+
+:root[data-theme="dark"] .band-contact {
+  background: #24201B;
+}
+
+.contact-title {
+  font-style: italic;
+  font-size: clamp(56px, 7.6vw, 120px);
+}
+
+.contact-links .contact-link {
+  font-family: var(--font-head);
+  font-size: 28px;
+}
+
+@media (max-width: 1024px) {
+  .band-hero { grid-template-columns: 1fr; }
+  .sv-grid { grid-template-columns: 1fr 1fr; }
+  .sv-card:first-child { grid-row: auto; grid-column: span 2; }
+  .sv-card:last-child { grid-column: span 2; }
+  .impact-list { gap: 12px; }
+  .cell-metric + .cell-metric { border-top: 0; }
+  .quality-column { border-top: 0; padding: var(--sp-24); }
+}
+
+@media (max-width: 720px) {
+  .sv-grid { grid-template-columns: 1fr; }
+  .sv-card:first-child, .sv-card:last-child { grid-column: auto; }
+  .sv-card, .sv-card:nth-child(even) { padding: var(--sp-24); }
+  .stack-grid { grid-template-columns: 1fr; }
+  .pr-flag { padding: 20px; }
+  .band-contact { padding: 28px 20px; }
+  .readout-huge { font-size: 104px; }
+  .readout-unit { font-size: 48px; }
+}

@@ -173,119 +173,169 @@
 
   // --- Chart Generators ----------------------------------------------
 
-  // 4.a Headline figure for 96% metric: waterfall from 100 down to 4
+  // 4.a-4.e Chart generators. Every printed number is read from config.js
+  // (value, delta, or the scope sentence); nothing numeric is typed here
+  // except fallbacks that mirror the same config strings.
+
+  // Pull the first number that precedes a phrase out of a config sentence,
+  // e.g. numIn('about 2,900 table loads', /([\d.,]+)\s*table loads/) -> 2900.
+  function numIn(text, re, fallback) {
+    var m = String(text || '').match(re);
+    if (!m) return fallback;
+    var n = parseFloat(m[1].replace(/,/g, ''));
+    return isNaN(n) ? fallback : n;
+  }
+  function fmt(n) {
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+  function svgOpen(cls, w, h, id, title, desc) {
+    return '<svg class="chart-svg ' + cls + '" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-labelledby="' + id + '-t ' + id + '-d">' +
+      '<title id="' + id + '-t">' + esc(title) + '</title><desc id="' + id + '-d">' + esc(desc) + '</desc>';
+  }
+
+  // 4.a Hero: horizontal waterfall. Each row is one optimisation step; the
+  // hatched chunk is what that step removed, the arrow figure is what is left.
   function generateWaterfallSVG(metric) {
     var d = (metric && metric.delta) || {};
     var before = parseFloat(d.before && d.before.value);
     var after = parseFloat(d.after && d.after.value);
     if (isNaN(before)) before = 100;
     if (isNaN(after)) after = 4;
-
     var drop = before - after;
     var s1 = Math.round(drop * 0.5416666666666666);
     var s2 = Math.round(drop * 0.2916666666666667);
-    var values = [before, s1, s2, drop - s1 - s2, after];
-    var labels = [['01', 'Baseline'], ['02', 'Partition'], ['03', 'Cluster'], ['04', 'Prune'], ['05', 'Residual']];
-    // Full words for the axis-label title attribute, kept identical to the pre-refactor output.
-    var titles = ['01 Baseline', '02 Partitioning', '03 Clustering', '04 Pruning', '05 Residual'];
-    var classes = ['wf-bar opening-bar', 'wf-bar step-bar', 'wf-bar step-bar', 'wf-bar step-bar', 'wf-bar closing-bar'];
-    var barW = 45, gap = 25, startX = 25, baseY = 130, scale = 0.95;
-    var level = baseY - before * scale;
-    var body = '';
+    var steps = [s1, s2, drop - s1 - s2];
+    var names = ['Partitioning', 'Clustering', 'Pruning'];
 
-    for (var i = 0; i < values.length; i++) {
-      var x = startX + i * (barW + gap);
-      var h = values[i] * scale;
-      var y = (i === 0 || i === values.length - 1) ? baseY - h : level;
-      var valText = (i > 0 && i < values.length - 1) ? '-' + values[i] + '%' : String(values[i]);
-      var anchor = x + barW / 2;
-      if (i > 0) {
-        body += '<path d="M ' + (x - gap) + ' ' + y.toFixed(1) + ' H ' + (x - gap / 2).toFixed(1) +
-          ' V ' + y.toFixed(1) + ' H ' + x + '" class="wf-connector" fill="none" />';
+    var W = 320, L = 92, R = 300, top = 30, rowH = 30, barH = 16;
+    var px = (R - L) / before;
+    var X = function (v) { return (L + v * px).toFixed(1); };
+    var H = top + rowH * 5 + 10;
+    var out = svgOpen('waterfall-svg wf2', W, H, 'wf',
+      'BigQuery slot time from ' + before + ' down to ' + after,
+      'Indexed slot time ' + before + '. Partitioning removes ' + steps[0] + ', clustering ' + steps[1] + ', pruning ' + steps[2] + ', leaving ' + after + ': ' + drop + '% less.');
+    out += '<defs><pattern id="wf-hatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">' +
+      '<rect width="5" height="5" class="wf-hatch-bg"/><line x1="0" y1="0" x2="0" y2="5" class="wf-hatch-line"/></pattern></defs>';
+    [0, 25, 50, 75, 100].forEach(function (t) {
+      var v = before * t / 100;
+      out += '<line x1="' + X(v) + '" y1="' + (top - 6) + '" x2="' + X(v) + '" y2="' + (H - 6) + '" class="grid-line"/>' +
+        '<text x="' + X(v) + '" y="' + (top - 12) + '" class="c-tick">' + v + '</text>';
+    });
+    var remaining = before;
+    for (var i = 0; i < 5; i++) {
+      var y = top + i * rowH + (rowH - barH) / 2;
+      var cy = (y + barH / 2 + 4).toFixed(1);
+      var label = i === 0 ? 'Baseline' : i === 4 ? 'Left over' : names[i - 1];
+      out += '<text x="' + (L - 10) + '" y="' + cy + '" class="c-row-label' + (i === 4 ? ' is-accent' : '') + '">' + label + '</text>';
+      out += '<rect x="' + L + '" y="' + y + '" width="' + (R - L) + '" height="' + barH + '" rx="2" class="c-track"/>';
+      if (i === 0) {
+        out += '<rect x="' + L + '" y="' + y + '" width="' + (before * px).toFixed(1) + '" height="' + barH + '" rx="2" class="wf-base grow-x"/>' +
+          '<text x="' + (R - 6) + '" y="' + cy + '" class="c-in-label is-end">' + before + '</text>';
+      } else if (i < 4) {
+        var v = steps[i - 1];
+        var from = remaining - v;
+        out += '<rect x="' + L + '" y="' + y + '" width="' + (from * px).toFixed(1) + '" height="' + barH + '" rx="2" class="wf-keep grow-x" style="--d:' + (i * 0.18) + 's"/>' +
+          '<rect x="' + X(from) + '" y="' + y + '" width="' + (v * px).toFixed(1) + '" height="' + barH + '" rx="2" class="wf-cut fade-in" style="--d:' + (i * 0.18 + 0.35) + 's"/>' +
+          '<text x="' + ((from + v / 2) * px + L).toFixed(1) + '" y="' + cy + '" class="c-in-label is-mid fade-in" style="--d:' + (i * 0.18 + 0.35) + 's">\u2212' + v + '</text>' +
+          '<line x1="' + X(remaining) + '" y1="' + (y - rowH + barH) + '" x2="' + X(remaining) + '" y2="' + y + '" class="wf-step"/>';
+        if (from * px > 30) {
+          out += '<text x="' + (L + from * px - 6).toFixed(1) + '" y="' + cy + '" class="c-in-label is-end">' + from + '</text>';
+        }
+        remaining = from;
+      } else {
+        out += '<line x1="' + X(remaining) + '" y1="' + (y - rowH + barH) + '" x2="' + X(remaining) + '" y2="' + y + '" class="wf-step"/>' +
+          '<rect x="' + L + '" y="' + y + '" width="' + (after * px).toFixed(1) + '" height="' + barH + '" rx="2" class="wf-left grow-x" style="--d:0.9s"/>' +
+          '<text x="' + (L + after * px + 8).toFixed(1) + '" y="' + cy + '" class="c-callout fade-in" style="--d:1.1s">' + after + ' left \u00b7 \u2212' + drop + '%</text>';
       }
-      if (i > 0 && i < values.length - 1) level += h;
-      body += '<rect x="' + x + '" y="' + y.toFixed(1) + '" width="' + barW + '" height="' + h.toFixed(1) + '" class="' + classes[i] + '" />' +
-        '<text x="' + anchor + '" y="' + (y - 8).toFixed(1) + '" class="wf-val' + (i > 0 && i < 4 ? ' step-val' : '') + (i === 4 ? ' closing-val' : '') + '">' + esc(valText) + '</text>' +
-        '<text x="' + anchor + '" y="141" class="wf-axis-label" title="' + titles[i] + '"><tspan x="' + anchor + '" dy="0" class="step-num">' + labels[i][0] + '</tspan><tspan x="' + anchor + '" dy="12">' + labels[i][1] + '</tspan></text>';
     }
-
-    return '<svg class="chart-svg waterfall-svg" viewBox="0 0 380 160" role="img" aria-labelledby="wf-title wf-desc">' +
-      '<title id="wf-title">BigQuery slot time reduction from ' + esc(before) + ' to ' + esc(after) + '</title>' +
-      '<desc id="wf-desc">Slot time fell from ' + esc(before) + ' baseline by ' + esc(drop) + '% down to ' + esc(after) + ' residual across partitioning, clustering, and pruning steps.</desc>' +
-      '<line x1="15" y1="' + baseY + '" x2="365" y2="' + baseY + '" class="baseline-line" />' +
-      body +
-      '</svg>';
+    return out + '</svg>';
   }
 
-  // 4.b Two-bar comparison for 9x metric
+  // 4.b 9x: in the time the old query ran once, the new one runs 9 times.
   function generateTwoBarSVG(metric) {
-    var before = (metric && metric.delta && metric.delta.before && has(metric.delta.before.value))
-      ? metric.delta.before.value : '1x';
-    var after = (metric && metric.delta && metric.delta.after && has(metric.delta.after.value))
-      ? metric.delta.after.value : '9x';
-
-    var baselineY = 105;
-    return '<svg class="chart-svg twobar-svg" viewBox="0 0 240 140" role="img" aria-labelledby="tb-title tb-desc">' +
-      '<title id="tb-title">Processing speed increase from ' + esc(before) + ' to ' + esc(after) + '</title>' +
-      '<desc id="tb-desc">Processing speed increased from ' + esc(before) + ' baseline up to ' + esc(after) + ' closing speed after query optimization.</desc>' +
-      '<line x1="20" y1="' + baselineY + '" x2="220" y2="' + baselineY + '" class="baseline-line" />' +
-      '<line x1="20" y1="65" x2="220" y2="65" class="grid-line" />' +
-      '<line x1="20" y1="25" x2="220" y2="25" class="grid-line" />' +
-      '<path d="M 88 95 H 110 V 25 H 132" class="chart-connector" />' +
-      '<rect x="40" y="95" width="48" height="10" class="speed-bar speed-base" />' +
-      '<text x="64" y="87" class="speed-val">' + esc(before) + ' baseline</text>' +
-      '<text x="64" y="123" class="svg-axis-label"><tspan class="step-num">01</tspan> Before</text>' +
-      '<rect x="132" y="25" width="48" height="80" class="speed-bar speed-opt" />' +
-      '<text x="156" y="18" class="speed-val speed-val-opt">+' + esc(after) + ' faster (+800%)</text>' +
-      '<text x="156" y="123" class="svg-axis-label"><tspan class="step-num">02</tspan> After</text>' +
-      '</svg>';
+    var d = (metric && metric.delta) || {};
+    var beforeTxt = has(d.before && d.before.value) ? d.before.value : '1x';
+    var afterTxt = has(d.after && d.after.value) ? d.after.value : '9x';
+    var k = parseFloat(afterTxt) / (parseFloat(beforeTxt) || 1);
+    if (!k || isNaN(k)) k = 9;
+    var W = 300, L = 4, R = 296, gap = 3;
+    var seg = (R - L - gap * (k - 1)) / k;
+    var out = svgOpen('twobar-svg speed2', W, 150, 'tb',
+      'Processing speed ' + beforeTxt + ' to ' + afterTxt,
+      'In the time the original query finished one run, the optimised query finishes ' + k + ' runs.');
+    out += '<text x="' + L + '" y="14" class="c-row-label is-start">Before</text>' +
+      '<text x="' + R + '" y="14" class="c-tick is-end">1 run</text>' +
+      '<rect x="' + L + '" y="22" width="' + (R - L) + '" height="22" rx="3" class="speed-old grow-x"/>' +
+      '<text x="' + L + '" y="72" class="c-row-label is-start is-accent">After</text>' +
+      '<text x="' + R + '" y="72" class="c-tick is-end is-accent">' + k + ' runs</text>';
+    for (var i = 0; i < k; i++) {
+      out += '<rect x="' + (L + i * (seg + gap)).toFixed(1) + '" y="80" width="' + seg.toFixed(1) + '" height="22" rx="3" class="speed-new pop-in" style="--d:' + (0.25 + i * 0.07).toFixed(2) + 's"/>' +
+        '<text x="' + (L + i * (seg + gap) + seg / 2).toFixed(1) + '" y="95" class="c-in-label is-mid is-onaccent pop-in" style="--d:' + (0.25 + i * 0.07).toFixed(2) + 's">' + (i + 1) + '</text>';
+    }
+    out += '<path d="M ' + L + ' 114 V 120 H ' + R + ' V 114" class="c-bracket"/>' +
+      '<text x="' + ((L + R) / 2) + '" y="138" class="c-tick is-mid">same time window, same data volume</text>';
+    return out + '</svg>';
   }
 
-  // Materialization breakdown for 599 models metric
+  // 4.c 599 models as a waffle: one square per model, coloured by how it builds.
   function generateMaterializationSVG(metric) {
-    var total = (metric && has(metric.value)) ? String(metric.value) : '599';
-    var baselineY = 105;
-    return '<svg class="chart-svg breakdown-svg" viewBox="0 0 200 140" role="img" aria-labelledby="bm-title bm-desc">' +
-      '<title id="bm-title">dbt models materialization breakdown of ' + esc(total) + ' models</title>' +
-      '<desc id="bm-desc">' + esc(total) + ' total production models partitioned into 404 physical tables, 190 inlined views, and 5 incremental builds.</desc>' +
-      '<line x1="20" y1="' + baselineY + '" x2="180" y2="' + baselineY + '" class="baseline-line" />' +
-      '<path d="M 59 35 H 71 V 72 H 83" class="chart-connector" />' +
-      '<path d="M 117 72 H 129 V 101 H 141" class="chart-connector" />' +
-      '<rect x="25" y="35" width="34" height="70" class="model-bar bar-table" />' +
-      '<text x="42" y="27" class="model-val">404</text>' +
-      '<text x="42" y="123" class="svg-axis-label"><tspan class="step-num">01</tspan> Tables</text>' +
-      '<rect x="83" y="72" width="34" height="33" class="model-bar bar-view" />' +
-      '<text x="100" y="64" class="model-val">190</text>' +
-      '<text x="100" y="123" class="svg-axis-label"><tspan class="step-num">02</tspan> Views</text>' +
-      '<rect x="141" y="101" width="34" height="4" class="model-bar bar-incr" />' +
-      '<text x="158" y="93" class="model-val">5</text>' +
-      '<text x="158" y="123" class="svg-axis-label"><tspan class="step-num">03</tspan> Incr</text>' +
-      '</svg>';
+    var total = parseInt(metric && metric.value, 10) || 599;
+    var sc = (metric && metric.scope) || '';
+    var tbl = numIn(sc, /(\d[\d,]*)\s+models write a physical table/, 404);
+    var inl = numIn(sc, /(\d[\d,]*)\s+are inlined/, 190);
+    var inc = numIn(sc, /(\d[\d,]*)\s+build incrementally/, 5);
+    var groups = [[tbl, 'tables', 'wf-c-table'], [inl, 'inlined', 'wf-c-view'], [inc, 'incremental', 'wf-c-incr']];
+    var cols = 30, cell = 8.2, step = 9.6, gx = 6, gy = 46;
+    var rows = Math.ceil(total / cols);
+    var H = gy + rows * step + 6;
+    var out = svgOpen('breakdown-svg waffle', 300, H, 'bm',
+      total + ' dbt models by materialisation',
+      tbl + ' write a physical table, ' + inl + ' are inlined, ' + inc + ' build incrementally. One square per model.');
+    var lx = [4, 104, 194];
+    groups.forEach(function (g, gi) {
+      var pct = g[0] / total * 100;
+      var pctTxt = pct < 1 ? '<1%' : Math.round(pct) + '%';
+      out += '<rect x="' + lx[gi] + '" y="6" width="10" height="10" rx="2" class="' + g[2] + '"/>' +
+        '<text x="' + (lx[gi] + 15) + '" y="15" class="c-legend-num">' + g[0] + ' <tspan class="c-tick">\u00b7 ' + pctTxt + '</tspan></text>' +
+        '<text x="' + (lx[gi] + 15) + '" y="30" class="c-tick is-start">' + g[1] + '</text>';
+    });
+    var idx = 0;
+    groups.forEach(function (g) {
+      for (var j = 0; j < g[0]; j++, idx++) {
+        var c = idx % cols, r = Math.floor(idx / cols);
+        out += '<rect x="' + (gx + c * step).toFixed(1) + '" y="' + (gy + r * step).toFixed(1) + '" width="' + cell + '" height="' + cell + '" rx="1.5" class="' + g[2] + ' pop-in" style="--d:' + (r * 0.035).toFixed(2) + 's"/>';
+      }
+    });
+    return out + '</svg>';
   }
 
-  // 4.e Scatter / distribution figure for 3.5 TB/day metric
+  // 4.e 3.5 TB/day against the warehouse size, plus the month it adds up to.
   function generateScatterSVG(metric) {
-    var meanVal = (metric && has(metric.value)) ? String(metric.value) : '3.5';
-    var unit = (metric && has(metric.unit)) ? String(metric.unit) : 'TB/day';
-    var baselineY = 105;
-    var meanY = 58;
-
-    var dots = [[30,80,4],[45,55,5],[60,90,3],[75,40,5.5],[90,70,4],[105,45,5],[120,75,4],[135,35,6.5],[150,65,5],[165,50,5.5],[180,85,3.5],[195,60,5],[210,40,5.5],[225,70,4],[240,95,3]];
-
-    var dotMarkup = dots.map(function (d) { return '<circle cx="' + d[0] + '" cy="' + d[1] + '" r="' + d[2] + '" class="scatter-dot' + (d[0] === 135 ? ' dot-peak' : '') + '" />'; }).join('');
-
-    return '<svg class="chart-svg scatter-svg" viewBox="0 0 260 140" role="img" aria-labelledby="sc-title sc-desc">' +
-      '<title id="sc-title">Warehouse daily query scan distribution averaging ' + esc(meanVal) + ' ' + esc(unit) + '</title>' +
-      '<desc id="sc-desc">Daily query workload distribution across 24 hours averaging ' + esc(meanVal) + ' ' + esc(unit) + ' on-demand with peak batch processing windows.</desc>' +
-      '<line x1="20" y1="' + baselineY + '" x2="250" y2="' + baselineY + '" class="baseline-line" />' +
-      '<line x1="20" y1="25" x2="20" y2="' + baselineY + '" class="axis-line" />' +
-      '<line x1="20" y1="' + meanY + '" x2="250" y2="' + meanY + '" class="mean-line" />' +
-      '<text x="250" y="16" text-anchor="end" class="mean-label">Mean: ' + esc(meanVal) + ' ' + esc(unit) + ' (on-demand)</text>' +
-      dotMarkup +
-      '<text x="30" y="123" class="svg-axis-label"><tspan class="step-num">01</tspan> 00:00</text>' +
-      '<text x="135" y="123" class="svg-axis-label"><tspan class="step-num">02</tspan> 12:00</text>' +
-      '<text x="240" y="123" class="svg-axis-label"><tspan class="step-num">03</tspan> 24:00</text>' +
-      '</svg>';
+    var perDay = parseFloat(metric && metric.value) || 3.5;
+    var sc = (metric && metric.scope) || '';
+    var stored = numIn(sc, /holds\s+([\d.]+)\s*TB/, 2.7);
+    var month = numIn(sc, /about\s+([\d,.]+)\s*TB a month/, 105);
+    var ratio = (perDay / stored).toFixed(1);
+    var L = 4, R = 296, px = (R - L) / perDay;
+    var out = svgOpen('scatter-svg scan2', 300, 168, 'sc',
+      perDay + ' TB scanned per day against ' + stored + ' TB stored',
+      'The warehouse stores ' + stored + ' TB. Queries scan ' + perDay + ' TB every day, about ' + ratio + ' times the whole warehouse, roughly ' + month + ' TB a month.');
+    out += '<text x="' + L + '" y="14" class="c-row-label is-start">Stored in the warehouse</text>' +
+      '<rect x="' + L + '" y="20" width="' + (stored * px).toFixed(1) + '" height="18" rx="3" class="scan-stored grow-x"/>' +
+      '<text x="' + (L + stored * px - 6).toFixed(1) + '" y="33" class="c-in-label is-end">' + stored + ' TB</text>' +
+      '<text x="' + L + '" y="60" class="c-row-label is-start is-accent">Scanned every day</text>' +
+      '<rect x="' + L + '" y="66" width="' + (perDay * px).toFixed(1) + '" height="18" rx="3" class="scan-day grow-x" style="--d:.3s"/>' +
+      '<text x="' + (R - 6) + '" y="79" class="c-in-label is-end is-onaccent">' + perDay + ' TB</text>' +
+      '<line x1="' + (L + stored * px).toFixed(1) + '" y1="16" x2="' + (L + stored * px).toFixed(1) + '" y2="90" class="c-marker"/>' +
+      '<text x="' + L + '" y="104" class="c-callout fade-in" style="--d:.8s">\u2248' + ratio + '\u00d7 the whole warehouse, every day</text>';
+    var days = 30, gap = 2, w = (R - L - gap * (days - 1)) / days;
+    out += '<text x="' + L + '" y="126" class="c-row-label is-start">One month</text>' +
+      '<text x="' + R + '" y="126" class="c-tick is-end">\u2248' + fmt(month) + ' TB</text>';
+    for (var i = 0; i < days; i++) {
+      out += '<rect x="' + (L + i * (w + gap)).toFixed(1) + '" y="132" width="' + w.toFixed(1) + '" height="16" rx="1.5" class="scan-dayblock pop-in" style="--d:' + (0.5 + i * 0.025).toFixed(3) + 's"/>';
+    }
+    out += '<text x="' + L + '" y="162" class="c-tick is-start">one block = one day</text>';
+    return out + '</svg>';
   }
 
   // 4.c Data pipeline map band: 9 nodes in 4 stages.
@@ -354,11 +404,30 @@
     return out;
   }
 
+  // Throughput rail under the desktop pipeline: one measured figure per stage,
+  // every number read from the metric scope sentences in config.js.
+  function pipeRail() {
+    var m = arr(get('metrics', []));
+    var s121 = (m[3] && m[3].scope) || '', s35 = (m[4] && m[4].scope) || '';
+    var srcT = numIn(s121, /([\d,]+)\s+source tables/, 159);
+    var loads = numIn(s121, /about\s+([\d,]+)\s+table loads/, 2900);
+    var tb = numIn(s35, /holds\s+([\d.]+)\s*TB/, 2.7);
+    var nt = numIn(s35, /roughly\s+([\d,]+)\s+tables/, 3800);
+    var hourly = parseInt(m[3] && m[3].value, 10) || 121;
+    var items = [[78, fmt(srcT) + ' source tables'], [255, '\u2248' + fmt(loads) + ' loads / day'], [450, tb + ' TB \u00b7 ' + fmt(nt) + ' tables'], [655, hourly + ' tables every hour']];
+    var out = '<line x1="40" y1="178" x2="800" y2="178" class="pipe-rail"/>';
+    items.forEach(function (it, i) {
+      out += '<circle cx="' + it[0] + '" cy="178" r="3" class="pipe-rail-dot"/>' +
+        '<text x="' + it[0] + '" y="200" class="pipe-rail-label fade-in" style="--d:' + (0.6 + i * 0.15) + 's">' + it[1] + '</text>';
+    });
+    return out;
+  }
+
   function generatePipelineSVG() {
     // Desktop: existing geometry, untouched.
     var desktopSVG =
       '<svg class="chart-svg pipeline-svg pipeline-desktop"' +
-      ' viewBox="0 0 820 190" role="img" aria-labelledby="pipe-title pipe-desc">' +
+      ' viewBox="0 0 820 222" role="img" aria-labelledby="pipe-title pipe-desc">' +
       '<title id="pipe-title">Data platform pipeline from sources to governance and BI</title>' +
       '<desc id="pipe-desc">Architecture pipeline diagram: 9 nodes in 4 stages connected by right-angled paths.' +
       ' Sources: Postgres, Webhook APIs, Event logs.' +
@@ -369,15 +438,16 @@
       '<text x="255" y="18" class="pipe-stage-label"><tspan class="step-num">02</tspan> Ingestion</text>' +
       '<text x="450" y="18" class="pipe-stage-label"><tspan class="step-num">03</tspan> Warehouse and models</text>' +
       '<text x="655" y="18" class="pipe-stage-label"><tspan class="step-num">04</tspan> Governance and BI</text>' +
-      '<path d="M 60 44 H 160 V 70 H 255" class="pipe-connector" />' +
-      '<path d="M 60 92 H 160 V 70 H 255" class="pipe-connector" />' +
-      '<path d="M 60 140 H 160 V 128 H 255" class="pipe-connector" />' +
-      '<path d="M 255 70 H 450" class="pipe-connector" />' +
-      '<path d="M 255 128 H 350 V 70 H 450" class="pipe-connector" />' +
-      '<path d="M 450 70 V 128" class="pipe-connector" />' +
-      '<path d="M 450 128 H 550 V 54 H 655" class="pipe-connector" />' +
-      '<path d="M 450 128 H 550 V 136 H 655" class="pipe-connector" />' +
+      '<path d="M 60 44 H 160 V 70 H 255" class="pipe-connector draw-in" pathLength="1" />' +
+      '<path d="M 60 92 H 160 V 70 H 255" class="pipe-connector draw-in" pathLength="1" />' +
+      '<path d="M 60 140 H 160 V 128 H 255" class="pipe-connector draw-in" pathLength="1" />' +
+      '<path d="M 255 70 H 450" class="pipe-connector draw-in" pathLength="1" />' +
+      '<path d="M 255 128 H 350 V 70 H 450" class="pipe-connector draw-in" pathLength="1" />' +
+      '<path d="M 450 70 V 128" class="pipe-connector draw-in" pathLength="1" />' +
+      '<path d="M 450 128 H 550 V 54 H 655" class="pipe-connector draw-in" pathLength="1" />' +
+      '<path d="M 450 128 H 550 V 136 H 655" class="pipe-connector draw-in" pathLength="1" />' +
       pipeNodeMarkup(PIPE_DESKTOP_XY, false) +
+      pipeRail() +
       '</svg>';
 
     // Phone layout: 4 stage rows stacked vertically, viewBox 360x350.
@@ -417,9 +487,9 @@
       pipeNodeMarkup(PIPE_PHONE_XY, true, 0, 3) +
 
       // S1->S2 connectors: nodes 01+02 elbow to Airflow at x=140; node 03 elbows to CloudStorage at x=270
-      '<path d="M 105 48 V 83 H 140 V 100" class="pipe-connector" />' +
-      '<path d="M 200 48 V 83 H 140 V 100" class="pipe-connector" />' +
-      '<path d="M 295 48 V 83 H 270 V 100" class="pipe-connector" />' +
+      '<path d="M 105 48 V 83 H 140 V 100" class="pipe-connector draw-in" pathLength="1" />' +
+      '<path d="M 200 48 V 83 H 140 V 100" class="pipe-connector draw-in" pathLength="1" />' +
+      '<path d="M 295 48 V 83 H 270 V 100" class="pipe-connector draw-in" pathLength="1" />' +
 
       // Stage 02: Ingestion
       '<text x="6" y="115" class="pipe-stage-label pipe-stage-label-phone">' +
@@ -428,9 +498,9 @@
       pipeNodeMarkup(PIPE_PHONE_XY, true, 3, 2) +
 
       // S2->S3 connectors: Airflow(140) straight to BigQuery(140); CloudStorage(270) splits
-      '<path d="M 140 141 V 176 H 140 V 193" class="pipe-connector" />' +
-      '<path d="M 270 141 V 176 H 140 V 193" class="pipe-connector" />' +
-      '<path d="M 270 141 V 193" class="pipe-connector" />' +
+      '<path d="M 140 141 V 176 H 140 V 193" class="pipe-connector draw-in" pathLength="1" />' +
+      '<path d="M 270 141 V 176 H 140 V 193" class="pipe-connector draw-in" pathLength="1" />' +
+      '<path d="M 270 141 V 193" class="pipe-connector draw-in" pathLength="1" />' +
 
       // Stage 03: Warehouse and models
       '<text x="6" y="208" class="pipe-stage-label pipe-stage-label-phone">' +
@@ -439,11 +509,11 @@
       pipeNodeMarkup(PIPE_PHONE_XY, true, 5, 2) +
 
       // BigQuery->dbt intra-stage horizontal connector
-      '<path d="M 147 228 H 264" class="pipe-connector" />' +
+      '<path d="M 147 228 H 264" class="pipe-connector draw-in" pathLength="1" />' +
 
       // S3->S4 connectors: dbt(270) fans to Dataplex(140) + BI(270)
-      '<path d="M 270 234 V 269 H 140 V 286" class="pipe-connector" />' +
-      '<path d="M 270 234 V 286" class="pipe-connector" />' +
+      '<path d="M 270 234 V 269 H 140 V 286" class="pipe-connector draw-in" pathLength="1" />' +
+      '<path d="M 270 234 V 286" class="pipe-connector draw-in" pathLength="1" />' +
 
       // Stage 04: Governance and BI
       '<text x="6" y="301" class="pipe-stage-label pipe-stage-label-phone">' +
@@ -455,66 +525,58 @@
     return '<div class="pipeline-svg-pair">' + desktopSVG + phoneSVG + '</div>';
   }
 
-  // 4.d Tests matrix: 908 automated dbt tests in a dense grid.
-  // Returns an SVG element string only (no wrapper div).
+  // 4.d Tests: 908 squares grouped in blocks of 100 so the count reads at a glance.
   function generateTestsMatrixSVG(tests, note) {
-    var colsTests = 41;
-    var rows = Math.ceil(tests / colsTests);
-    var svgH = 28 + rows * 6.8 + 12;
-    var cellMarkup = '';
-    var startX = 8;
-    var startY = 24;
-    var stepX = 5.0;
-    var stepY = 6.8;
-    var w = 4.0;
-    var h = 4.4;
-
+    var models = parseInt(get('metrics.2.value', '599'), 10) || 599;
+    var per = (tests / models).toFixed(1);
+    var bw = 10, cell = 4.2, step = 5, blockW = bw * step, gapB = 7.5, perRow = 5;
+    var blocks = Math.ceil(tests / 100);
+    var top = 34;
+    var blockRows = Math.ceil(blocks / perRow);
+    var H = top + blockRows * (blockW + 8) + 8;
+    var out = svgOpen('quality-svg quality-tests-svg tests2', 280, H, 'qm-tests',
+      'Automated dbt tests: ' + tests + ' total',
+      tests + ' automated dbt tests, about ' + per + ' per model, drawn as blocks of 100. ' + note);
+    out += '<text x="0" y="13" class="matrix-stage-title"><tspan class="step-num">01</tspan> Automated dbt tests</text>' +
+      '<text x="280" y="13" class="matrix-count-badge" text-anchor="end">' + fmt(tests) + '</text>' +
+      '<text x="0" y="27" class="c-tick is-start">\u2248' + per + ' tests per model \u00b7 one block = 100</text>';
     for (var i = 0; i < tests; i++) {
-      var c = i % colsTests;
-      var r = Math.floor(i / colsTests);
-      var cx = (startX + c * stepX).toFixed(1);
-      var cy = (startY + r * stepY).toFixed(1);
-      cellMarkup += '<rect x="' + cx + '" y="' + cy + '" width="' + w + '" height="' + h + '" rx="0.5" class="cell-test"/>';
+      var b = Math.floor(i / 100), k = i % 100;
+      var bx = (b % perRow) * (blockW + gapB), by = top + Math.floor(b / perRow) * (blockW + 8);
+      out += '<rect x="' + (bx + (k % bw) * step).toFixed(1) + '" y="' + (by + Math.floor(k / bw) * step).toFixed(1) + '" width="' + cell + '" height="' + cell + '" rx=".6" class="cell-test pop-in" style="--d:' + (b * 0.08).toFixed(2) + 's"/>';
     }
-
-    return '<svg class="chart-svg quality-svg quality-tests-svg" viewBox="0 0 220 ' + svgH.toFixed(0) + '" role="img" aria-labelledby="qm-tests-title qm-tests-desc">' +
-      '<title id="qm-tests-title">Automated dbt tests: ' + esc(tests) + ' total</title>' +
-      '<desc id="qm-tests-desc">' + esc(tests) + ' automated dbt tests. ' + esc(note) + '</desc>' +
-      '<text x="8" y="13" class="matrix-stage-title"><tspan class="step-num">01</tspan> Automated dbt tests</text>' +
-      '<text x="212" y="13" class="matrix-count-badge" text-anchor="end">' + esc(tests) + '</text>' +
-      cellMarkup +
-      '</svg>';
+    var rem = tests % 100;
+    if (rem) {
+      var lb = Math.floor(tests / 100);
+      var lx = (lb % perRow) * (blockW + gapB), ly = top + Math.floor(lb / perRow) * (blockW + 8);
+      out += '<rect x="' + lx + '" y="' + ly + '" width="' + (blockW - 1) + '" height="' + (blockW - 1) + '" rx="2" class="c-track"/>' +
+        '<text x="' + (lx + blockW / 2) + '" y="' + (ly + blockW / 2 + 6) + '" class="c-in-label is-mid">+' + rem + '</text>';
+    }
+    return out + '</svg>';
   }
 
-  // 4.d Tables matrix: 121 hourly tables in a compact grid.
-  // Returns an SVG element string only (no wrapper div).
+  // 4.d Tables: a 24-hour clock. Every hour the same 121 tables refresh.
   function generateTablesMatrixSVG(tables, note) {
-    var colsTables = 11;
-    var rows = Math.ceil(tables / colsTables);
-    var svgH = 28 + rows * 14.0 + 12;
-    var cellMarkup = '';
-    var startX = 8;
-    var startY = 24;
-    var stepTX = 19.0;
-    var stepTY = 14.0;
-    var tw = 14.0;
-    var th = 11.0;
-
-    for (var j = 0; j < tables; j++) {
-      var tc = j % colsTables;
-      var tr = Math.floor(j / colsTables);
-      var tcx = (startX + tc * stepTX).toFixed(1);
-      var tcy = (startY + tr * stepTY).toFixed(1);
-      cellMarkup += '<rect x="' + tcx + '" y="' + tcy + '" width="' + tw + '" height="' + th + '" rx="1" class="cell-table"/>';
+    var perDay = numIn(note, /about\s+([\d,]+)\s+table loads a day/, tables * 24);
+    var cx = 140, cy = 128, r1 = 96, r0 = 66, H = 236;
+    var out = svgOpen('quality-svg quality-tables-svg clock24', 280, H, 'qm-tables',
+      'Hourly tables: ' + tables + ' total',
+      tables + ' tables refresh every hour, 24 times a day, about ' + fmt(perDay) + ' table loads a day. ' + note);
+    out += '<text x="0" y="13" class="matrix-stage-title"><tspan class="step-num">02</tspan> Hourly tables</text>' +
+      '<text x="280" y="13" class="matrix-count-badge" text-anchor="end">' + tables + '</text>';
+    function pt(r, a) { return (cx + r * Math.sin(a)).toFixed(1) + ' ' + (cy - r * Math.cos(a)).toFixed(1); }
+    for (var h = 0; h < 24; h++) {
+      var a0 = (h / 24) * Math.PI * 2 + 0.03, a1 = ((h + 1) / 24) * Math.PI * 2 - 0.03;
+      out += '<path d="M ' + pt(r0, a0) + ' L ' + pt(r1, a0) + ' A ' + r1 + ' ' + r1 + ' 0 0 1 ' + pt(r1, a1) + ' L ' + pt(r0, a1) + ' A ' + r0 + ' ' + r0 + ' 0 0 0 ' + pt(r0, a0) + ' Z" class="cell-table pop-in" style="--d:' + (h * 0.04).toFixed(2) + 's"><title>' + String(h).padStart(2, '0') + ':00 \u00b7 ' + tables + ' tables</title></path>';
     }
-
-    return '<svg class="chart-svg quality-svg quality-tables-svg" viewBox="0 0 220 ' + svgH.toFixed(0) + '" role="img" aria-labelledby="qm-tables-title qm-tables-desc">' +
-      '<title id="qm-tables-title">Hourly tables: ' + esc(tables) + ' total</title>' +
-      '<desc id="qm-tables-desc">' + esc(tables) + ' tables refreshed every hour. ' + esc(note) + '</desc>' +
-      '<text x="8" y="13" class="matrix-stage-title"><tspan class="step-num">02</tspan> Hourly tables</text>' +
-      '<text x="212" y="13" class="matrix-count-badge" text-anchor="end">' + esc(tables) + '</text>' +
-      cellMarkup +
-      '</svg>';
+    [[0, '00'], [6, '06'], [12, '12'], [18, '18']].forEach(function (t) {
+      var a = t[0] / 24 * Math.PI * 2, p = pt(r1 + 11, a).split(' ');
+      out += '<text x="' + p[0] + '" y="' + (parseFloat(p[1]) + 4).toFixed(1) + '" class="c-tick is-mid">' + t[1] + '</text>';
+    });
+    out += '<text x="' + cx + '" y="' + (cy - 4) + '" class="clock-num">' + tables + '</text>' +
+      '<text x="' + cx + '" y="' + (cy + 18) + '" class="c-tick is-mid">tables / hour</text>' +
+      '<text x="' + cx + '" y="' + (cy + 34) + '" class="c-tick is-mid is-accent">\u2248' + fmt(perDay) + ' / day</text>';
+    return out + '</svg>';
   }
 
   // --- Hero Section --------------------------------------------------
@@ -878,7 +940,32 @@
 
   // --- Motion / Reveal -----------------------------------------------
 
+  function initChartMotion() {
+    var charts = document.querySelectorAll('.chart-svg');
+    // Connectors go underneath nodes and labels so a line never strikes text.
+    for (var c = 0; c < charts.length; c++) {
+      var lines = charts[c].querySelectorAll('.pipe-connector');
+      var anchor = charts[c].querySelector('desc');
+      for (var l = lines.length - 1; l >= 0; l--) {
+        if (anchor && anchor.nextSibling) charts[c].insertBefore(lines[l], anchor.nextSibling);
+      }
+    }
+    var reduced = false;
+    try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+    if (reduced || typeof window.IntersectionObserver === 'undefined') return;
+    document.documentElement.classList.add('chart-anim');
+    var io = new IntersectionObserver(function (entries) {
+      for (var k = 0; k < entries.length; k++) {
+        if (!entries[k].isIntersecting) continue;
+        entries[k].target.classList.add('in');
+        io.unobserve(entries[k].target);
+      }
+    }, { threshold: 0.25 });
+    for (var i = 0; i < charts.length; i++) io.observe(charts[i]);
+  }
+
   function initReveal() {
+    initChartMotion();
     var nodes = document.querySelectorAll('.reveal');
     var reduced = false;
     try {
