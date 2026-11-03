@@ -61,3 +61,14 @@ git push
 ```
 
 The site is live at https://idzharulhuda.com/ about a minute later.
+
+## Static copy for crawlers (run after every `config.js` edit)
+
+Most AI crawlers and some search crawlers do not run JavaScript, so the landing-page bands that
+`script.js` builds from `config.js` are also baked into `index.html` between
+`<!-- prerender:ID -->` markers, and `llms.txt` is generated from the same render plus the page metadata.
+
+    python3 tools/build_static.py          # rewrite index.html + llms.txt
+    python3 tools/build_static.py --check  # exit 1 when either is stale
+
+At runtime `script.js` replaces those containers with identical markup, so visitors see no change.

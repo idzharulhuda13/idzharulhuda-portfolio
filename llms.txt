@@ -1,0 +1,43 @@
+# Idzharul Huda
+
+> Data infrastructure engineer in Jakarta. Pipelines, BigQuery cost optimization, dbt, and headless reporting.
+
+Idzharul Huda is a data and analytics engineer in Jakarta, Indonesia, working through an independent practice. The practice builds data platforms end to end and rescues the ones already running: ingestion, warehouse modeling, orchestration, and the reports people open every day.
+
+The work is done personally, from the first call to the handover. Engagements usually start from one platform problem, an assessment of something already running, or a delivery that has to land inside the tools a team already uses. The four services on the home page describe how they usually begin.
+
+Alongside client work the practice ships its own products. RaschLab, a platform for Rasch model calibration and item analysis, is the first: in pilot since September 2026, built on an engine checked against Winsteps output for parity on identical input.
+
+## Facts
+
+- Practice: Independent data and analytics engineering practice
+- Run by: Idzharul Huda, analytics engineer in Jakarta
+- Founded: 2026
+- Based in: Jakarta, Indonesia (UTC+7)
+- Works in: Indonesian and English
+- Products: RaschLab, in pilot since September 2026
+- Contact: hello@idzharulhuda.com
+
+## Pages
+
+- [Idzharul Huda](https://idzharulhuda.com/): Data infrastructure engineer in Jakarta. Pipelines, BigQuery cost optimization, dbt, and headless reporting.
+- [About](https://idzharulhuda.com/about.html): Idzharul Huda is an independent data and analytics engineering practice in Jakarta: platforms built end to end, platforms rescued, and RaschLab as its first product.
+- [Changelog](https://idzharulhuda.com/changelog.html): Dated entries for the practice site and the products behind it, newest first.
+
+## Case studies
+
+- [BigQuery Pipeline Optimization](https://idzharulhuda.com/projects/bigquery-pipeline-optimization.html): A critical datamart query was consuming 96%+ of BigQuery slot time, bottlenecking every report downstream of it and driving cloud cost up.
+- [Clinic Incentives Dashboard](https://idzharulhuda.com/projects/clinic-incentives-dashboard.html): Google Apps Script sidebar dashboard bound to a dental practice's cashier workbook: month-filtered KPIs, a revenue trend and a target held in a Config tab, with no write-back.
+- [Dataverse - Conversational AI Analytics](https://idzharulhuda.com/projects/dataverse-conversational-ai-analytics.html): Business users needed ad-hoc analysis but lacked SQL skills, so analysts spent hours writing queries for simple questions.
+- [DBT + Metabase Self-Serve Analytics](https://idzharulhuda.com/projects/dbt-metabase-self-serve-analytics.html): 15 analysts spent 2+ hours daily running manual reports from Google Sheets.
+- [Hourly Incentive Reporting Pipeline](https://idzharulhuda.com/projects/hourly-incentive-reporting-pipeline.html): Multi-source sync that pulls eight SQL cards into one Google Sheets workbook on an hourly trigger, with frozen weeks and audited divergences.
+- [Incentive Performance Dashboard](https://idzharulhuda.com/projects/incentive-performance-dashboard.html): Google Apps Script web app over the incentive workbook: pick a week and read per-person and per-team numbers, read-only, with a diagnostics panel instead of silent zeros.
+- [Internal Data Request and Catalogue Platform](https://idzharulhuda.com/projects/internal-data-request-platform.html): A platform for teams outside the data function to file, follow and audit data requests, with the asset catalogue and pipeline health in the same place.
+- [RaschLab](https://idzharulhuda.com/projects/raschlab.html): A Python toolkit that reproduces a legacy item-response tool's output on real assessment datasets, with every table column gated against committed reference fixtures.
+- [Telehealth Cost-Effectiveness Study](https://idzharulhuda.com/projects/telehealth-cost-effectiveness-study.html): A retrospective cost analysis of telehealth-powered managed care against conventional in-person care for acute respiratory infection, published and presented at ICOPH 2024.
+
+## Optional
+
+- [Resume (PDF)](https://idzharulhuda.com/resume.pdf)
+- [GitHub](https://github.com/idzharulhuda13)
+- [LinkedIn](https://id.linkedin.com/in/idzharulhuda)
